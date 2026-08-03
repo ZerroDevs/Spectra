@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroNuxs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #7928ca, #021f9e); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="white" stroke-width="2" fill="none">
+                            <path d="M9 12l2 2 4-4"></path>
+                            <circle cx="12" cy="12" r="10"></circle>
+                        </svg>
+                    </div>
+                    <h2 style="font-size: 1.1rem; font-weight: 700; margin: 0; background: linear-gradient(135deg, #7928ca, #11019e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Multi Check</h2>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                    <button id="dashboard-btn" class="icon-btn" title="Dashboard" style="width: 32px; height: 32px; border-radius: 6px; background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2);">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </button>
+                    <button id="theme-toggle-btn" class="icon-btn" title="Toggle Theme" style="width: 32px; height: 32px; border-radius: 6px; background: rgba(79, 70, 229, 0.1); border: 1px solid rgba(79, 70, 229, 0.2);">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2"
+                            fill="none">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </button>
+                    <button id="add-tab-btn" class="icon-btn" title="Add Tab" style="width: 32px; height: 32px; border-radius: 6px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(99, 102, 241, 0.15)); border: 1px solid rgba(79, 70, 229, 0.3);">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2"
+                            fill="none">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="workspace-selector">
+                <div class="workspace-selector-header">
+                    <span class="workspace-label" style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Workspace</span>
+                    <button id="manage-workspaces-btn" class="icon-btn small" title="Manage Workspaces" style="width: 28px; height: 28px; border-radius: 6px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2);">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="workspace-dropdown-wrapper">
+                    <button id="workspace-dropdown-btn" class="workspace-dropdown-btn" style="background: rgba(79, 70, 229, 0.1); border: 1px solid rgba(79, 70, 229, 0.2); border-radius: 8px; padding: 10px 12px;">
+                        <span id="workspace-dropdown-label" style="font-weight: 600;">Default</span>
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div id="workspace-dropdown-menu" class="workspace-dropdown-menu hidden">
+                        <!-- Workspaces populated by JS -->
+                    </div>
+                </div>
+                <div id="workspace-tags" class="workspace-tags">
+                    <!-- Tags populated by JS -->
+                </div>
+            </div>
+            <ul class="tab-list" id="tab-list">
+                <!-- Tabs will be dynamically inserted here -->
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <button id="show-header-btn" class="show-header-tab hidden" title="Show Header">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+            <header class="top-bar">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button id="toggle-sidebar-btn" class="icon-btn" title="Toggle Sidebar" style="width: 36px; height: 36px; border-radius: 8px; background: rgba(79, 70, 229, 0.1); border: 1px solid rgba(79, 70, 229, 0.2);">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2"
+                            fill="none">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <div style="display: flex; align-items: center; gap: 10px; padding-left: 8px; border-left: 1px solid var(--glass-border);">
+                        <h1 id="current-tab-title" style="font-size: 1.1rem; font-weight: 600; margin: 0;">Tab 1</h1>
+                        <span id="page-state-indicator" class="page-state-indicator">Multi Checker</span>
+                    </div>
+                    <div id="save-status" class="save-status" aria-live="polite" style="margin-left: auto;">Autosaved</div>
+                </div>
+                <div class="actions" style="display: flex; align-items: center; gap: 8px;">
+                    <button id="view-toggle-btn" class="secondary-btn"
+                        style="padding: 8px 16px; font-weight: 600; font-size: 0.85rem; border-radius: 8px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(99, 102, 241, 0.15)); border: 1px solid rgba(79, 70, 229, 0.3);">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align: middle; margin-right: 6px;">
+                            <path d="M12 2v20M2 12h20"></path>
+                        </svg>
+                        Ban Generator
+                    </button>
+                    <button id="clear-all-btn" class="secondary-btn" title="Clear All Data in Tab"
+                        style="padding: 8px 14px; font-size: 0.85rem; border-radius: 8px; color: #ef4444; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.1);">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align: middle; margin-right: 6px;">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Clear All
+                    </button>
+                    <div style="width: 1px; height: 24px; background: var(--glass-border); margin: 0 4px;"></div>
+                    <button id="toggle-hover-btn" class="icon-btn" title="Toggle Hover Copy" style="width: 32px; height: 32px; border-radius: 6px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2"
+                            fill="none">
+                            <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path>
+                            <path d="M13 13l6 6"></path>
+                        </svg>
+                    </button>
+                    <button id="hide-header-btn" class="icon-btn" title="Hide Header" style="width: 32px; height: 32px; border-radius: 6px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2"
+                            fill="none">
+                            <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                    </button>
+                    <button id="editor-theme-btn" class="secondary-btn" title="Toggle Writing Space Theme"
+                        style="margin-right: 10px; padding: 8px 12px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2"
+                            fill="none" style="vertical-align: middle;">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </button>
+                    <button id="process-btn" class="primary-btn">Process Data</button>
+                </div>
+            </header>
+
+            <div class="editor-container" id="editor-container">
+                <div class="pane" id="input-pane">
+                    <label style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                        <span>Input (Raw Data)</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <label
+                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">
+                                <input type="checkbox" id="auto-process-toggle"
+                                    style="accent-color: var(--primary-color);"> Process
+                            </label>
+                            <div
+                                style="display: flex; align-items: center; gap: 2px; border: 1px solid var(--glass-border); border-radius: 6px; overflow: hidden;">
+                                <button id="font-dec-btn" class="icon-btn small"
+                                    style="border-radius:0; border:none; padding: 3px 7px; font-size:0.8rem; font-weight:bold;"
+                                    title="Decrease font size">A-</button>
+                                <span id="font-size-display"
+                                    style="font-size:0.78rem; color:var(--text-muted); padding: 0 5px; min-width:28px; text-align:center;">100%</span>
+                                <button id="font-inc-btn" class="icon-btn small"
+                                    style="border-radius:0; border:none; padding: 3px 7px; font-size:0.8rem; font-weight:bold;"
+                                    title="Increase font size">A+</button>
+                            </div>
+                            <button id="clear-input-btn" class="icon-btn small" style="color: #ef4444;">Clear</button>
+                        </div>
+                    </label>
+                    <div class="textarea-wrapper">
+                        <div class="line-numbers" id="input-lines">1</div>
+                        <textarea id="input-area" wrap="off" placeholder="Paste your data here..."></textarea>
+                    </div>
+                </div>
+                <div class="pane" id="output-pane">
+                    <label style="display: flex; justify-content: space-between; width: 100%;">
+                        <span>Output (Processed)</span>
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <label
+                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; margin-right: 5px;">
+                                <input type="checkbox" id="underscore-names-toggle"
+                                    style="accent-color: var(--primary-color);"> _Name
+                            </label>
+                            <label
+                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; margin-right: 5px;">
+                                <input type="checkbox" id="discord-code-toggle"
+                                    style="accent-color: var(--primary-color);"> Dis ```
+                            </label>
+                            <label
+                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; margin-right: 5px;"
+                                title="Toggle between (M)/(T) and M/T tag formats">
+                                <input type="checkbox" id="tag-format-toggle"
+                                    style="accent-color: var(--primary-color);"> No ()
+                            </label>
+                            <label id="kbd-shortcuts-label"
+                                style="display: flex; align-items: center; gap: 4px; font-size: 0.82rem; color: var(--text-muted); cursor: pointer; padding: 3px 5px; border-radius: 6px; transition: all 0.2s; border: 1px solid transparent; margin-right: 5px;"
+                                title="TAB=(M) ESC=Revert `=(T) 1=Non-RP  2=Fail-RP  3=Provoking  4=GR3.1  5=GR3.2">
+                                <input type="checkbox" id="kbd-shortcuts-toggle"
+                                    style="accent-color: var(--primary-color);"> ⌨ Hotkeys
+                            </label>
+                            <button id="clear-output-btn" class="icon-btn small" style="color: #ef4444;">Clear</button>
+                            <button id="toggle-fullscreen-btn" class="icon-btn small" title="Toggle Fullscreen Output">
+                                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2"
+                                    fill="none">
+                                    <path
+                                        d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+                                    </path>
+                                </svg>
+                            </button>
+                            <button id="true-fullscreen-btn" class="icon-btn small"
+                                title="True Fullscreen (Covers whole screen)">
+                                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2"
+                                    fill="none">
+                                    <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path>
+                                </svg>
+                            </button>
+                            <button id="toggle-stats-btn" class="icon-btn small" title="Toggle Stats Bar">Stats</button>
+                            <button id="export-btn" class="icon-btn small">Export</button>
+                            <button id="copy-ids-btn" class="icon-btn small">Copy IDs</button>
+                            <button id="copy-btn" class="icon-btn small">Copy</button>
+                        </div>
+                    </label>
+                    <div id="stats-bar" class="stats-bar" style="display: none;">
+                        <span id="stats-accounts"></span>
+                        <span class="stats-divider">|</span>
+                        <span id="stats-m"></span>
+                        <span class="stats-divider">|</span>
+                        <span id="stats-t"></span>
+                        <span class="stats-divider">|</span>
+                        <span id="stats-serials"></span>
+                        <span class="stats-divider">|</span>
+                        <span id="stats-griefers"></span>
+                        <span class="stats-divider">|</span>
+                        <span id="stats-size"></span>
+                    </div>
+                    <div id="griefer-alert-bar" class="griefer-alert-bar" style="display: none;">
+                        <span>🚨 <strong>Griefer Detected!</strong> Rule Breaks: <strong
+                                id="griefer-count"></strong></span>
+                        <div style="margin-left: auto; display: flex; gap: 8px;">
+                            <button id="griefer-copy-clean-btn" class="icon-btn small"
+                                style="background: white; color: var(--danger);">Copy without griefing title</button>
+                            <button id="griefer-copy-ids-btn" class="icon-btn small"
+                                style="background: white; color: var(--danger);">Copy IDs</button>
+                            <button id="griefer-copy-accounts-btn" class="icon-btn small"
+                                style="background: white; color: var(--danger);">Copy Accounts</button>
+                            <button id="griefer-copy-btn" class="icon-btn small"
+                                style="background: white; color: var(--danger);">Copy Lines</button>
+                        </div>
+                    </div>
+                    <div class="shortcuts">
+                        <div class="button-group">
+                            <button class="group-toggle" data-group="regular" title="Toggle quick tags">
+                                <span class="group-icon">⚡</span>
+                                <span class="group-label">Quick</span>
+                            </button>
+                            <div class="group-buttons" id="regular-buttons">
+                                <button class="shortcut-btn" id="revert-btn" title="Revert Last Action"
+                                    style="display: flex; align-items: center; justify-content: center; padding: 6px;">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2"
+                                        fill="none">
+                                        <path d="M3 14h12a5 5 0 0 0 5-5v0a5 5 0 0 0-5-5H3"></path>
+                                        <path d="M7 18L3 14l4-4"></path>
+                                    </svg>
+                                </button>
+                                <button class="shortcut-btn" data-text="(Non-RP) !!">Non-RP</button>
+                                <button class="shortcut-btn" data-text="(Fail-RP) !!">Fail-RP</button>
+                                <button class="shortcut-btn" data-text="(Provoking) !!">Provoking</button>
+                                <button class="shortcut-btn" data-text="(GR3.1) !!">GR3.1</button>
+                                <button class="shortcut-btn" data-text="(GR3.2) !!">GR3.2</button>
+                                <button class="shortcut-btn" data-text="(DM) !!">DM</button>
+                                <button class="shortcut-btn" data-text="(T)">(T)</button>
+                            </div>
+                        </div>
+                        <div class="button-group">
+                            <button class="group-toggle mort-toggle" data-group="mort" title="Toggle tools">
+                                <span class="group-icon">🔧</span>
+                                <span class="group-label">Tools</span>
+                            </button>
+                            <div class="group-buttons" id="mort-buttons">
+                                <button class="shortcut-btn mort-btn" id="mort-btn">(M)or(T) Detector</button>
+                                <button class="shortcut-btn mort-btn" id="rank-age-btn" title="Highlight a serial block to rank">Rank by Age</button>
+                                <button class="shortcut-btn mort-btn" id="serial-ids-btn" title="Add M/T IDs next to serials">Serial IDs</button>
+                                <button class="shortcut-btn mort-btn" id="remove-duplicates-btn" title="Remove duplicate accounts/serials">Remove Duplicates</button>
+                                <button class="shortcut-btn mort-btn" id="merge-data-btn" title="Add new accounts to existing output">Merge New Data</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="search-bar-row" id="search-bar-row">
+                        <div class="search-input-wrap">
+                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2"
+                                fill="none">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" id="search-input" placeholder="Search name, ID, serial..."
+                                autocomplete="off">
+                            <span id="search-count"></span>
+                            <button id="search-prev-btn" class="icon-btn" title="Previous match">&#8593;</button>
+                            <button id="search-next-btn" class="icon-btn" title="Next match">&#8595;</button>
+                            <button id="search-clear-btn" class="icon-btn" title="Clear search">&#10005;</button>
+                        </div>
+                    </div>
+                    <div class="textarea-wrapper">
+                        <div class="line-numbers" id="output-lines">1</div>
+                        <div class="editor-content"
+                            style="position: relative; flex: 1; display: flex; overflow: hidden; background: transparent;">
+                            <div id="output-mirror" class="textarea-mirror"></div>
+                            <textarea id="output-area" wrap="off" placeholder="Result will appear here..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ban Generator View -->
+            <div class="editor-container" id="ban-generator-view" style="display: none; flex-direction: column;">
+                <div
+                    style="padding: 15px 20px; border-bottom: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 12px;">
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <label style="font-weight: 500; color: var(--text-muted); white-space: nowrap;">Preset:</label>
+                        <div class="preset-dropdown-wrapper" style="flex: 1;">
+                            <button id="ban-preset-btn" class="preset-dropdown-btn">
+                                <span id="ban-preset-label">Multi Account Griefing</span>
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                            <div id="ban-preset-menu" class="preset-dropdown-menu hidden">
+                                <!-- Presets populated by JS -->
+                            </div>
+                        </div>
+                        <label
+                            style="font-weight: 500; color: var(--text-muted); white-space: nowrap;">Duration:</label>
+                        <div class="duration-dropdown-wrapper" style="width: 80px;">
+                            <button id="ban-duration-btn" class="duration-dropdown-btn">
+                                <span id="ban-duration-label">60</span>
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                            <div id="ban-duration-menu" class="duration-dropdown-menu hidden">
+                                <div class="duration-dropdown-item" data-value="no">No</div>
+                                <div class="duration-dropdown-item" data-value="30">30</div>
+                                <div class="duration-dropdown-item" data-value="60">60</div>
+                            </div>
+                        </div>
+                        <button id="open-preset-builder-btn" class="secondary-btn"
+                            style="white-space: nowrap; padding: 8px 12px;">&#9881; Presets</button>
+                        <button id="import-from-tab-btn" class="secondary-btn"
+                            style="white-space: nowrap; padding: 8px 12px;">&#8601; Import Tab</button>
+                        <button id="ban-clear-btn" class="secondary-btn"
+                            style="white-space: nowrap; padding: 8px 12px; color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">&#10005;
+                            Clear</button>
+                        <button id="generate-bans-btn" class="primary-btn" style="white-space: nowrap;">Generate
+                            Bans</button>
+                    </div>
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <label
+                            style="display: flex; align-items: center; gap: 8px; color: var(--text-main); font-size: 0.95rem; cursor: pointer; white-space: nowrap; margin-right: 15px;">
+                            <input type="checkbox" id="ban-pending-checkbox"
+                                style="width: 16px; height: 16px; accent-color: var(--primary-color);">
+                            (Pending Perma)
+                        </label>
+                        <label
+                            style="display: flex; align-items: center; gap: 8px; color: var(--text-main); font-size: 0.95rem; cursor: pointer; white-space: nowrap;">
+                            <input type="checkbox" id="ban-by-checkbox"
+                                style="width: 16px; height: 16px; accent-color: var(--primary-color);">
+                            Append "By"
+                        </label>
+                        <label
+                            style="display: flex; align-items: center; gap: 8px; color: var(--text-main); font-size: 0.95rem; cursor: pointer; white-space: nowrap;">
+                            <input type="checkbox" id="ban-griefer-only-checkbox"
+                                style="width: 16px; height: 16px; accent-color: var(--danger);">
+                            Griefer Only
+                        </label>
+                        <label
+                            style="display: flex; align-items: center; gap: 8px; color: var(--text-main); font-size: 0.95rem; cursor: pointer; white-space: nowrap;">
+                            <input type="checkbox" id="ban-no-tag-checkbox"
+                                style="width: 16px; height: 16px; accent-color: var(--primary-color);">
+                            No Tag
+                        </label>
+                        <label
+                            style="display: flex; align-items: center; gap: 8px; color: var(--text-main); font-size: 0.95rem; cursor: pointer; white-space: nowrap; margin-right: 15px;">
+                            <input type="checkbox" id="ban-only-mort-checkbox"
+                                style="width: 16px; height: 16px; accent-color: var(--primary-color);">
+                            Only (M)or(T)
+                        </label>
+                        <label
+                            style="display: flex; align-items: center; gap: 8px; color: var(--text-main); font-size: 0.95rem; cursor: pointer; white-space: nowrap; margin-right: 15px; padding: 6px 12px; background: rgba(79, 70, 229, 0.1); border: 1px solid rgba(79, 70, 229, 0.2); border-radius: 6px;">
+                            <input type="checkbox" id="ban-manual-input-checkbox"
+                                style="width: 16px; height: 16px; accent-color: var(--primary-color);">
+                            Manual Input Mode
+                        </label>
+                        <input type="text" id="ban-admin-name" placeholder="Enter Admin Name (e.g. Tommy ZeroNuxs)"
+                            class="dropdown" style="flex: 1; padding: 8px 12px; cursor: text;">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; flex: 1; min-height: 0; overflow: hidden;">
+                    <div class="pane" style="border-right: 1px solid var(--glass-border); overflow: hidden; display: flex; flex-direction: column;">
+                        <label id="ban-input-label">Input (List of Accounts)</label>
+                        <div class="textarea-wrapper" id="ban-account-input-wrapper" style="flex: 1; display: flex;">
+                            <textarea id="ban-input-area" placeholder="Paste account list here..." style="height: 100%;"></textarea>
+                        </div>
+                        <div class="textarea-wrapper hidden" id="ban-manual-input-wrapper" style="flex: 1; display: none;">
+                            <textarea id="ban-manual-input-area" placeholder="Paste manual ban commands here...&#10;/ban player_name 60 GR 1.9 (reason)&#10;/ban another_player 60 GR 1.9 (reason)" style="height: 100%;"></textarea>
+                        </div>
+                    </div>
+                    <div class="pane" style="overflow: hidden; display: flex; flex-direction: column;">
+                        <label style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>Generated Commands <span id="ban-count-badge" class="ban-badge"
+                                    style="display:none;"></span></span>
+                            <div style="display: flex; gap: 5px;">
+                                <button id="ban-copy-next-btn" class="icon-btn small"
+                                    style="background: rgba(79, 70, 229, 0.15); color: var(--primary-color);">Copy
+                                    Next</button>
+                                <button id="ban-copy-btn" class="icon-btn small">Copy All</button>
+                            </div>
+                        </label>
+                        <div class="textarea-wrapper" style="flex: 1; min-height: 0;">
+                            <div class="line-numbers" id="ban-line-numbers" style="overflow-y: auto; scrollbar-width: none;">1</div>
+                            <div id="ban-output-area" class="ban-output-list"
+                                style="flex: 1; overflow-y: auto; padding: 10px 15px; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.9rem; line-height: 1.6; color: var(--text-main); white-space: pre-wrap; word-break: break-all;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Rename Modal -->
+    <div id="rename-modal" class="modal hidden">
+        <div class="modal-content glass">
+            <h3>Rename Tab</h3>
+            <input type="text" id="rename-input" placeholder="Tab Name">
+            <div class="modal-actions">
+                <button id="cancel-rename-btn" class="secondary-btn">Cancel</button>
+                <button id="save-rename-btn" class="primary-btn">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="delete-modal" class="modal hidden">
+        <div class="modal-content glass">
+            <h3>Delete Tab</h3>
+            <p style="color: var(--text-muted); margin-bottom: 25px; line-height: 1.5;">Are you sure you want to delete
+                this tab? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button id="cancel-delete-btn" class="secondary-btn">Cancel</button>
+                <button id="archive-delete-btn" class="secondary-btn">Archive</button>
+                <button id="confirm-delete-btn" class="primary-btn"
+                    style="background: var(--danger); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-modal" class="modal confirm-modal hidden">
+        <div class="modal-content glass">
+            <h3 id="confirm-modal-title">Are you sure?</h3>
+            <p id="confirm-modal-msg" style="color: var(--text-muted); margin-bottom: 25px; line-height: 1.5;"></p>
+            <div class="modal-actions">
+                <button id="confirm-modal-cancel" class="secondary-btn">Cancel</button>
+                <button id="confirm-modal-ok" class="primary-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Group Modal -->
+    <div id="create-group-modal" class="modal hidden">
+        <div class="modal-content glass" style="width: 400px;">
+            <h3>Create New Group</h3>
+            <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">Group Name</label>
+            <input type="text" id="group-name-input" placeholder="e.g. Important Tabs" style="width:100%;margin-bottom:14px;">
+            <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">Group Color</label>
+            <div id="group-color-picker" style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+                <!-- Color options populated by JS -->
+            </div>
+            <div class="modal-actions">
+                <button id="cancel-create-group-btn" class="secondary-btn">Cancel</button>
+                <button id="save-create-group-btn" class="primary-btn">Create Group</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Archive Modal -->
+    <div id="archive-modal" class="modal hidden">
+        <div class="modal-content glass" style="width: 500px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="white" stroke-width="2" fill="none">
+                        <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                        <rect x="1" y="3" width="15" height="13"></rect>
+                        <polyline points="10 12 15 12 15 7"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <h3 id="archive-modal-title" style="margin: 0; font-size: 1.25rem;">Archive</h3>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin: 2px 0 0 0;">Save to archive for safekeeping</p>
+                </div>
+            </div>
+            <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 8px; padding: 12px; margin-bottom: 18px;">
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0; line-height: 1.5;">
+                    <strong style="color: #f59e0b;">Tip:</strong> Add an optional note to help you remember why you archived this item. You can restore it later from the archive tab.
+                </p>
+            </div>
+            <label style="display:block;margin-bottom:8px;font-size:0.85rem;color:var(--text-main);font-weight:500;">Archive Note (Optional)</label>
+            <textarea id="archive-note-input" placeholder="Enter a note for this archive..." style="width:100%;height:100px;margin-bottom:20px;resize:vertical;border-radius:8px;border:1px solid var(--glass-border);background:rgba(0,0,0,0.2);color:var(--text-main);padding:12px;font-size:0.9rem;"></textarea>
+            <div class="modal-actions">
+                <button id="cancel-archive-btn" class="secondary-btn">Cancel</button>
+                <button id="save-archive-btn" class="primary-btn" style="background: linear-gradient(135deg, #f59e0b, #d97706); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600;">Archive</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Preset Builder Modal -->
+    <div id="preset-modal" class="modal hidden">
+        <div class="modal-content glass" style="width: 480px;">
+            <h3>Custom Preset Builder</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; line-height: 1.6;">
+                Use <code style="background:rgba(79,70,229,0.15);padding:2px 5px;border-radius:4px;">{name}</code>,
+                <code style="background:rgba(79,70,229,0.15);padding:2px 5px;border-radius:4px;">{duration}</code>,
+                <code style="background:rgba(79,70,229,0.15);padding:2px 5px;border-radius:4px;">{tag}</code> as
+                placeholders.
+            </p>
+            <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">Preset
+                Name</label>
+            <input type="text" id="preset-name-input" placeholder="e.g. Multi Account Exploiting"
+                style="width:100%;margin-bottom:14px;">
+            <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">Command
+                Template</label>
+            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                <button class="placeholder-btn" data-placeholder="{name}">{name}</button>
+                <button class="placeholder-btn" data-placeholder="{duration}">{duration}</button>
+                <button class="placeholder-btn" data-placeholder="{tag}">{tag}</button>
+            </div>
+            <input type="text" id="preset-template-input" placeholder="/ban {name} {duration} Reason {tag}"
+                style="width:100%;margin-bottom:20px;">
+            <div id="preset-list" style="margin-bottom: 20px;"></div>
+            <div class="modal-actions">
+                <button id="preset-modal-cancel" class="secondary-btn">Close</button>
+                <button id="preset-modal-save" class="primary-btn">Add Preset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workspace Management Modal -->
+    <div id="workspace-modal" class="modal hidden">
+        <div class="modal-content glass" style="width: 520px; max-height: 80vh; overflow-y: auto;">
+            <h3>Manage Workspaces</h3>
+            
+            <!-- Tabs -->
+            <div style="display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border);">
+                <button id="workspace-tab-btn" class="modal-tab-btn active" data-tab="workspaces">Workspaces</button>
+                <button id="groups-tab-btn" class="modal-tab-btn" data-tab="groups">Groups</button>
+                <button id="archive-tab-btn" class="modal-tab-btn" data-tab="archive">Archive</button>
+            </div>
+            
+            <!-- Workspaces Tab Content -->
+            <div id="workspaces-tab-content" class="modal-tab-content">
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; line-height: 1.6;">
+                    Create separate workspaces to organize different projects. Each workspace has its own tabs, data, and settings.
+                </p>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">New Workspace Name</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="new-workspace-name" placeholder="e.g. Server A, Project X"
+                            style="flex:1;">
+                        <button id="create-workspace-btn" class="primary-btn">Create</button>
+                    </div>
+                </div>
+
+                <div id="workspace-list" style="margin-bottom: 20px;"></div>
+            </div>
+            
+            <!-- Groups Tab Content -->
+            <div id="groups-tab-content" class="modal-tab-content hidden">
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; line-height: 1.6;">
+                    Create and manage tab groups to organize your tabs within the current workspace.
+                </p>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">New Group Name</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="new-group-name" placeholder="e.g. Important Tabs"
+                            style="flex:1;">
+                        <button id="create-group-btn" class="primary-btn">Create</button>
+                    </div>
+                </div>
+
+                <div id="groups-list" style="margin-bottom: 20px;"></div>
+            </div>
+            
+            <!-- Archive Tab Content -->
+            <div id="archive-tab-content" class="modal-tab-content hidden">
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; line-height: 1.6;">
+                    Archive old workspaces to keep them safe without cluttering your active workspace list.
+                </p>
+
+                <div id="archive-list" style="margin-bottom: 20px;"></div>
+            </div>
+
+            <div class="modal-actions">
+                <button id="workspace-modal-cancel" class="secondary-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove Duplicates Modal -->
+    <div id="remove-duplicates-modal" class="modal hidden">
+        <div class="modal-content glass" style="width: 550px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="white" stroke-width="2" fill="none">
+                        <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h3 style="margin: 0; font-size: 1.25rem;">Remove Duplicates</h3>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin: 2px 0 0 0;">Filter out duplicate accounts from your output</p>
+                </div>
+            </div>
+            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; padding: 12px; margin-bottom: 18px;">
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0; line-height: 1.5;">
+                    <strong style="color: #ef4444;">Tip:</strong> Supports both processed format ("Name | ID xN (Tag)") and raw tab-separated data. Raw data will be automatically processed. Serials (32 hex chars) will be preserved.
+                </p>
+            </div>
+            <label style="display:block;margin-bottom:8px;font-size:0.85rem;color:var(--text-main);font-weight:500;">Data to check for duplicates (one per line)</label>
+            <textarea id="duplicates-input" placeholder="Paste processed data...&#10;Zachary Calhounyaq | 536603 x3 (T)&#10;Reggie Hudsonygl | 536619 x2 (T)&#10;&#10;Or raw tab-separated data...&#10;Name	ID	Serial	...	...	Count" style="width:100%;height:180px;margin-bottom:20px;resize:vertical;font-family:'Consolas','Courier New',monospace;font-size:0.85rem;border-radius:8px;border:1px solid var(--glass-border);background:rgba(0,0,0,0.2);color:var(--text-main);padding:12px;"></textarea>
+            <div class="modal-actions">
+                <button id="cancel-duplicates-btn" class="secondary-btn">Cancel</button>
+                <button id="remove-duplicates-confirm-btn" class="primary-btn" style="background: linear-gradient(135deg, #ef4444, #dc2626); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600;">Remove Duplicates</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Merge Data Modal -->
+    <div id="merge-data-modal" class="modal hidden">
+        <div class="modal-content glass" style="width: 550px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="white" stroke-width="2" fill="none">
+                        <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h3 style="margin: 0; font-size: 1.25rem;">Merge New Data</h3>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin: 2px 0 0 0;">Add new accounts without losing existing data</p>
+                </div>
+            </div>
+            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 8px; padding: 12px; margin-bottom: 18px;">
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0; line-height: 1.5;">
+                    <strong style="color: #22c55e;">Tip:</strong> Paste new serials/accounts to process. Existing data will be preserved. Only new accounts will be added under their respective serial blocks.
+                </p>
+            </div>
+            <label style="display:block;margin-bottom:8px;font-size:0.85rem;color:var(--text-main);font-weight:500;">New Data (serials/accounts)</label>
+            <textarea id="merge-data-input" placeholder="Paste new data here to process and merge..." style="width:100%;height:200px;margin-bottom:20px;resize:vertical;font-family:'Consolas','Courier New',monospace;font-size:0.85rem;border-radius:8px;border:1px solid var(--glass-border);background:rgba(0,0,0,0.2);color:var(--text-main);padding:12px;"></textarea>
+            <div class="modal-actions">
+                <button id="cancel-merge-btn" class="secondary-btn">Cancel</button>
+                <button id="merge-data-confirm-btn" class="primary-btn" style="background: linear-gradient(135deg, #22c55e, #16a34a); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600;">Process & Merge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hover Copy Popup -->
+    <button id="hover-copy-popup" class="hover-copy-popup hidden">
+        Copy <span id="hover-copy-type"></span>
+    </button>
+
+    <div id="undo-toast" class="undo-toast hidden" role="status" aria-live="polite">
+        <span id="undo-toast-message">Changes saved</span>
+        <button id="undo-toast-btn" class="secondary-btn">Undo</button>
+    </div>
+
+    <!-- Tab Context Menu -->
+    <div id="tab-context-menu" class="context-menu hidden">
+        <button id="ctx-rename-tab" class="context-menu-item">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            Rename
+        </button>
+        <button id="ctx-duplicate-tab" class="context-menu-item">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Duplicate
+        </button>
+        <button id="ctx-export-tab" class="context-menu-item">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Export
+        </button>
+        <div class="context-menu-item submenu-item">
+            <div class="context-menu-item-content">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                Copy to Workspace
+                <svg class="submenu-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+            <div id="tab-copy-submenu" class="context-submenu hidden">
+                <!-- Workspace options populated by JS -->
+            </div>
+        </div>
+        <div class="context-menu-item submenu-item">
+            <div class="context-menu-item-content">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                Add to Group
+                <svg class="submenu-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+            <div id="tab-group-submenu" class="context-submenu hidden">
+                <!-- Group options populated by JS -->
+            </div>
+        </div>
+        <div class="context-menu-divider"></div>
+        <button id="ctx-pin-tab" class="context-menu-item">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 17v5"></path><path d="M5 3h14l-3 7v3l-4-2-4 2v-3L5 3z"></path></svg>
+            Pin to Top
+        </button>
+        <div class="context-menu-divider"></div>
+        <button id="ctx-delete-tab" class="context-menu-item danger">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            Delete
+        </button>
+        <button id="ctx-archive-tab" class="context-menu-item">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="15" height="13"></rect><polyline points="10 12 15 12 15 7"></polyline></svg>
+            Archive
+        </button>
+    </div>
+
+    <!-- Workspace Context Menu -->
+    <div id="workspace-context-menu" class="context-menu hidden">
+        <button id="ctx-rename-workspace" class="context-menu-item">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            Rename
+        </button>
+        <button id="ctx-switch-workspace" class="context-menu-item">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            Switch to Workspace
+        </button>
+        <div class="context-menu-item submenu-item">
+            <div class="context-menu-item-content">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                Copy to Workspace
+                <svg class="submenu-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+            <div id="workspace-copy-submenu" class="context-submenu hidden">
+                <!-- Workspace options populated by JS -->
+            </div>
+        </div>
+        <div class="context-menu-divider"></div>
+        <button id="ctx-delete-workspace" class="context-menu-item danger">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            Delete
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
