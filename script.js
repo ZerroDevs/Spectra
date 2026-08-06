@@ -2554,10 +2554,15 @@ showHeaderBtn.onclick = () => {
 let tagFormatNoParentheses = localStorage.getItem(getWorkspaceStorageKey('multiCheckTagFormat')) === 'true';
 if (tagFormatToggle) {
     tagFormatToggle.checked = tagFormatNoParentheses;
-    tagFormatToggle.onchange = () => {
+    tagFormatToggle.onchange = (e) => {
+        e.stopPropagation();
         tagFormatNoParentheses = tagFormatToggle.checked;
         localStorage.setItem(getWorkspaceStorageKey('multiCheckTagFormat'), tagFormatNoParentheses);
     };
+    // Prevent label click from bubbling
+    tagFormatToggle.parentElement?.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
 }
 
 let hoverCopyEnabled = localStorage.getItem('hoverCopyEnabled') !== 'false';
@@ -2582,17 +2587,27 @@ updateHoverBtnState();
 const underscoreNamesToggle = document.getElementById('underscore-names-toggle');
 if (underscoreNamesToggle) {
     underscoreNamesToggle.checked = localStorage.getItem(getWorkspaceStorageKey('multiCheckUnderscoreNames')) === 'true';
-    underscoreNamesToggle.addEventListener('change', () => {
+    underscoreNamesToggle.addEventListener('change', (e) => {
+        e.stopPropagation();
         localStorage.setItem(getWorkspaceStorageKey('multiCheckUnderscoreNames'), underscoreNamesToggle.checked);
+    });
+    // Prevent label click from bubbling
+    underscoreNamesToggle.parentElement?.addEventListener('click', (e) => {
+        e.stopPropagation();
     });
 }
 
 if (autoProcessToggle) {
     autoProcessToggle.checked = localStorage.getItem(getWorkspaceStorageKey('multiCheckAutoProcess')) === 'true';
     autoProcessEnabled = autoProcessToggle.checked;
-    autoProcessToggle.addEventListener('change', () => {
+    autoProcessToggle.addEventListener('change', (e) => {
+        e.stopPropagation();
         autoProcessEnabled = autoProcessToggle.checked;
         localStorage.setItem(getWorkspaceStorageKey('multiCheckAutoProcess'), autoProcessEnabled);
+    });
+    // Prevent label click from bubbling
+    autoProcessToggle.parentElement?.addEventListener('click', (e) => {
+        e.stopPropagation();
     });
 }
 
@@ -2610,8 +2625,13 @@ if (inputArea) {
 const discordCodeToggle = document.getElementById('discord-code-toggle');
 if (discordCodeToggle) {
     discordCodeToggle.checked = localStorage.getItem(getWorkspaceStorageKey('multiCheckDiscordCode')) === 'true';
-    discordCodeToggle.addEventListener('change', () => {
+    discordCodeToggle.addEventListener('change', (e) => {
+        e.stopPropagation();
         localStorage.setItem(getWorkspaceStorageKey('multiCheckDiscordCode'), discordCodeToggle.checked);
+    });
+    // Prevent label click from bubbling
+    discordCodeToggle.parentElement?.addEventListener('click', (e) => {
+        e.stopPropagation();
     });
 }
 
@@ -3840,9 +3860,14 @@ function applyKbdToggleStyle() {
 if (kbdToggle) {
     kbdToggle.checked = localStorage.getItem(getWorkspaceStorageKey('multiCheckKbdHotkeys')) === 'true';
     applyKbdToggleStyle();
-    kbdToggle.addEventListener('change', () => {
+    kbdToggle.addEventListener('change', (e) => {
+        e.stopPropagation();
         localStorage.setItem(getWorkspaceStorageKey('multiCheckKbdHotkeys'), kbdToggle.checked);
         applyKbdToggleStyle();
+    });
+    // Prevent label click from bubbling
+    kbdLabel?.addEventListener('click', (e) => {
+        e.stopPropagation();
     });
 }
 
@@ -3983,7 +4008,8 @@ if (serialIdsBtn) {
 
         // First pass: collect IDs for each serial
         for (const line of lines) {
-            if (/^[A-Fa-f0-9]{32}$/.test(line.trim())) {
+            const serialMatch = line.match(/^([A-Fa-f0-9]{32})/);
+            if (serialMatch) {
                 // Process previous block
                 if (currentSerial && currentBlock.length > 0) {
                     const ids = [];
@@ -4003,7 +4029,7 @@ if (serialIdsBtn) {
                         serialIdsMap.set(currentSerial, ids);
                     }
                 }
-                currentSerial = line.trim();
+                currentSerial = serialMatch[1];
                 currentBlock = [];
             } else if (line.includes('|')) {
                 currentBlock.push(line);
@@ -4030,13 +4056,14 @@ if (serialIdsBtn) {
         }
 
         // Second pass: add IDs to serial lines
-        currentSerial = null;
         for (const line of lines) {
-            if (/^[A-Fa-f0-9]{32}$/.test(line.trim())) {
-                currentSerial = line.trim();
-                const ids = serialIdsMap.get(currentSerial);
+            const serialMatch = line.match(/^([A-Fa-f0-9]{32})(.*)$/);
+            if (serialMatch) {
+                const serial = serialMatch[1];
+                const restOfLine = serialMatch[2];
+                const ids = serialIdsMap.get(serial);
                 if (ids && ids.length > 0) {
-                    newLines.push(line + ' [ ' + ids.join(', ') + ' ]');
+                    newLines.push(serial + restOfLine + ' [ ' + ids.join(', ') + ' ]');
                 } else {
                     newLines.push(line);
                 }
