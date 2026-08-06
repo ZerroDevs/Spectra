@@ -202,12 +202,19 @@
                                 <input type="checkbox" id="discord-code-toggle"
                                     style="accent-color: var(--primary-color);"> Dis ```
                             </label>
-                            <label
-                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; margin-right: 5px;"
-                                title="Toggle between (M)/(T) and M/T tag formats">
-                                <input type="checkbox" id="tag-format-toggle"
-                                    style="accent-color: var(--primary-color);"> No ()
-                            </label>
+                            <div class="tag-format-dropdown-wrapper" style="margin-right: 5px;">
+                                <button id="tag-format-dropdown-btn" class="tag-format-dropdown-btn" style="background: rgba(79, 70, 229, 0.1); border: 1px solid rgba(79, 70, 229, 0.2); border-radius: 8px; padding: 6px 10px; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                    <span id="tag-format-label">With ()</span>
+                                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+                                <div id="tag-format-dropdown-menu" class="tag-format-dropdown-menu hidden">
+                                    <div class="tag-format-option" data-value="none">With ()</div>
+                                    <div class="tag-format-option" data-value="mt">No () M/T</div>
+                                    <div class="tag-format-option" data-value="all">No () All</div>
+                                </div>
+                            </div>
                             <label id="kbd-shortcuts-label"
                                 style="display: flex; align-items: center; gap: 4px; font-size: 0.82rem; color: var(--text-muted); cursor: pointer; padding: 3px 5px; border-radius: 6px; transition: all 0.2s; border: 1px solid transparent; margin-right: 5px;"
                                 title="TAB=(M) ESC=Revert `=(T) 1=Non-RP  2=Fail-RP  3=Provoking  4=GR3.1  5=GR3.2">
@@ -233,6 +240,7 @@
                             <button id="toggle-stats-btn" class="icon-btn small" title="Toggle Stats Bar">Stats</button>
                             <button id="export-btn" class="icon-btn small">Export</button>
                             <button id="copy-ids-btn" class="icon-btn small">Copy IDs</button>
+                            <button id="copy-mt-ids-btn" class="icon-btn small" title="Copy only M/T tagged IDs">Copy M/T IDs</button>
                             <button id="copy-btn" class="icon-btn small">Copy</button>
                         </div>
                     </label>

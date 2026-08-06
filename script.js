@@ -2550,20 +2550,57 @@ showHeaderBtn.onclick = () => {
     localStorage.setItem('multiCheckHeader', 'false');
 };
 
-// Tag format toggle (with/without parentheses)
-let tagFormatNoParentheses = localStorage.getItem(getWorkspaceStorageKey('multiCheckTagFormat')) === 'true';
-if (tagFormatToggle) {
-    tagFormatToggle.checked = tagFormatNoParentheses;
-    tagFormatToggle.onchange = (e) => {
-        e.stopPropagation();
-        tagFormatNoParentheses = tagFormatToggle.checked;
-        localStorage.setItem(getWorkspaceStorageKey('multiCheckTagFormat'), tagFormatNoParentheses);
-    };
-    // Prevent label click from bubbling
-    tagFormatToggle.parentElement?.addEventListener('click', (e) => {
-        e.stopPropagation();
+// Tag format dropdown (with/without parentheses)
+let tagFormatMode = localStorage.getItem(getWorkspaceStorageKey('multiCheckTagFormat')) || 'none';
+const tagFormatDropdownBtn = document.getElementById('tag-format-dropdown-btn');
+const tagFormatDropdownMenu = document.getElementById('tag-format-dropdown-menu');
+const tagFormatLabel = document.getElementById('tag-format-label');
+const tagFormatOptions = document.querySelectorAll('.tag-format-option');
+
+const tagFormatLabels = {
+    'none': 'With ()',
+    'mt': 'No () M/T',
+    'all': 'No () All'
+};
+
+function updateTagFormatLabel() {
+    if (tagFormatLabel) {
+        tagFormatLabel.textContent = tagFormatLabels[tagFormatMode] || 'With ()';
+    }
+    // Update active state of options
+    tagFormatOptions.forEach(option => {
+        option.classList.toggle('active', option.dataset.value === tagFormatMode);
     });
 }
+
+if (tagFormatDropdownBtn) {
+    tagFormatDropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        tagFormatDropdownMenu.classList.toggle('hidden');
+    });
+}
+
+if (tagFormatOptions) {
+    tagFormatOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
+            e.stopPropagation();
+            tagFormatMode = option.dataset.value;
+            localStorage.setItem(getWorkspaceStorageKey('multiCheckTagFormat'), tagFormatMode);
+            updateTagFormatLabel();
+            tagFormatDropdownMenu.classList.add('hidden');
+        });
+    });
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (tagFormatDropdownMenu && !tagFormatDropdownMenu.contains(e.target) && !tagFormatDropdownBtn.contains(e.target)) {
+        tagFormatDropdownMenu.classList.add('hidden');
+    }
+});
+
+// Initialize label and active state
+updateTagFormatLabel();
 
 let hoverCopyEnabled = localStorage.getItem('hoverCopyEnabled') !== 'false';
 function updateHoverBtnState() {
@@ -3882,10 +3919,11 @@ outputArea.addEventListener('keydown', (e) => {
         return;
     }
 
-    // Handle TAB for (M) or M based on toggle
+    // Handle TAB for (M) or M based on dropdown
     if (key === 'Tab') {
         e.preventDefault();
-        const textToInsert = tagFormatNoParentheses ? ' M' : ' (M)';
+        const useNoParens = tagFormatMode === 'mt' || tagFormatMode === 'all';
+        const textToInsert = useNoParens ? ' M' : ' (M)';
         const start = outputArea.selectionStart;
         const end = outputArea.selectionEnd;
         const value = outputArea.value;
@@ -3905,15 +3943,17 @@ outputArea.addEventListener('keydown', (e) => {
 
     e.preventDefault();
     let textToInsert = ' ' + kbdShortcutMap[key];
-    
-    // For the ` key (T), respect the No () toggle
+
+    // For the ` key (T), respect the dropdown (no parens for mt or all)
     if (key === '`' || key === 'ذ') {
-        textToInsert = tagFormatNoParentheses ? ' T' : ' (T)';
+        const useNoParens = tagFormatMode === 'mt' || tagFormatMode === 'all';
+        textToInsert = useNoParens ? ' T' : ' (T)';
     }
-    
-    // For griefer hotkeys (1-6), respect the No () toggle
+
+    // For griefer hotkeys (1-6), respect the dropdown (no parens only for all)
     if (kbdGrieferShortcutMap[key]) {
-        textToInsert = tagFormatNoParentheses ? ' ' + kbdGrieferShortcutMap[key] : ' ' + kbdShortcutMap[key];
+        const useNoParens = tagFormatMode === 'all';
+        textToInsert = useNoParens ? ' ' + kbdGrieferShortcutMap[key] : ' ' + kbdShortcutMap[key];
     }
     const start = outputArea.selectionStart;
     const end = outputArea.selectionEnd;
@@ -3972,10 +4012,11 @@ mortBtn.addEventListener('click', () => {
                     const id = parseInt(match[1], 10);
                     let cleanLine = line.replace(/\s*\([MT]\)/g, '').replace(/\s*\([MT]\s*\)/g, '').replace(/\s*M\s*$/g, '').replace(/\s*T\s*$/g, '').replace(/\s*\( M \)/g, '').replace(/\s*\( T \)/g, '').replace(/\s*\(\d+\s+days\)/g, '');
                     const tagFormat = ' ';
+                    const useNoParens = tagFormatMode === 'mt' || tagFormatMode === 'all';
                     if (id === lowestId) {
-                        newLines.push(cleanLine + tagFormat + (tagFormatNoParentheses ? 'M' : '(M)'));
+                        newLines.push(cleanLine + tagFormat + (useNoParens ? 'M' : '(M)'));
                     } else {
-                        newLines.push(cleanLine + tagFormat + (tagFormatNoParentheses ? 'T' : '(T)'));
+                        newLines.push(cleanLine + tagFormat + (useNoParens ? 'T' : '(T)'));
                     }
                 } else {
                     newLines.push(line);
@@ -4656,6 +4697,42 @@ if (copyIdsBtn) {
             const originalText = copyIdsBtn.innerText;
             copyIdsBtn.innerText = 'No IDs found';
             setTimeout(() => copyIdsBtn.innerText = originalText, 2000);
+        }
+    };
+}
+
+const copyMtIdsBtn = document.getElementById('copy-mt-ids-btn');
+if (copyMtIdsBtn) {
+    copyMtIdsBtn.onclick = () => {
+        const text = outputArea.value;
+        const lines = text.split('\n').filter(l => l.trim());
+        const uniqueIds = new Set();
+        for (const line of lines) {
+            const t = line.trim();
+            if (t.includes('|')) {
+                const match = t.match(/\|\s*(\d+)/);
+                if (match) {
+                    // Check if line has M or T tag (any format)
+                    const hasM = t.includes('(M)') || t.match(/M\s*$/) || t.includes('( M )');
+                    const hasT = t.includes('(T)') || t.match(/T\s*$/) || t.includes('( T )');
+                    if (hasM || hasT) {
+                        uniqueIds.add(match[1]);
+                    }
+                }
+            }
+        }
+
+        if (uniqueIds.size > 0) {
+            const idsString = Array.from(uniqueIds).join(', ') + ',';
+            robustCopy(idsString, () => {
+                const originalText = copyMtIdsBtn.innerText;
+                copyMtIdsBtn.innerText = 'Copied!';
+                setTimeout(() => copyMtIdsBtn.innerText = originalText, 2000);
+            });
+        } else {
+            const originalText = copyMtIdsBtn.innerText;
+            copyMtIdsBtn.innerText = 'No M/T IDs';
+            setTimeout(() => copyMtIdsBtn.innerText = originalText, 2000);
         }
     };
 }
