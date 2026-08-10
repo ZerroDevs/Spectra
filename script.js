@@ -2323,6 +2323,17 @@ function updateOutputLineNumbers() {
             copyValue = line;
             lineType = 'serial';
         }
+        // Ban command line (/ban NAME duration reason)
+        else if (line.startsWith('/ban')) {
+            const parts = line.split(' ');
+            if (parts.length >= 2) {
+                const name = parts[1];
+                if (name) {
+                    copyValue = name;
+                    lineType = 'name';
+                }
+            }
+        }
         // Name line (contains |)
         else if (line.includes('|')) {
             const splitIndex = line.indexOf('|');
@@ -2606,8 +2617,9 @@ updateTagFormatLabel();
 const discordWebhookUrlInput = document.getElementById('discord-webhook-url');
 if (discordWebhookUrlInput) {
     discordWebhookUrlInput.value = localStorage.getItem(getWorkspaceStorageKey('multiCheckDiscordWebhookUrl')) || '';
-    discordWebhookUrlInput.addEventListener('input', () => {
+    discordWebhookUrlInput.addEventListener('change', () => {
         localStorage.setItem(getWorkspaceStorageKey('multiCheckDiscordWebhookUrl'), discordWebhookUrlInput.value);
+        showUndoToast('Discord webhook URL saved', null, 2000);
     });
 }
 
@@ -5693,6 +5705,39 @@ if (banOutputArea && banLineNumbers) {
     banOutputArea.addEventListener('scroll', () => {
         banLineNumbers.scrollTop = banOutputArea.scrollTop;
     });
+
+    // Add click handler to copy name by line number
+    banLineNumbers.addEventListener('click', (e) => {
+        if (e.target.tagName === 'SPAN') {
+            const lineNumber = parseInt(e.target.textContent);
+            const banLines = banOutputArea.querySelectorAll('.ban-line');
+            if (lineNumber > 0 && lineNumber <= banLines.length) {
+                const banLine = banLines[lineNumber - 1];
+                const banText = banLine.textContent;
+
+                // Extract name from ban command: /ban NAME duration reason
+                const parts = banText.split(' ');
+                if (parts.length >= 2 && parts[0] === '/ban') {
+                    const name = parts[1];
+                    const originalText = e.target.textContent;
+                    robustCopy(name, () => {
+                        e.target.textContent = '✓';
+                        e.target.style.color = '#22c55e';
+                        e.target.style.fontWeight = 'bold';
+                        setTimeout(() => {
+                            e.target.textContent = originalText;
+                            e.target.style.color = '';
+                            e.target.style.fontWeight = '';
+                        }, 1000);
+                        showUndoToast(`Copied: ${name}`, null, 2000);
+                    });
+                }
+            }
+        }
+    });
+
+    // Add cursor style to indicate clickable
+    banLineNumbers.style.cursor = 'pointer';
 }
 
 if (banCopyNextBtn) {
