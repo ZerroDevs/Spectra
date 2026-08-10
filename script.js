@@ -2602,6 +2602,108 @@ document.addEventListener('click', (e) => {
 // Initialize label and active state
 updateTagFormatLabel();
 
+// Discord webhook URL
+const discordWebhookUrlInput = document.getElementById('discord-webhook-url');
+if (discordWebhookUrlInput) {
+    discordWebhookUrlInput.value = localStorage.getItem(getWorkspaceStorageKey('multiCheckDiscordWebhookUrl')) || '';
+    discordWebhookUrlInput.addEventListener('input', () => {
+        localStorage.setItem(getWorkspaceStorageKey('multiCheckDiscordWebhookUrl'), discordWebhookUrlInput.value);
+    });
+}
+
+// Discord webhook sending function
+async function sendToDiscord(content, source = 'Output') {
+    const webhookUrl = discordWebhookUrlInput?.value?.trim();
+    if (!webhookUrl) {
+        showUndoToast('No Webhook URL - Please enter a Discord webhook URL in the Manage Workspaces modal.', null, 4000);
+        return false;
+    }
+
+    if (!content || content.trim() === '') {
+        showUndoToast('No Content - There is no content to send.', null, 4000);
+        return false;
+    }
+
+    const maxLength = 2000;
+    const codeBlockPrefix = '```\n';
+    const codeBlockSuffix = '\n```';
+    const sourceLabel = `**Source: ${source}**\n\n`;
+
+    // Split content into chunks that fit in code blocks
+    const lines = content.split('\n');
+    let currentChunk = '';
+    let chunks = [];
+
+    for (const line of lines) {
+        const testChunk = currentChunk ? currentChunk + '\n' + line : line;
+        const fullLength = sourceLabel.length + codeBlockPrefix.length + testChunk.length + codeBlockSuffix.length;
+
+        if (fullLength > maxLength) {
+            if (currentChunk) {
+                chunks.push(currentChunk);
+            }
+            currentChunk = line;
+        } else {
+            currentChunk = testChunk;
+        }
+    }
+    if (currentChunk) {
+        chunks.push(currentChunk);
+    }
+
+    let successCount = 0;
+    for (let i = 0; i < chunks.length; i++) {
+        try {
+            const embedContent = sourceLabel + codeBlockPrefix + chunks[i] + codeBlockSuffix;
+            const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    embeds: [{
+                        title: `${source} - Part ${i + 1}/${chunks.length}`,
+                        description: embedContent,
+                        color: source === 'Ban Generator' ? 15158332 : 5763719,
+                        timestamp: new Date().toISOString()
+                    }]
+                })
+            });
+
+            if (response.ok) {
+                successCount++;
+            } else {
+                throw new Error(`HTTP ${response.status}`);
+            }
+        } catch (error) {
+            showUndoToast(`Send Failed - Failed to send chunk ${i + 1}/${chunks.length}: ${error.message}`, null, 5000);
+            return false;
+        }
+    }
+
+    showUndoToast(`Successfully sent ${successCount}/${chunks.length} message(s) to Discord.`, null, 4000);
+    return true;
+}
+
+// Send button for main output
+const sendBtn = document.getElementById('send-btn');
+if (sendBtn) {
+    sendBtn.onclick = () => {
+        const content = outputArea.value;
+        sendToDiscord(content, 'Output');
+    };
+}
+
+// Send button for ban generator
+const banSendBtn = document.getElementById('ban-send-btn');
+if (banSendBtn) {
+    banSendBtn.onclick = () => {
+        const banLines = Array.from(banOutputArea.querySelectorAll('.ban-line')).map(el => el.textContent);
+        const content = banLines.join('\n');
+        sendToDiscord(content, 'Ban Generator');
+    };
+}
+
 let hoverCopyEnabled = localStorage.getItem('hoverCopyEnabled') !== 'false';
 function updateHoverBtnState() {
     if (hoverCopyEnabled) {
@@ -3869,7 +3971,8 @@ const kbdShortcutMap = {
     '3': '(Provoking) !!',
     '4': '(GR3.1) !!',
     '5': '(GR3.2) !!',
-    "6": "(DM) !!"
+    "6": "(DM) !!",
+    "7": "(GR 5.3) !!"
 };
 
 const kbdGrieferShortcutMap = {
@@ -3878,7 +3981,8 @@ const kbdGrieferShortcutMap = {
     '3': 'Provoking !!',
     '4': 'GR3.1 !!',
     '5': 'GR3.2 !!',
-    "6": "DM !!"
+    "6": "DM !!",
+    "7": "GR 5.3 !!"
 };
 
 function applyKbdToggleStyle() {
@@ -5493,7 +5597,7 @@ generateBansBtn.onclick = () => {
             const rest = line.substring(splitIndex + 1);
 
             // Extract (M) or (T) marker (with or without parentheses, including spaced format)
-            const mortMatch = rest.match(/\((M|T)\)/) || rest.match(/(M|T)\s*$/) || rest.match(/\( M \)/) || rest.match(/\( T \)/);
+            const mortMatch = rest.match(/\((M|T)\)/) || rest.match(/(M|T)(?=\s|$)/) || rest.match(/\( M \)/) || rest.match(/\( T \)/);
 
             if (banOnlyMortCheckbox && banOnlyMortCheckbox.checked && !mortMatch) {
                 // Remove from seenNames so we don't accidentally skip them if they appear later WITH a tag

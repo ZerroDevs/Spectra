@@ -241,6 +241,7 @@
                             <button id="export-btn" class="icon-btn small">Export</button>
                             <button id="copy-ids-btn" class="icon-btn small">Copy IDs</button>
                             <button id="copy-mt-ids-btn" class="icon-btn small" title="Copy only M/T tagged IDs">Copy M/T IDs</button>
+                            <button id="send-btn" class="icon-btn small" title="Send to Discord">Send</button>
                             <button id="copy-btn" class="icon-btn small">Copy</button>
                         </div>
                     </label>
@@ -292,7 +293,7 @@
                                 <button class="shortcut-btn" data-text="(GR3.1) !!">GR3.1</button>
                                 <button class="shortcut-btn" data-text="(GR3.2) !!">GR3.2</button>
                                 <button class="shortcut-btn" data-text="(DM) !!">DM</button>
-                                <button class="shortcut-btn" data-text="(T)">(T)</button>
+                                <button class="shortcut-btn" data-text="(GR 5.3) !!">GR 5.3</button>
                             </div>
                         </div>
                         <div class="button-group">
@@ -437,6 +438,7 @@
                                     style="background: rgba(79, 70, 229, 0.15); color: var(--primary-color);">Copy
                                     Next</button>
                                 <button id="ban-copy-btn" class="icon-btn small">Copy All</button>
+                                <button id="ban-send-btn" class="icon-btn small" title="Send to Discord">Send</button>
                             </div>
                         </label>
                         <div class="textarea-wrapper" style="flex: 1; min-height: 0;">
@@ -586,7 +588,7 @@
                 <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; line-height: 1.6;">
                     Create separate workspaces to organize different projects. Each workspace has its own tabs, data, and settings.
                 </p>
-                
+
                 <div style="margin-bottom: 20px;">
                     <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">New Workspace Name</label>
                     <div style="display: flex; gap: 10px;">
@@ -597,6 +599,15 @@
                 </div>
 
                 <div id="workspace-list" style="margin-bottom: 20px;"></div>
+
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+                    <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">Discord Webhook URL</label>
+                    <input type="text" id="discord-webhook-url" placeholder="https://discord.com/api/webhooks/..."
+                        style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); color: var(--text-main); font-size: 0.85rem; outline: none;">
+                    <p style="color: var(--text-muted); font-size: 0.75rem; margin-top: 6px; line-height: 1.4;">
+                        Enter your Discord webhook URL to enable the Send button for sending content to Discord.
+                    </p>
+                </div>
             </div>
             
             <!-- Groups Tab Content -->
