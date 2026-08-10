@@ -2623,6 +2623,51 @@ if (discordWebhookUrlInput) {
     });
 }
 
+// Register service worker for PWA
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then((registration) => {
+                console.log('Service Worker registered:', registration);
+            })
+            .catch((error) => {
+                console.log('Service Worker registration failed:', error);
+            });
+    });
+}
+
+// PWA Install handling
+let deferredPrompt;
+const installAppBtn = document.getElementById('install-app-btn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installAppBtn) {
+        installAppBtn.classList.remove('hidden');
+    }
+});
+
+if (installAppBtn) {
+    installAppBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                installAppBtn.classList.add('hidden');
+            }
+            deferredPrompt = null;
+        }
+    });
+}
+
+window.addEventListener('appinstalled', () => {
+    if (installAppBtn) {
+        installAppBtn.classList.add('hidden');
+    }
+    showUndoToast('App installed successfully!', null, 3000);
+});
+
 // Discord webhook sending function
 async function sendToDiscord(content, source = 'Output') {
     const webhookUrl = discordWebhookUrlInput?.value?.trim();
