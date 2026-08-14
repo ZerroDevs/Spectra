@@ -110,7 +110,7 @@ function switchWorkspace(workspaceId) {
     fontSizeIdx = parseInt(localStorage.getItem(getWorkspaceStorageKey('multiCheckFontSizeIdx')) ?? DEFAULT_FONT_IDX, 10);
     if (fontSizeIdx < 0 || fontSizeIdx >= FONT_STEPS.length) fontSizeIdx = DEFAULT_FONT_IDX;
     applyFontSize();
-    
+
     if (underscoreNamesToggle) {
         underscoreNamesToggle.checked = localStorage.getItem(getWorkspaceStorageKey('multiCheckUnderscoreNames')) === 'true';
     }
@@ -120,6 +120,9 @@ function switchWorkspace(workspaceId) {
     if (kbdToggle) {
         kbdToggle.checked = localStorage.getItem(getWorkspaceStorageKey('multiCheckKbdHotkeys')) === 'true';
         applyKbdToggleStyle();
+    }
+    if (defaultTabNameFormatInput) {
+        defaultTabNameFormatInput.value = localStorage.getItem(getWorkspaceStorageKey('multiCheckDefaultTabNameFormat')) || '';
     }
     if (autoProcessToggle) {
         autoProcessToggle.checked = localStorage.getItem(getWorkspaceStorageKey('multiCheckAutoProcess')) === 'true';
@@ -2613,14 +2616,43 @@ document.addEventListener('click', (e) => {
 // Initialize label and active state
 updateTagFormatLabel();
 
-// Discord webhook URL
+// Discord webhook URL (global, not workspace-specific)
+const DEFAULT_WEBHOOK_URL = 'https://discord.com/api/webhooks/1536185540146106471/kWFB_ySyAKbdwczvaC2C_wlefiGY0SY1j1lIPnTGNb2ounmPrMEC5Vwncy2UdHEjkV72';
 const discordWebhookUrlInput = document.getElementById('discord-webhook-url');
 if (discordWebhookUrlInput) {
-    discordWebhookUrlInput.value = localStorage.getItem(getWorkspaceStorageKey('multiCheckDiscordWebhookUrl')) || '';
+    discordWebhookUrlInput.value = localStorage.getItem('multiCheckDiscordWebhookUrl') || '';
     discordWebhookUrlInput.addEventListener('change', () => {
-        localStorage.setItem(getWorkspaceStorageKey('multiCheckDiscordWebhookUrl'), discordWebhookUrlInput.value);
+        localStorage.setItem('multiCheckDiscordWebhookUrl', discordWebhookUrlInput.value);
         showUndoToast('Discord webhook URL saved', null, 2000);
     });
+}
+
+// Default tab name format
+const defaultTabNameFormatInput = document.getElementById('default-tab-name-format');
+if (defaultTabNameFormatInput) {
+    defaultTabNameFormatInput.value = localStorage.getItem(getWorkspaceStorageKey('multiCheckDefaultTabNameFormat')) || '';
+    defaultTabNameFormatInput.addEventListener('change', () => {
+        localStorage.setItem(getWorkspaceStorageKey('multiCheckDefaultTabNameFormat'), defaultTabNameFormatInput.value);
+        showUndoToast('Tab name format saved', null, 2000);
+    });
+}
+
+function generateTabName() {
+    const format = defaultTabNameFormatInput?.value?.trim();
+    if (!format) return 'New List';
+
+    const workspace = getCurrentWorkspace();
+    const workspaceName = workspace?.name || 'Workspace';
+    const tabNumber = tabs.length + 1;
+    const now = new Date();
+    const date = now.toLocaleDateString();
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    return format
+        .replace(/{num}/g, tabNumber)
+        .replace(/{date}/g, date)
+        .replace(/{time}/g, time)
+        .replace(/{ws}/g, workspaceName);
 }
 
 // Register service worker for PWA
@@ -2670,11 +2702,7 @@ window.addEventListener('appinstalled', () => {
 
 // Discord webhook sending function
 async function sendToDiscord(content, source = 'Output') {
-    const webhookUrl = discordWebhookUrlInput?.value?.trim();
-    if (!webhookUrl) {
-        showUndoToast('No Webhook URL - Please enter a Discord webhook URL in the Manage Workspaces modal.', null, 4000);
-        return false;
-    }
+    const webhookUrl = discordWebhookUrlInput?.value?.trim() || DEFAULT_WEBHOOK_URL;
 
     if (!content || content.trim() === '') {
         showUndoToast('No Content - There is no content to send.', null, 4000);
@@ -3774,11 +3802,12 @@ function createTabElement(tab) {
     return li;
 }
 
-function addTab(name = 'New List') {
+function addTab(name = null) {
     updateCurrentTabData();
+    const tabName = name || generateTabName();
     const newTab = {
         id: 'tab-' + Date.now(),
-        name: name,
+        name: tabName,
         input: '',
         output: '',
         pinned: false,
@@ -5501,6 +5530,7 @@ const banPendingCheckbox = document.getElementById('ban-pending-checkbox');
 const banOnlyMortCheckbox = document.getElementById('ban-only-mort-checkbox');
 const banGrieferOnlyCheckbox = document.getElementById('ban-griefer-only-checkbox');
 const banNoTagCheckbox = document.getElementById('ban-no-tag-checkbox');
+const banUnbanModeCheckbox = document.getElementById('ban-unban-mode-checkbox');
 const banAdminName = document.getElementById('ban-admin-name');
 const banDurationSelect = document.getElementById('ban-duration-select');
 const importFromTabBtn = document.getElementById('import-from-tab-btn');
@@ -5530,10 +5560,28 @@ if (banManualInputCheckbox) {
             banAccountInputWrapper.style.display = 'flex';
             banManualInputWrapper.style.display = 'none';
             banInputLabel.textContent = 'Input (List of Accounts)';
-            generateBansBtn.textContent = 'Generate Bans';
+            updateGenerateButtonText();
         }
         if (typeof saveBanGeneratorState === 'function') saveBanGeneratorState();
     };
+}
+
+if (banUnbanModeCheckbox) {
+    banUnbanModeCheckbox.checked = localStorage.getItem(getWorkspaceStorageKey('multiCheckUnbanMode')) === 'true';
+    updateGenerateButtonText();
+    banUnbanModeCheckbox.onchange = () => {
+        localStorage.setItem(getWorkspaceStorageKey('multiCheckUnbanMode'), banUnbanModeCheckbox.checked);
+        updateGenerateButtonText();
+        if (typeof saveBanGeneratorState === 'function') saveBanGeneratorState();
+    };
+}
+
+function updateGenerateButtonText() {
+    if (banUnbanModeCheckbox && banUnbanModeCheckbox.checked) {
+        generateBansBtn.textContent = 'Generate Unbans';
+    } else {
+        generateBansBtn.textContent = 'Generate Bans';
+    }
 }
 
 if (banClearBtn) {
@@ -5617,6 +5665,94 @@ generateBansBtn.onclick = () => {
         if (banCountBadge) {
             if (outLines.length > 0) {
                 banCountBadge.textContent = `${outLines.length} bans`;
+                banCountBadge.style.display = 'inline-block';
+            } else {
+                banCountBadge.style.display = 'none';
+            }
+        }
+
+        if (typeof saveBanGeneratorState === 'function') saveBanGeneratorState();
+        return;
+    }
+
+    // Check if unban mode is enabled
+    const isUnbanMode = banUnbanModeCheckbox && banUnbanModeCheckbox.checked;
+
+    if (isUnbanMode) {
+        // Unban generation logic
+        const lines = banInputArea.value.split('\n');
+        const outLines = [];
+        const seenIds = new Set();
+
+        for (let line of lines) {
+            line = line.trim();
+            if (!line) continue;
+
+            if (/^[A-Fa-f0-9]{32}$/.test(line)) continue;
+
+            const splitIndex = line.indexOf('|');
+            if (splitIndex !== -1) {
+                // Format: "Name | ID x### M/T"
+                const rest = line.substring(splitIndex + 1);
+
+                // Extract (M) or (T) marker (with or without parentheses, including spaced format)
+                const mortMatch = rest.match(/\((M|T)\)/) || rest.match(/(M|T)(?=\s|$)/) || rest.match(/\( M \)/) || rest.match(/\( T \)/);
+
+                if (banOnlyMortCheckbox && banOnlyMortCheckbox.checked && !mortMatch) {
+                    continue;
+                }
+
+                // Extract ID from format: "166267 x1500 M" or "183124 x99 T"
+                const idMatch = rest.match(/(\d+)\s*x/);
+                if (idMatch) {
+                    const id = idMatch[1];
+                    if (seenIds.has(id)) continue;
+                    seenIds.add(id);
+
+                    outLines.push(`/unban ${id}`);
+                }
+            } else {
+                // Direct ID input - check if line is just a number or comma-separated numbers
+                // Handle comma-separated IDs
+                if (line.includes(',')) {
+                    const ids = line.split(',').map(id => id.trim()).filter(id => id && /^\d+$/.test(id));
+                    for (const id of ids) {
+                        if (seenIds.has(id)) continue;
+                        seenIds.add(id);
+                        outLines.push(`/unban ${id}`);
+                    }
+                }
+                // Handle single ID per line
+                else if (/^\d+$/.test(line)) {
+                    if (seenIds.has(line)) continue;
+                    seenIds.add(line);
+                    outLines.push(`/unban ${line}`);
+                }
+            }
+        }
+
+        banOutputArea.innerHTML = '';
+        outLines.forEach(line => {
+            const div = document.createElement('div');
+            div.className = 'ban-line';
+            div.textContent = line;
+            banOutputArea.appendChild(div);
+        });
+
+        // Update line numbers
+        const banLineNumbers = document.getElementById('ban-line-numbers');
+        if (banLineNumbers) {
+            let numHtml = '';
+            for (let i = 1; i <= outLines.length; i++) numHtml += `<span>${i}</span><br>`;
+            banLineNumbers.innerHTML = numHtml || '1';
+        }
+
+        window.banCopyIndex = 0;
+
+        // Ban count badge
+        if (banCountBadge) {
+            if (outLines.length > 0) {
+                banCountBadge.textContent = `${outLines.length} unbans`;
                 banCountBadge.style.display = 'inline-block';
             } else {
                 banCountBadge.style.display = 'none';
