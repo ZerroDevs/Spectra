@@ -432,7 +432,9 @@
                                 style="width: 16px; height: 16px; accent-color: var(--primary-color);">
                             Manual Input Mode
                         </label>
-                        <input type="text" id="ban-admin-name" placeholder="Enter Admin Name (e.g. Tommy ZeroNuxs)"
+                        <input type="text" id="ban-admin-name" placeholder="Admin Name"
+                            class="dropdown" style="width: 180px; padding: 8px 12px; cursor: text;">
+                        <input type="text" id="ban-thread-input" placeholder="Thread (e.g. /threads/120586/ or full URL)"
                             class="dropdown" style="flex: 1; padding: 8px 12px; cursor: text;">
                     </div>
                 </div>
@@ -559,12 +561,13 @@
 
     <!-- Custom Preset Builder Modal -->
     <div id="preset-modal" class="modal hidden">
-        <div class="modal-content glass" style="width: 480px;">
+        <div class="modal-content glass" style="width: 480px; max-height: 80vh; overflow-y: auto;">
             <h3>Custom Preset Builder</h3>
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; line-height: 1.6;">
                 Use <code style="background:rgba(79,70,229,0.15);padding:2px 5px;border-radius:4px;">{name}</code>,
                 <code style="background:rgba(79,70,229,0.15);padding:2px 5px;border-radius:4px;">{duration}</code>,
-                <code style="background:rgba(79,70,229,0.15);padding:2px 5px;border-radius:4px;">{tag}</code> as
+                <code style="background:rgba(79,70,229,0.15);padding:2px 5px;border-radius:4px;">{tag}</code>,
+                <code style="background:rgba(79,70,229,0.15);padding:2px 5px;border-radius:4px;">{thread}</code> as
                 placeholders.
             </p>
             <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">Preset
@@ -573,13 +576,18 @@
                 style="width:100%;margin-bottom:14px;">
             <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">Command
                 Template</label>
-            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+            <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
                 <button class="placeholder-btn" data-placeholder="{name}">{name}</button>
                 <button class="placeholder-btn" data-placeholder="{duration}">{duration}</button>
                 <button class="placeholder-btn" data-placeholder="{tag}">{tag}</button>
+                <button class="placeholder-btn" data-placeholder="{thread}">{thread}</button>
             </div>
-            <input type="text" id="preset-template-input" placeholder="/ban {name} {duration} Reason {tag}"
+            <input type="text" id="preset-template-input" placeholder="/ban {name} {duration} {thread} Reason {tag}"
                 style="width:100%;margin-bottom:20px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button id="bulk-add-thread-btn" class="secondary-btn" style="flex: 1; font-size: 0.85rem;">Add {thread} to All Presets</button>
+                <button id="bulk-remove-thread-btn" class="secondary-btn" style="flex: 1; font-size: 0.85rem; color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">Remove {thread} from All</button>
+            </div>
             <div id="preset-list" style="margin-bottom: 20px;"></div>
             <div class="modal-actions">
                 <button id="preset-modal-cancel" class="secondary-btn">Close</button>

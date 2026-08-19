@@ -124,6 +124,9 @@ function switchWorkspace(workspaceId) {
     if (defaultTabNameFormatInput) {
         defaultTabNameFormatInput.value = localStorage.getItem(getWorkspaceStorageKey('multiCheckDefaultTabNameFormat')) || '';
     }
+    if (banThreadInput) {
+        banThreadInput.value = localStorage.getItem(getWorkspaceStorageKey('multiCheckBanThread')) || '';
+    }
     if (autoProcessToggle) {
         autoProcessToggle.checked = localStorage.getItem(getWorkspaceStorageKey('multiCheckAutoProcess')) === 'true';
         autoProcessEnabled = autoProcessToggle.checked;
@@ -5112,7 +5115,7 @@ const BAN_PRESETS = [
     {
         id: 'griefing',
         name: "Multi Account Griefing",
-        template: "/ban {name} {duration} Multi Account Griefing ( التخريب بعده حسابات ) {tag}"
+        template: "/ban {name} {duration} {thread} Multi Account Griefing ( التخريب بعده حسابات ) {tag}"
     }
 ];
 
@@ -5532,6 +5535,7 @@ const banGrieferOnlyCheckbox = document.getElementById('ban-griefer-only-checkbo
 const banNoTagCheckbox = document.getElementById('ban-no-tag-checkbox');
 const banUnbanModeCheckbox = document.getElementById('ban-unban-mode-checkbox');
 const banAdminName = document.getElementById('ban-admin-name');
+const banThreadInput = document.getElementById('ban-thread-input');
 const banDurationSelect = document.getElementById('ban-duration-select');
 const importFromTabBtn = document.getElementById('import-from-tab-btn');
 const banCountBadge = document.getElementById('ban-count-badge');
@@ -5574,6 +5578,36 @@ if (banUnbanModeCheckbox) {
         updateGenerateButtonText();
         if (typeof saveBanGeneratorState === 'function') saveBanGeneratorState();
     };
+}
+
+if (banThreadInput) {
+    banThreadInput.value = localStorage.getItem(getWorkspaceStorageKey('multiCheckBanThread')) || '';
+    banThreadInput.addEventListener('change', () => {
+        localStorage.setItem(getWorkspaceStorageKey('multiCheckBanThread'), banThreadInput.value);
+    });
+}
+
+function extractThread(input) {
+    if (!input || !input.trim()) return '';
+    input = input.trim();
+
+    // If already in /threads/number/ format, return as is
+    if (input.startsWith('/threads/')) {
+        return input;
+    }
+
+    // Extract thread ID from full URL
+    const urlMatch = input.match(/\/threads\/(\d+)/);
+    if (urlMatch) {
+        return `/threads/${urlMatch[1]}/`;
+    }
+
+    // If it's just a number, format it
+    if (/^\d+$/.test(input)) {
+        return `/threads/${input}/`;
+    }
+
+    return '';
 }
 
 function updateGenerateButtonText() {
@@ -5768,6 +5802,7 @@ generateBansBtn.onclick = () => {
     if (!preset) return;
 
     const duration = currentDuration;
+    const thread = extractThread(banThreadInput?.value);
     const lines = banInputArea.value.split('\n');
     const outLines = [];
     const seenNames = new Set();
@@ -5830,9 +5865,10 @@ generateBansBtn.onclick = () => {
             }
             command = command.replace('{name}', name);
             command = command.replace('{tag}', tag);
+            command = command.replace('{thread}', thread);
 
-            // Clean up extra spaces if tag is empty
-            if (tag === '') {
+            // Clean up extra spaces if tag or thread is empty
+            if (tag === '' || thread === '') {
                 command = command.replace(/\s+/g, ' ').trim();
             }
 
@@ -6161,6 +6197,51 @@ document.querySelectorAll('.placeholder-btn').forEach(btn => {
 });
 const presetListEl = document.getElementById('preset-list');
 const openPresetBuilderBtn = document.getElementById('open-preset-builder-btn');
+const bulkAddThreadBtn = document.getElementById('bulk-add-thread-btn');
+const bulkRemoveThreadBtn = document.getElementById('bulk-remove-thread-btn');
+
+if (bulkAddThreadBtn) {
+    bulkAddThreadBtn.onclick = () => {
+        let updatedCount = 0;
+        customPresets.forEach(preset => {
+            // Only add {thread} if it doesn't already exist
+            if (!preset.template.includes('{thread}')) {
+                // Add {thread} after {duration}
+                preset.template = preset.template.replace('{duration}', '{duration} {thread}');
+                updatedCount++;
+            }
+        });
+        if (updatedCount > 0) {
+            saveCustomPresets();
+            renderPresetList();
+            rebuildPresetSelect();
+            showUndoToast(`Added {thread} to ${updatedCount} preset(s)`, null, 3000);
+        } else {
+            showUndoToast('All presets already have {thread}', null, 2000);
+        }
+    };
+}
+
+if (bulkRemoveThreadBtn) {
+    bulkRemoveThreadBtn.onclick = () => {
+        let updatedCount = 0;
+        customPresets.forEach(preset => {
+            if (preset.template.includes('{thread}')) {
+                // Remove {thread} and clean up extra spaces
+                preset.template = preset.template.replace(/\s*\{thread\}\s*/g, ' ').replace(/\s+/g, ' ').trim();
+                updatedCount++;
+            }
+        });
+        if (updatedCount > 0) {
+            saveCustomPresets();
+            renderPresetList();
+            rebuildPresetSelect();
+            showUndoToast(`Removed {thread} from ${updatedCount} preset(s)`, null, 3000);
+        } else {
+            showUndoToast('No presets have {thread} to remove', null, 2000);
+        }
+    };
+}
 
 // Custom presets are loaded near BAN_PRESETS definition
 
