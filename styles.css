@@ -2397,3 +2397,83 @@ input[type="checkbox"][style*="--danger"]:checked {
     70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
     100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
+
+/* Ban Generator Collapsible Sections */
+.ban-section {
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.ban-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: background 0.15s ease;
+}
+
+.ban-section-header:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.ban-section-header .chevron {
+    display: inline-flex;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.ban-section.collapsed .ban-section-header .chevron {
+    transform: rotate(-90deg);
+}
+
+.ban-section-header .section-label {
+    flex: 1;
+}
+
+.ban-section-header .section-hint {
+    font-weight: 400;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+    text-transform: none;
+    letter-spacing: normal;
+    margin-left: 4px;
+}
+
+.ban-section-body {
+    overflow: hidden;
+    transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+    max-height: 200px;
+    opacity: 1;
+    padding: 0 20px 12px 20px;
+}
+
+.ban-section.collapsed .ban-section-body {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.ban-actions-bar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(99, 102, 241, 0.03);
+}
+
+[data-theme="light"] .ban-section-header:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .ban-actions-bar {
+    background: rgba(99, 102, 241, 0.05);
+}

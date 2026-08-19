@@ -5111,6 +5111,13 @@ viewToggleBtn.onclick = () => {
     if (typeof saveBanGeneratorState === 'function') saveBanGeneratorState();
 };
 
+document.querySelectorAll('.ban-section-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const section = document.getElementById(btn.dataset.target);
+        if (section) section.classList.toggle('collapsed');
+    });
+});
+
 const BAN_PRESETS = [
     {
         id: 'griefing',
