@@ -172,14 +172,14 @@
 
             <div class="editor-container" id="editor-container">
                 <div class="pane" id="input-pane">
-                    <label style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
                         <span>Input (Raw Data)</span>
                         <div style="display: flex; gap: 6px; align-items: center;">
-                            <label
-                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer;">
+                            <div
+                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted);">
                                 <input type="checkbox" id="auto-process-toggle"
-                                    style="accent-color: var(--primary-color);"> Process
-                            </label>
+                                    style="accent-color: var(--primary-color); cursor: pointer;"> <span style="cursor: default;">Process</span>
+                            </div>
                             <div
                                 style="display: flex; align-items: center; gap: 2px; border: 1px solid var(--glass-border); border-radius: 6px; overflow: hidden;">
                                 <button id="font-dec-btn" class="icon-btn small"
@@ -193,7 +193,7 @@
                             </div>
                             <button id="clear-input-btn" class="icon-btn small" style="color: #ef4444;">Clear</button>
                         </div>
-                    </label>
+                    </div>
                     <div class="textarea-wrapper">
                         <div class="line-numbers" id="input-lines">1</div>
                         <textarea id="input-area" wrap="off" placeholder="Paste your data here..."></textarea>
