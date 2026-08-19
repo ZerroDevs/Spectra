@@ -200,19 +200,19 @@
                     </div>
                 </div>
                 <div class="pane" id="output-pane">
-                    <label style="display: flex; justify-content: space-between; width: 100%;">
+                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
                         <span>Output (Processed)</span>
                         <div style="display: flex; gap: 5px; align-items: center;">
-                            <label
-                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; margin-right: 5px;">
+                            <div
+                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted); margin-right: 5px;">
                                 <input type="checkbox" id="underscore-names-toggle"
-                                    style="accent-color: var(--primary-color);"> _Name
-                            </label>
-                            <label
-                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; margin-right: 5px;">
+                                    style="accent-color: var(--primary-color); cursor: pointer;"> <span style="cursor: default;">_Name</span>
+                            </div>
+                            <div
+                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted); margin-right: 5px;">
                                 <input type="checkbox" id="discord-code-toggle"
-                                    style="accent-color: var(--primary-color);"> Dis ```
-                            </label>
+                                    style="accent-color: var(--primary-color); cursor: pointer;"> <span style="cursor: default;">Dis ```</span>
+                            </div>
                             <div class="tag-format-dropdown-wrapper" style="margin-right: 5px;">
                                 <button id="tag-format-dropdown-btn" class="tag-format-dropdown-btn" style="background: rgba(79, 70, 229, 0.1); border: 1px solid rgba(79, 70, 229, 0.2); border-radius: 8px; padding: 6px 10px; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer;">
                                     <span id="tag-format-label">With ()</span>
@@ -255,7 +255,7 @@
                             <button id="send-btn" class="icon-btn small" title="Send to Discord">Send</button>
                             <button id="copy-btn" class="icon-btn small">Copy</button>
                         </div>
-                    </label>
+                    </div>
                     <div id="stats-bar" class="stats-bar" style="display: none;">
                         <span id="stats-accounts"></span>
                         <span class="stats-divider">|</span>
