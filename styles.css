@@ -2477,3 +2477,269 @@ input[type="checkbox"][style*="--danger"]:checked {
 [data-theme="light"] .ban-actions-bar {
     background: rgba(99, 102, 241, 0.05);
 }
+
+/* Workspace Modal Redesign */
+#workspace-modal .modal-content {
+    width: 580px;
+    max-height: 82vh;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.ws-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 22px 28px 0 28px;
+}
+
+.ws-modal-header-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.2));
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.ws-modal-header-text h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.ws-modal-header-text p {
+    margin: 2px 0 0 0;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+/* Tabs - Pill Style */
+.ws-modal-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 16px 28px 0 28px;
+}
+
+.ws-modal-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 14px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ws-modal-tab:hover {
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.ws-modal-tab.active {
+    color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+.ws-modal-tab svg {
+    flex-shrink: 0;
+}
+
+/* Tab Content Area */
+.ws-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 28px 0 28px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.ws-modal-body::-webkit-scrollbar {
+    width: 5px;
+}
+
+.ws-modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ws-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+/* Create Row */
+.ws-create-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.ws-create-row input {
+    flex: 1;
+    padding: 9px 14px !important;
+    margin-bottom: 0 !important;
+    font-size: 0.88rem !important;
+    border-radius: 8px !important;
+}
+
+.ws-create-row .primary-btn {
+    padding: 9px 18px;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+/* Empty State */
+.ws-empty-state {
+    text-align: center;
+    padding: 28px 16px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.ws-empty-state svg {
+    display: block;
+    margin: 0 auto 10px auto;
+    opacity: 0.4;
+}
+
+/* Settings Section (collapsible) */
+.ws-settings-section {
+    border-top: 1px solid var(--glass-border);
+    margin-top: 12px;
+}
+
+.ws-settings-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0;
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: color 0.15s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    font-family: inherit;
+}
+
+.ws-settings-toggle:hover {
+    color: var(--text-main);
+}
+
+.ws-settings-toggle .chevron {
+    display: inline-flex;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.ws-settings-section.collapsed .ws-settings-toggle .chevron {
+    transform: rotate(-90deg);
+}
+
+.ws-settings-body {
+    overflow: hidden;
+    transition: max-height 0.25s ease, opacity 0.2s ease;
+    max-height: 200px;
+    opacity: 1;
+    padding-bottom: 16px;
+}
+
+.ws-settings-section.collapsed .ws-settings-body {
+    max-height: 0;
+    opacity: 0;
+    padding-bottom: 0;
+}
+
+.ws-field {
+    margin-bottom: 14px;
+}
+
+.ws-field:last-child {
+    margin-bottom: 0;
+}
+
+.ws-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.ws-field input,
+.ws-field textarea {
+    width: 100%;
+    padding: 9px 14px !important;
+    border-radius: 8px !important;
+    font-size: 0.85rem !important;
+    margin-bottom: 0 !important;
+}
+
+.ws-field-hint {
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    margin-top: 5px;
+    line-height: 1.4;
+    opacity: 0.75;
+}
+
+/* Storage Banner */
+.ws-storage-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    margin-bottom: 14px;
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: var(--primary-color);
+}
+
+/* Footer */
+.ws-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 14px 28px;
+    border-top: 1px solid var(--glass-border);
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.ws-modal-footer .secondary-btn {
+    padding: 8px 20px;
+    font-size: 0.85rem;
+    border-radius: 8px;
+}
+
+[data-theme="light"] .ws-modal-footer {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="light"] .ws-settings-toggle:hover {
+    color: var(--text-main);
+}
+
+[data-theme="light"] .ws-empty-state svg {
+    opacity: 0.3;
+}

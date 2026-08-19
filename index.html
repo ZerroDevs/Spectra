@@ -617,80 +617,85 @@
 
     <!-- Workspace Management Modal -->
     <div id="workspace-modal" class="modal hidden">
-        <div class="modal-content glass" style="width: 520px; max-height: 80vh; overflow-y: auto;">
-            <h3>Manage Workspaces</h3>
-            
-            <!-- Tabs -->
-            <div style="display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--glass-border);">
-                <button id="workspace-tab-btn" class="modal-tab-btn active" data-tab="workspaces">Workspaces</button>
-                <button id="groups-tab-btn" class="modal-tab-btn" data-tab="groups">Groups</button>
-                <button id="archive-tab-btn" class="modal-tab-btn" data-tab="archive">Archive</button>
+        <div class="modal-content glass">
+            <!-- Header -->
+            <div class="ws-modal-header">
+                <div class="ws-modal-header-icon">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="#f59e0b" stroke-width="2" fill="none">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                </div>
+                <div class="ws-modal-header-text">
+                    <h3>Manage Workspaces</h3>
+                    <p>Organize projects with separate tabs, data &amp; settings</p>
+                </div>
             </div>
-            
-            <!-- Workspaces Tab Content -->
-            <div id="workspaces-tab-content" class="modal-tab-content">
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; line-height: 1.6;">
-                    Create separate workspaces to organize different projects. Each workspace has its own tabs, data, and settings.
-                </p>
 
-                <div style="margin-bottom: 20px;">
-                    <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">New Workspace Name</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="new-workspace-name" placeholder="e.g. Server A, Project X"
-                            style="flex:1;">
+            <!-- Tabs -->
+            <div class="ws-modal-tabs">
+                <button id="workspace-tab-btn" class="ws-modal-tab active" data-tab="workspaces">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                    Workspaces
+                </button>
+                <button id="groups-tab-btn" class="ws-modal-tab" data-tab="groups">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    Groups
+                </button>
+                <button id="archive-tab-btn" class="ws-modal-tab" data-tab="archive">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="15" height="13"></rect><polyline points="10 12 15 12 15 7"></polyline></svg>
+                    Archive
+                </button>
+            </div>
+
+            <!-- Scrollable Body -->
+            <div class="ws-modal-body">
+                <!-- Workspaces Tab -->
+                <div id="workspaces-tab-content" class="modal-tab-content">
+                    <div class="ws-create-row">
+                        <input type="text" id="new-workspace-name" placeholder="New workspace name...">
                         <button id="create-workspace-btn" class="primary-btn">Create</button>
                     </div>
-                </div>
+                    <div id="workspace-list"></div>
 
-                <div id="workspace-list" style="margin-bottom: 20px;"></div>
-
-                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
-                    <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">Default Tab Name Format</label>
-                    <input type="text" id="default-tab-name-format" placeholder="e.g. Griefers {num}, Check {date}"
-                        style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); color: var(--text-main); font-size: 0.85rem; outline: none;">
-                    <p style="color: var(--text-muted); font-size: 0.75rem; margin-top: 6px; line-height: 1.4;">
-                        Available placeholders: {num} (tab number), {date} (current date), {time} (current time), {ws} (workspace name)
-                    </p>
-                </div>
-
-                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
-                    <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">Discord Webhook URL</label>
-                    <input type="text" id="discord-webhook-url" placeholder="https://discord.com/api/webhooks/..."
-                        style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); color: var(--text-main); font-size: 0.85rem; outline: none;">
-                    <p style="color: var(--text-muted); font-size: 0.75rem; margin-top: 6px; line-height: 1.4;">
-                        Enter your Discord webhook URL to enable the Send button for sending content to Discord.
-                    </p>
-                </div>
-            </div>
-            
-            <!-- Groups Tab Content -->
-            <div id="groups-tab-content" class="modal-tab-content hidden">
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; line-height: 1.6;">
-                    Create and manage tab groups to organize your tabs within the current workspace.
-                </p>
-                
-                <div style="margin-bottom: 20px;">
-                    <label style="display:block;margin-bottom:6px;font-size:0.85rem;color:var(--text-muted);">New Group Name</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="new-group-name" placeholder="e.g. Important Tabs"
-                            style="flex:1;">
-                        <button id="create-group-btn" class="primary-btn">Create</button>
+                    <div class="ws-settings-section" id="ws-settings-section">
+                        <button class="ws-settings-toggle ws-settings-toggle-btn" type="button">
+                            <span class="chevron"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                            Settings
+                        </button>
+                        <div class="ws-settings-body">
+                            <div class="ws-field">
+                                <label>Default Tab Name Format</label>
+                                <input type="text" id="default-tab-name-format" placeholder="e.g. Griefers {num}, Check {date}">
+                                <p class="ws-field-hint">Placeholders: {num} (tab number), {date} (current date), {time} (current time), {ws} (workspace name)</p>
+                            </div>
+                            <div class="ws-field">
+                                <label>Discord Webhook URL</label>
+                                <input type="text" id="discord-webhook-url" placeholder="https://discord.com/api/webhooks/...">
+                                <p class="ws-field-hint">Enter your Discord webhook URL to enable the Send button for Discord integration.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div id="groups-list" style="margin-bottom: 20px;"></div>
-            </div>
-            
-            <!-- Archive Tab Content -->
-            <div id="archive-tab-content" class="modal-tab-content hidden">
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; line-height: 1.6;">
-                    Archive old workspaces to keep them safe without cluttering your active workspace list.
-                </p>
+                <!-- Groups Tab -->
+                <div id="groups-tab-content" class="modal-tab-content hidden">
+                    <div class="ws-create-row">
+                        <input type="text" id="new-group-name" placeholder="New group name...">
+                        <button id="create-group-btn" class="primary-btn">Create</button>
+                    </div>
+                    <div id="groups-list"></div>
+                </div>
 
-                <div id="archive-list" style="margin-bottom: 20px;"></div>
+                <!-- Archive Tab -->
+                <div id="archive-tab-content" class="modal-tab-content hidden">
+                    <div id="archive-list"></div>
+                </div>
             </div>
 
-            <div class="modal-actions">
+            <!-- Footer -->
+            <div class="ws-modal-footer">
                 <button id="workspace-modal-cancel" class="secondary-btn">Close</button>
             </div>
         </div>

@@ -5118,6 +5118,13 @@ document.querySelectorAll('.ban-section-toggle').forEach(btn => {
     });
 });
 
+document.querySelectorAll('.ws-settings-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const section = btn.closest('.ws-settings-section');
+        if (section) section.classList.toggle('collapsed');
+    });
+});
+
 const BAN_PRESETS = [
     {
         id: 'griefing',
