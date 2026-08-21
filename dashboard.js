@@ -1,215 +1,601 @@
-function getWorkspaceStorageKey(baseKey) {
-    const currentWorkspace = localStorage.getItem('multiCheckCurrentWorkspace') || 'workspace-default';
-    return `${baseKey}_${currentWorkspace}`;
-}
+(() => {
+    'use strict';
 
-function formatBytes(bytes) {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
+    const KEYS = {
+        workspaces: 'multiCheckWorkspaces',
+        current: 'multiCheckCurrentWorkspace',
+        tabs: 'multiCheckTabs',
+        groups: 'multiCheckGroups'
+    };
 
-function loadDashboard() {
-    let totalAccounts = 0;
-    let totalTabs = 0;
-    let totalMains = 0;
-    let totalTwinks = 0;
-    let totalGriefers = 0;
-    let totalGroups = 0;
-    let totalSize = 0;
+    const DEFAULT_WORKSPACE_ID = 'workspace-default';
+    const STORAGE_LIMIT = 5 * 1024 * 1024;
+    const GRIEFER_TAGS = ['Non-RP', 'Fail-RP', 'Provoking', 'GR3.1', 'GR3.2', 'DM'];
+    const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Get all workspaces
-    const workspaces = JSON.parse(localStorage.getItem('multiCheckWorkspaces') || '[]');
-    const workspacesList = document.getElementById('workspaces-list');
-    workspacesList.innerHTML = '';
+    const escapeRegex = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const GRIEFER_RE = new RegExp(`(?:^|[^a-z0-9])(${GRIEFER_TAGS.map(escapeRegex).join('|')})(?:[^a-z0-9]|$)`, 'i');
+    const MAIN_RE = /\(\s*m\s*\)|\bm\s*$/i;
+    const TWINK_RE = /\(\s*t\s*\)|\bt\s*$/i;
 
-    if (workspaces.length === 0) {
-        workspacesList.innerHTML = `
-            <div class="empty-state">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                </svg>
-                <p>No workspaces found</p>
-            </div>
-        `;
-    } else {
-        workspaces.forEach(workspace => {
-            const wsKey = `${workspace.id}`;
-            const tabs = JSON.parse(localStorage.getItem(`multiCheckTabs_${wsKey}`) || '[]');
-            const groups = JSON.parse(localStorage.getItem(`multiCheckGroups_${wsKey}`) || '[]');
-            
-            let wsAccounts = 0;
-            let wsMains = 0;
-            let wsTwinks = 0;
-            let wsGriefers = 0;
+    const state = {
+        loadedAt: 0,
+        expanded: new Set(),
+        wsSearch: '',
+        tabSearch: '',
+        wsSort: 'default',
+        tabSort: 'default',
+        data: null
+    };
 
-            tabs.forEach(tab => {
-                const output = tab.output || '';
-                const lines = output.split('\n');
-                lines.forEach(line => {
-                    if (line.includes('|')) {
-                        wsAccounts++;
-                        // Count both (M)/(T), M/T, and ( M )/( T ) formats
-                        if (line.includes('(M)') || line.match(/M\s*$/) || line.includes('( M )')) wsMains++;
-                        else if (line.includes('(T)') || line.match(/T\s*$/) || line.includes('( T )')) wsTwinks++;
-                        
-                        const grieferTags = ['(Non-RP)', '(Fail-RP)', '(Provoking)', '(GR3.1)', '(GR3.2)', '(DM)'];
-                        const upperLine = line.toUpperCase();
-                        // Check both with and without parentheses, and with/without !! suffix
-                        const hasGrieferTag = grieferTags.some(tag => {
-                            const tagWithParens = tag.toUpperCase();
-                            const tagWithoutParens = tag.replace(/[()]/g, '').toUpperCase();
-                            const tagWithoutParensNoSuffix = tagWithoutParens.replace(' !!', '').trim();
-                            return upperLine.includes(tagWithParens) || upperLine.includes(tagWithoutParens) || upperLine.includes(tagWithoutParensNoSuffix);
-                        });
-                        if (hasGrieferTag) {
-                            wsGriefers++;
-                        }
-                    }
-                });
-            });
+    const $ = id => document.getElementById(id);
+    const els = {
+        backBtn: $('back-btn'),
+        refreshBtn: $('refresh-btn'),
+        lastUpdated: $('last-updated'),
+        statAccounts: $('stat-accounts'),
+        statTabs: $('stat-tabs'),
+        statWorkspaces: $('stat-workspaces'),
+        statGroups: $('stat-groups'),
+        statMains: $('stat-mains'),
+        statTwinks: $('stat-twinks'),
+        statGriefers: $('stat-griefers'),
+        statStorage: $('stat-storage'),
+        distTotal: $('dist-total'),
+        distMains: $('dist-mains'),
+        distTwinks: $('dist-twinks'),
+        distUnlabeled: $('dist-unlabeled'),
+        distMainsCount: $('dist-mains-count'),
+        distTwinksCount: $('dist-twinks-count'),
+        distUnlabeledCount: $('dist-unlabeled-count'),
+        wsSearch: $('ws-search'),
+        wsSort: $('ws-sort'),
+        wsList: $('workspaces-list'),
+        tabsSearch: $('tabs-search'),
+        tabsSort: $('tabs-sort'),
+        tabsList: $('tabs-list'),
+        tabsWsName: $('tabs-workspace-name'),
+        groupsList: $('groups-list'),
+        groupsWsName: $('groups-workspace-name'),
+        storageUsed: $('storage-used'),
+        storagePercent: $('storage-percent'),
+        storageBar: $('storage-bar'),
+        storageProgress: $('storage-progress'),
+        storageKeys: $('storage-keys'),
+        exportBtn: $('export-btn'),
+        toast: $('toast')
+    };
 
-            totalAccounts += wsAccounts;
-            totalTabs += tabs.length;
-            totalMains += wsMains;
-            totalTwinks += wsTwinks;
-            totalGriefers += wsGriefers;
-            totalGroups += groups.length;
-
-            const wsItem = document.createElement('div');
-            wsItem.className = 'workspace-item';
-            wsItem.innerHTML = `
-                <div class="item-info">
-                    <div class="item-name">${workspace.name}</div>
-                    <div class="item-badge">${tabs.length} tabs</div>
-                </div>
-                <div class="item-meta">${wsAccounts} accounts • ${wsMains}M / ${wsTwinks}T • ${wsGriefers} Griefers</div>
-            `;
-            workspacesList.appendChild(wsItem);
-        });
-    }
-
-    // Get all tabs from current workspace
-    const tabs = JSON.parse(localStorage.getItem(getWorkspaceStorageKey('multiCheckTabs')) || '[]');
-    const groups = JSON.parse(localStorage.getItem(getWorkspaceStorageKey('multiCheckGroups')) || '[]');
-    
-    const tabsList = document.getElementById('tabs-list');
-    tabsList.innerHTML = '';
-
-    if (tabs.length === 0) {
-        tabsList.innerHTML = `
-            <div class="empty-state">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="3" y1="9" x2="21" y2="9"></line>
-                    <line x1="9" y1="21" x2="9" y2="9"></line>
-                </svg>
-                <p>No tabs found</p>
-            </div>
-        `;
-    } else {
-        tabs.forEach(tab => {
-            const output = tab.output || '';
-            const lines = output.split('\n');
-            let tabAccounts = 0;
-            let tabMains = 0;
-            let tabTwinks = 0;
-            let tabGriefers = 0;
-
-            lines.forEach(line => {
-                if (line.includes('|')) {
-                    tabAccounts++;
-                    // Count both (M)/(T) and M/T formats
-                    if (line.includes('(M)') || line.match(/M\s*$/) || line.includes('( M )')) tabMains++;
-                    else if (line.includes('(T)') || line.match(/T\s*$/) || line.includes('( T )')) tabTwinks++;
-                    
-                    const grieferTags = ['(Non-RP)', '(Fail-RP)', '(Provoking)', '(GR3.1)', '(GR3.2)', '(DM)'];
-                    const upperLine = line.toUpperCase();
-                    // Check both with and without parentheses, and with/without !! suffix
-                    const hasGrieferTag = grieferTags.some(tag => {
-                        const tagWithParens = tag.toUpperCase();
-                        const tagWithoutParens = tag.replace(/[()]/g, '').toUpperCase();
-                        const tagWithoutParensNoSuffix = tagWithoutParens.replace(' !!', '').trim();
-                        return upperLine.includes(tagWithParens) || upperLine.includes(tagWithoutParens) || upperLine.includes(tagWithoutParensNoSuffix);
-                    });
-                    if (hasGrieferTag) {
-                        tabGriefers++;
-                    }
-                }
-            });
-
-            const tabItem = document.createElement('div');
-            tabItem.className = 'tab-item';
-            tabItem.innerHTML = `
-                <div class="item-info">
-                    <div class="item-name">${tab.name}</div>
-                    ${tab.pinned ? '<span class="item-badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">Pinned</span>' : ''}
-                </div>
-                <div class="item-meta">${tabAccounts} accounts • ${tabMains}M / ${tabTwinks}T • ${tabGriefers} Griefers</div>
-            `;
-            tabsList.appendChild(tabItem);
-        });
-    }
-
-    // Groups
-    const groupsList = document.getElementById('groups-list');
-    groupsList.innerHTML = '';
-
-    if (groups.length === 0) {
-        groupsList.innerHTML = `
-            <div class="empty-state">
-                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                </svg>
-                <p>No groups found</p>
-            </div>
-        `;
-    } else {
-        groups.forEach(group => {
-            const groupTabs = tabs.filter(t => t.groupId === group.id);
-            const groupItem = document.createElement('div');
-            groupItem.className = 'group-item';
-            groupItem.innerHTML = `
-                <div class="item-info">
-                    <div class="color-dot" style="background: ${group.color}; margin-right: 8px;"></div>
-                    <div class="item-name">${group.name}</div>
-                </div>
-                <div class="item-badge">${groupTabs.length} tabs</div>
-            `;
-            groupsList.appendChild(groupItem);
-        });
-    }
-
-    // Calculate storage
-    let storageUsed = 0;
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('multiCheck')) {
-            storageUsed += (localStorage.getItem(key) || '').length;
+    function lsGet(key, fallback) {
+        try {
+            const v = localStorage.getItem(key);
+            return v === null ? fallback : v;
+        } catch (e) {
+            return fallback;
         }
     }
 
-    // Update stats
-    document.getElementById('total-accounts').textContent = totalAccounts.toLocaleString();
-    document.getElementById('total-tabs').textContent = totalTabs.toLocaleString();
-    document.getElementById('total-workspaces').textContent = workspaces.length;
-    document.getElementById('total-groups').textContent = totalGroups.toLocaleString();
-    document.getElementById('total-size').textContent = formatBytes(storageUsed);
-    document.getElementById('total-mains').textContent = totalMains.toLocaleString();
-    document.getElementById('total-twinks').textContent = totalTwinks.toLocaleString();
-    document.getElementById('total-griefers').textContent = totalGriefers.toLocaleString();
+    function parseJSON(str, fallback) {
+        try {
+            const v = JSON.parse(str);
+            return v === null || v === undefined ? fallback : v;
+        } catch (e) {
+            return fallback;
+        }
+    }
 
-    // Storage info
-    document.getElementById('storage-used').textContent = formatBytes(storageUsed);
-    document.getElementById('storage-keys').textContent = localStorage.length;
-    const storagePercent = Math.min((storageUsed / (5 * 1024 * 1024)) * 100, 100);
-    document.getElementById('storage-bar').style.width = storagePercent + '%';
-}
+    function wsKey(base, workspaceId) {
+        return `${base}_${workspaceId}`;
+    }
 
-// Load dashboard on page load
-loadDashboard();
+    function formatBytes(bytes) {
+        if (!bytes) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1);
+        return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+    }
+
+    function safeColor(color) {
+        return typeof color === 'string' && /^#[0-9a-f]{3,8}$/i.test(color.trim()) ? color.trim() : '#6366f1';
+    }
+
+    function analyzeOutput(output) {
+        const stats = { accounts: 0, mains: 0, twinks: 0, griefers: 0 };
+        if (!output) return stats;
+        for (const line of String(output).split('\n')) {
+            if (!line.includes('|')) continue;
+            stats.accounts++;
+            if (MAIN_RE.test(line)) stats.mains++;
+            else if (TWINK_RE.test(line)) stats.twinks++;
+            if (GRIEFER_RE.test(line)) stats.griefers++;
+        }
+        return stats;
+    }
+
+    function addStats(target, source) {
+        target.accounts += source.accounts;
+        target.mains += source.mains;
+        target.twinks += source.twinks;
+        target.griefers += source.griefers;
+    }
+
+    function animateValue(el, target, formatter = v => Math.round(v).toLocaleString()) {
+        const from = Number(el.dataset.v || 0);
+        el.dataset.v = String(target);
+        if (REDUCED_MOTION || from === target) {
+            el.textContent = formatter(target);
+            return;
+        }
+        if (el.dataset.raf) cancelAnimationFrame(Number(el.dataset.raf));
+        const duration = 650;
+        const start = performance.now();
+        const step = now => {
+            const p = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = formatter(from + (target - from) * eased);
+            if (p < 1) el.dataset.raf = String(requestAnimationFrame(step));
+            else delete el.dataset.raf;
+        };
+        el.dataset.raf = String(requestAnimationFrame(step));
+    }
+
+    function collectData() {
+        const workspacesRaw = parseJSON(lsGet(KEYS.workspaces, '[]'), []);
+        const currentId = lsGet(KEYS.current, DEFAULT_WORKSPACE_ID);
+
+        const totals = { accounts: 0, mains: 0, twinks: 0, griefers: 0, tabs: 0, groups: 0 };
+        const wsRows = [];
+        let currentName = 'Default';
+
+        for (const ws of workspacesRaw) {
+            if (!ws || !ws.id) continue;
+            const tabs = parseJSON(lsGet(wsKey(KEYS.tabs, ws.id), '[]'), []);
+            const groups = parseJSON(lsGet(wsKey(KEYS.groups, ws.id), '[]'), []);
+            const wsStats = { accounts: 0, mains: 0, twinks: 0, griefers: 0 };
+            const tabRows = tabs.map(tab => {
+                const stats = analyzeOutput(tab && tab.output);
+                addStats(wsStats, stats);
+                return { tab, stats };
+            });
+            totals.accounts += wsStats.accounts;
+            totals.mains += wsStats.mains;
+            totals.twinks += wsStats.twinks;
+            totals.griefers += wsStats.griefers;
+            totals.tabs += tabs.length;
+            totals.groups += Array.isArray(groups) ? groups.length : 0;
+            if (ws.id === currentId) currentName = ws.name || 'Default';
+            wsRows.push({ ws, tabRows, groupCount: Array.isArray(groups) ? groups.length : 0, stats: wsStats });
+        }
+
+        const curTabs = parseJSON(lsGet(wsKey(KEYS.tabs, currentId), '[]'), []);
+        const curGroups = parseJSON(lsGet(wsKey(KEYS.groups, currentId), '[]'), []);
+        const curTabRows = curTabs.map(tab => ({ tab, stats: analyzeOutput(tab && tab.output) }));
+
+        let bytes = 0;
+        let keyCount = 0;
+        try {
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('multiCheck')) {
+                    bytes += (localStorage.getItem(key) || '').length;
+                    keyCount++;
+                }
+            }
+        } catch (e) { /* storage unavailable */ }
+
+        return { wsRows, currentId, currentName, curTabRows, curGroups, totals, storage: { bytes, keyCount } };
+    }
+
+    function renderStats() {
+        const t = state.data.totals;
+        animateValue(els.statAccounts, t.accounts);
+        animateValue(els.statTabs, t.tabs);
+        animateValue(els.statWorkspaces, state.data.wsRows.length);
+        animateValue(els.statGroups, t.groups);
+        animateValue(els.statMains, t.mains);
+        animateValue(els.statTwinks, t.twinks);
+        animateValue(els.statGriefers, t.griefers);
+        animateValue(els.statStorage, state.data.storage.bytes, formatBytes);
+    }
+
+    function renderDistribution() {
+        const { accounts, mains, twinks } = state.data.totals;
+        const unlabeled = Math.max(accounts - mains - twinks, 0);
+        const pct = v => (accounts > 0 ? (v / accounts) * 100 : 0);
+        els.distMains.style.width = pct(mains) + '%';
+        els.distTwinks.style.width = pct(twinks) + '%';
+        els.distUnlabeled.style.width = pct(unlabeled) + '%';
+        els.distTotal.textContent = accounts.toLocaleString();
+        els.distMainsCount.textContent = mains.toLocaleString();
+        els.distTwinksCount.textContent = twinks.toLocaleString();
+        els.distUnlabeledCount.textContent = unlabeled.toLocaleString();
+    }
+
+    function metaText(stats) {
+        return `${stats.accounts} account${stats.accounts === 1 ? '' : 's'} · ${stats.mains}M / ${stats.twinks}T · ${stats.griefers} griefer${stats.griefers === 1 ? '' : 's'}`;
+    }
+
+    function makeEl(tag, className, text) {
+        const el = document.createElement(tag);
+        if (className) el.className = className;
+        if (text !== undefined) el.textContent = text;
+        return el;
+    }
+
+    function chevronSvg() {
+        const ns = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(ns, 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('width', '15');
+        svg.setAttribute('height', '15');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '2.4');
+        svg.setAttribute('stroke-linecap', 'round');
+        svg.setAttribute('stroke-linejoin', 'round');
+        svg.classList.add('chev');
+        const poly = document.createElementNS(ns, 'polyline');
+        poly.setAttribute('points', '6 9 12 15 18 9');
+        svg.appendChild(poly);
+        return svg;
+    }
+
+    function emptyState(message, iconPathBuilder) {
+        const wrap = makeEl('div', 'empty-state');
+        const ns = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(ns, 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '1.6');
+        svg.setAttribute('stroke-linecap', 'round');
+        svg.setAttribute('stroke-linejoin', 'round');
+        iconPathBuilder(svg, ns);
+        const p = makeEl('p', null, message);
+        wrap.append(svg, p);
+        return wrap;
+    }
+
+    function sortRows(rows, mode) {
+        const sorted = rows.slice();
+        switch (mode) {
+            case 'name':
+                sorted.sort((a, b) => rowName(a).localeCompare(rowName(b), undefined, { sensitivity: 'base' }));
+                break;
+            case 'accounts':
+                sorted.sort((a, b) => b.stats.accounts - a.stats.accounts);
+                break;
+            case 'tabs':
+                sorted.sort((a, b) => rowCount(a) - rowCount(b)).reverse();
+                break;
+        }
+        return sorted;
+    }
+
+    function rowName(row) {
+        return (row.tab ? row.tab.name : row.ws.name) || '';
+    }
+
+    function rowCount(row) {
+        return row.tabRows ? row.tabRows.length : 0;
+    }
+
+    function renderWorkspaces() {
+        const list = els.wsList;
+        list.innerHTML = '';
+
+        if (state.data.wsRows.length === 0) {
+            list.appendChild(emptyState('No workspaces found', (svg, ns) => {
+                const p1 = document.createElementNS(ns, 'path');
+                p1.setAttribute('d', 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2');
+                const c = document.createElementNS(ns, 'circle');
+                c.setAttribute('cx', '9');
+                c.setAttribute('cy', '7');
+                c.setAttribute('r', '4');
+                svg.append(p1, c);
+            }));
+            return;
+        }
+
+        let rows = state.data.wsRows.filter(r => (r.ws.name || '').toLowerCase().includes(state.wsSearch));
+        rows = sortRows(rows, state.wsSort);
+
+        if (rows.length === 0) {
+            list.appendChild(emptyState('No workspaces match your filter', (svg, ns) => {
+                const c1 = document.createElementNS(ns, 'circle');
+                c1.setAttribute('cx', '11');
+                c1.setAttribute('cy', '11');
+                c1.setAttribute('r', '8');
+                const l = document.createElementNS(ns, 'line');
+                l.setAttribute('x1', '21');
+                l.setAttribute('y1', '21');
+                l.setAttribute('x2', '16.65');
+                l.setAttribute('y2', '16.65');
+                svg.append(c1, l);
+            }));
+            return;
+        }
+
+        for (const row of rows) {
+            const block = makeEl('div', 'ws-block' + (state.expanded.has(row.ws.id) ? ' open' : ''));
+
+            const item = makeEl('div', 'item ws-item');
+            item.setAttribute('role', 'button');
+            item.setAttribute('tabindex', '0');
+            item.setAttribute('aria-expanded', String(state.expanded.has(row.ws.id)));
+
+            const main = makeEl('div', 'item-main');
+            main.append(chevronSvg(), makeEl('span', 'item-name', row.ws.name || 'Untitled'));
+            main.appendChild(makeEl('span', 'badge', `${row.tabRows.length} tab${row.tabRows.length === 1 ? '' : 's'}`));
+            if (row.groupCount > 0) main.appendChild(makeEl('span', 'badge badge-green', `${row.groupCount} group${row.groupCount === 1 ? '' : 's'}`));
+
+            const meta = makeEl('div', 'item-meta', metaText(row.stats));
+            item.append(main, meta);
+
+            const children = makeEl('div', 'ws-children');
+            const inner = makeEl('div', 'ws-children-inner');
+            for (const tr of row.tabRows) {
+                const mini = makeEl('div', 'mini-row');
+                const nameWrap = makeEl('div', 'item-main');
+                nameWrap.appendChild(makeEl('span', 'mini-name', tr.tab.name || 'Untitled'));
+                if (tr.tab.pinned) nameWrap.appendChild(makeEl('span', 'badge badge-amber', 'Pinned'));
+                mini.append(nameWrap, makeEl('span', 'mini-meta', metaText(tr.stats)));
+                inner.appendChild(mini);
+            }
+            children.appendChild(inner);
+
+            const toggle = () => {
+                const open = !state.expanded.has(row.ws.id);
+                if (open) state.expanded.add(row.ws.id);
+                else state.expanded.delete(row.ws.id);
+                block.classList.toggle('open', open);
+                item.setAttribute('aria-expanded', String(open));
+            };
+            item.addEventListener('click', toggle);
+            item.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggle();
+                }
+            });
+
+            block.append(item, children);
+            list.appendChild(block);
+        }
+    }
+
+    function renderTabs() {
+        const list = els.tabsList;
+        list.innerHTML = '';
+        els.tabsWsName.textContent = `· ${state.data.currentName}`;
+        els.groupsWsName.textContent = `· ${state.data.currentName}`;
+
+        if (state.data.curTabRows.length === 0) {
+            list.appendChild(emptyState('No tabs in this workspace', (svg, ns) => {
+                const r = document.createElementNS(ns, 'rect');
+                r.setAttribute('x', '3');
+                r.setAttribute('y', '3');
+                r.setAttribute('width', '18');
+                r.setAttribute('height', '18');
+                r.setAttribute('rx', '2');
+                const l1 = document.createElementNS(ns, 'line');
+                l1.setAttribute('x1', '3');
+                l1.setAttribute('y1', '9');
+                l1.setAttribute('x2', '21');
+                l1.setAttribute('y2', '9');
+                const l2 = document.createElementNS(ns, 'line');
+                l2.setAttribute('x1', '9');
+                l2.setAttribute('y1', '21');
+                l2.setAttribute('x2', '9');
+                l2.setAttribute('y2', '9');
+                svg.append(r, l1, l2);
+            }));
+            return;
+        }
+
+        const groupNameById = new Map(state.data.curGroups.map(g => [g.id, g]));
+
+        let rows = state.data.curTabRows.filter(r => (r.tab.name || '').toLowerCase().includes(state.tabSearch));
+        rows = sortRows(rows, state.tabSort);
+
+        if (rows.length === 0) {
+            list.appendChild(emptyState('No tabs match your filter', (svg, ns) => {
+                const c1 = document.createElementNS(ns, 'circle');
+                c1.setAttribute('cx', '11');
+                c1.setAttribute('cy', '11');
+                c1.setAttribute('r', '8');
+                const l = document.createElementNS(ns, 'line');
+                l.setAttribute('x1', '21');
+                l.setAttribute('y1', '21');
+                l.setAttribute('x2', '16.65');
+                l.setAttribute('y2', '16.65');
+                svg.append(c1, l);
+            }));
+            return;
+        }
+
+        for (const row of rows) {
+            const item = makeEl('div', 'item');
+            const main = makeEl('div', 'item-main');
+            main.appendChild(makeEl('span', 'item-name', row.tab.name || 'Untitled'));
+            if (row.tab.pinned) main.appendChild(makeEl('span', 'badge badge-amber', 'Pinned'));
+            const group = groupNameById.get(row.tab.groupId);
+            if (group) {
+                const chip = makeEl('span', 'group-chip');
+                const dot = makeEl('i', 'dot');
+                dot.style.background = safeColor(group.color);
+                chip.append(dot, document.createTextNode(group.name || 'Group'));
+                main.appendChild(chip);
+            }
+            item.append(main, makeEl('div', 'item-meta', metaText(row.stats)));
+            list.appendChild(item);
+        }
+    }
+
+    function renderGroups() {
+        const list = els.groupsList;
+        list.innerHTML = '';
+
+        if (state.data.curGroups.length === 0) {
+            list.appendChild(emptyState('No groups in this workspace', (svg, ns) => {
+                const c = document.createElementNS(ns, 'circle');
+                c.setAttribute('cx', '12');
+                c.setAttribute('cy', '12');
+                c.setAttribute('r', '10');
+                const l1 = document.createElementNS(ns, 'line');
+                l1.setAttribute('x1', '12');
+                l1.setAttribute('y1', '8');
+                l1.setAttribute('x2', '12');
+                l1.setAttribute('y2', '12');
+                const l2 = document.createElementNS(ns, 'line');
+                l2.setAttribute('x1', '12');
+                l2.setAttribute('y1', '16');
+                l2.setAttribute('x2', '12.01');
+                l2.setAttribute('y2', '16');
+                svg.append(c, l1, l2);
+            }));
+            return;
+        }
+
+        const totalTabs = state.data.curTabRows.length || 1;
+        for (const group of state.data.curGroups) {
+            const tabCount = state.data.curTabRows.filter(r => r.tab.groupId === group.id).length;
+            const share = Math.round((tabCount / totalTabs) * 100);
+
+            const item = makeEl('div', 'item');
+            const main = makeEl('div', 'item-main');
+            const dot = makeEl('i', 'dot');
+            dot.style.background = safeColor(group.color);
+            main.append(dot, makeEl('span', 'item-name', group.name || 'Untitled group'));
+            item.append(
+                main,
+                makeEl('span', 'badge', `${tabCount} tab${tabCount === 1 ? '' : 's'} · ${share}%`)
+            );
+            list.appendChild(item);
+        }
+    }
+
+    function renderStorage() {
+        const { bytes, keyCount } = state.data.storage;
+        const percent = Math.min((bytes / STORAGE_LIMIT) * 100, 100);
+
+        els.storageUsed.textContent = formatBytes(bytes);
+        els.storagePercent.textContent = `${percent.toFixed(percent < 10 ? 1 : 0)}%`;
+        els.storageBar.style.width = percent + '%';
+        els.storageBar.classList.toggle('warn', percent >= 60 && percent < 85);
+        els.storageBar.classList.toggle('danger', percent >= 85);
+        els.storageProgress.setAttribute('aria-valuenow', String(Math.round(percent)));
+        els.storageKeys.textContent = keyCount.toLocaleString();
+    }
+
+    function relativeTime(ts) {
+        const diff = Math.max(Math.floor((Date.now() - ts) / 1000), 0);
+        if (diff < 10) return 'Updated just now';
+        if (diff < 60) return `Updated ${diff}s ago`;
+        if (diff < 3600) return `Updated ${Math.floor(diff / 60)}m ago`;
+        return `Updated ${Math.floor(diff / 3600)}h ago`;
+    }
+
+    let toastTimer = null;
+    function toast(message) {
+        els.toast.textContent = message;
+        els.toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => els.toast.classList.remove('show'), 2200);
+    }
+
+    function refresh(options = {}) {
+        const { silent = false } = options;
+        state.data = collectData();
+        renderStats();
+        renderDistribution();
+        renderWorkspaces();
+        renderTabs();
+        renderGroups();
+        renderStorage();
+
+        state.loadedAt = Date.now();
+        els.lastUpdated.textContent = relativeTime(state.loadedAt);
+
+        if (!silent) {
+            toast('Dashboard refreshed');
+            els.refreshBtn.classList.add('loading');
+            setTimeout(() => els.refreshBtn.classList.remove('loading'), 700);
+        }
+    }
+
+    function exportData() {
+        const dump = {};
+        try {
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('multiCheck')) dump[key] = localStorage.getItem(key);
+            }
+        } catch (e) {
+            toast('Export failed: storage unavailable');
+            return;
+        }
+        const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        const blob = new Blob([JSON.stringify(dump, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `multicheck-backup-${stamp}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast(`Exported ${Object.keys(dump).length} keys`);
+    }
+
+    function bindEvents() {
+        els.backBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+
+        els.refreshBtn.addEventListener('click', () => refresh());
+        els.exportBtn.addEventListener('click', exportData);
+
+        els.wsSearch.addEventListener('input', e => {
+            state.wsSearch = e.target.value.trim().toLowerCase();
+            renderWorkspaces();
+        });
+
+        els.tabsSearch.addEventListener('input', e => {
+            state.tabSearch = e.target.value.trim().toLowerCase();
+            renderTabs();
+        });
+
+        els.wsSort.addEventListener('change', e => {
+            state.wsSort = e.target.value;
+            renderWorkspaces();
+        });
+
+        els.tabsSort.addEventListener('change', e => {
+            state.tabSort = e.target.value;
+            renderTabs();
+        });
+
+        document.addEventListener('keydown', e => {
+            const tag = (e.target.tagName || '').toLowerCase();
+            if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            if (e.key.toLowerCase() === 'r') {
+                e.preventDefault();
+                refresh();
+            }
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) refresh({ silent: true });
+        });
+
+        setInterval(() => {
+            if (state.loadedAt) els.lastUpdated.textContent = relativeTime(state.loadedAt);
+        }, 30000);
+    }
+
+    bindEvents();
+    refresh({ silent: true });
+})();
