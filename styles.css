@@ -1509,6 +1509,31 @@ input[type="checkbox"][style*="--danger"]:checked {
     overflow: hidden;
 }
 
+#ban-generator-view {
+    padding: 10px;
+    gap: 0;
+}
+
+#ban-generator-view .pane {
+    padding: 10px;
+}
+
+#ban-generator-view .pane label {
+    margin-bottom: 6px;
+}
+
+#ban-generator-view .ban-section-header {
+    padding: 6px 14px;
+}
+
+#ban-generator-view .ban-section-body {
+    padding: 0 14px 6px 14px;
+}
+
+#ban-generator-view .ban-actions-bar {
+    padding: 8px 14px;
+}
+
 .pane {
     flex: 1;
     display: flex;
@@ -2742,4 +2767,412 @@ input[type="checkbox"][style*="--danger"]:checked {
 
 [data-theme="light"] .ws-empty-state svg {
     opacity: 0.3;
+}
+
+/* ============================================
+   Toast Notifications - Stacked from Top-Right
+   ============================================ */
+.toast-container {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 5000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+    max-width: min(400px, calc(100vw - 32px));
+}
+
+.toast-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    background: rgba(23, 23, 35, 0.96);
+    backdrop-filter: blur(12px);
+    color: var(--text-main);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    font-size: 0.88rem;
+    pointer-events: auto;
+    animation: toastSlideIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toast-item.removing {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.toast-item .toast-message {
+    flex: 1;
+    line-height: 1.4;
+}
+
+.toast-item .toast-undo-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-radius: 6px;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(99, 102, 241, 0.15);
+    color: var(--primary-color);
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.15s;
+    font-family: inherit;
+}
+
+.toast-item .toast-undo-btn:hover {
+    background: rgba(99, 102, 241, 0.3);
+}
+
+.toast-item .toast-close-btn {
+    padding: 2px;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    opacity: 0.5;
+    transition: opacity 0.15s;
+}
+
+.toast-item .toast-close-btn:hover {
+    opacity: 1;
+}
+
+.toast-item.toast-success {
+    border-color: rgba(34, 197, 94, 0.25);
+}
+
+.toast-item.toast-danger {
+    border-color: rgba(239, 68, 68, 0.25);
+}
+
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+[data-theme="light"] .toast-item {
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   Empty State Illustrations
+   ============================================ */
+.ws-empty-state {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--text-muted);
+}
+
+.ws-empty-state svg {
+    display: block;
+    margin: 0 auto 14px auto;
+    opacity: 0.35;
+}
+
+.ws-empty-state strong {
+    display: block;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+.ws-empty-state span {
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+/* ============================================
+   Quick Preset Chips (Ban Generator)
+   ============================================ */
+#preset-chips-section .ban-section-body {
+    padding: 0 20px 8px 20px;
+}
+
+.preset-chips-bar {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.preset-chips-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.preset-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    background: rgba(99, 102, 241, 0.06);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.preset-chip:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
+    color: var(--text-main);
+}
+
+.preset-chip.active {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.preset-chip .chip-type {
+    font-size: 0.65rem;
+    opacity: 0.5;
+    text-transform: uppercase;
+}
+
+[data-theme="light"] .preset-chip {
+    background: rgba(99, 102, 241, 0.04);
+}
+
+[data-theme="light"] .preset-chip:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="light"] .preset-chip.active {
+    background: rgba(99, 102, 241, 0.15);
+}
+
+/* ============================================
+   Ban Progress Bar
+   ============================================ */
+.ban-progress-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 15px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: rgba(99, 102, 241, 0.04);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.ban-progress-track {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+[data-theme="light"] .ban-progress-track {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.ban-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), #818cf8);
+    border-radius: 99px;
+    transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    min-width: 0;
+}
+
+.ban-progress-fill.complete {
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+}
+
+.ban-progress-text {
+    white-space: nowrap;
+    min-width: 45px;
+    text-align: right;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.ban-progress-bar.hidden {
+    display: none;
+}
+
+/* ============================================
+   Workspace Chip (Header)
+   ============================================ */
+.ws-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 8px;
+    border-radius: 20px;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #f59e0b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.ws-chip:hover {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.35);
+}
+
+.ws-chip svg {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.ws-chip.open svg {
+    transform: rotate(180deg);
+}
+
+/* Mini workspace dropdown from header chip */
+.ws-chip-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 200px;
+    background: var(--modal-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    z-index: 2000;
+    padding: 4px;
+    animation: contextMenuFadeIn 0.15s ease;
+}
+
+.ws-chip-dropdown.hidden {
+    display: none;
+}
+
+.ws-chip-dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    transition: background 0.12s;
+}
+
+.ws-chip-dropdown-item:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.ws-chip-dropdown-item.active {
+    color: var(--primary-color);
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.ws-chip-dropdown-item .ws-chip-count {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+[data-theme="light"] .ws-chip {
+    background: rgba(245, 158, 11, 0.06);
+}
+
+[data-theme="light"] .ws-chip-dropdown {
+    background: #ffffff;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   Ban Generator Pane Divider
+   ============================================ */
+.ban-pane-divider {
+    width: 5px;
+    cursor: col-resize;
+    background: var(--glass-border);
+    flex-shrink: 0;
+    transition: background 0.15s ease;
+    position: relative;
+}
+
+.ban-pane-divider:hover,
+.ban-pane-divider.dragging {
+    background: var(--primary-color);
+}
+
+.ban-pane-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 3px;
+    height: 30px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.15);
+    transition: height 0.15s ease;
+}
+
+.ban-pane-divider:hover::after,
+.ban-pane-divider.dragging::after {
+    height: 50px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="light"] .ban-pane-divider::after {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .ban-pane-divider:hover::after,
+[data-theme="light"] .ban-pane-divider.dragging::after {
+    background: rgba(0, 0, 0, 0.25);
+}
+
+/* ============================================
+   Responsive Layout
+   ============================================ */
+@media (max-width: 900px) {
+    .sidebar {
+        position: fixed;
+        z-index: 500;
+        height: 100vh;
+    }
+
+    .sidebar.collapsed {
+        margin-left: -320px;
+    }
+}
+
+@media (max-width: 768px) {
+    .editor-container[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    #ban-generator-view > div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    .top-bar {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .top-bar .actions {
+        flex-wrap: wrap;
+    }
 }

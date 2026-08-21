@@ -411,6 +411,66 @@ function renderWorkspaceUI() {
             workspaceTags.appendChild(tagEl);
         });
     }
+
+    // Update header workspace chip
+    const wsChipLabel = document.getElementById('ws-chip-label');
+    if (wsChipLabel && currentWorkspace) {
+        wsChipLabel.textContent = currentWorkspace.name;
+    }
+    renderWsChipDropdown();
+}
+
+function renderWsChipDropdown() {
+    const dropdown = document.getElementById('ws-chip-dropdown');
+    if (!dropdown) return;
+    dropdown.innerHTML = '';
+    const sorted = [...workspaces].sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        const orderA = a.order !== undefined ? a.order : 999;
+        const orderB = b.order !== undefined ? b.order : 999;
+        if (orderA !== orderB) return orderA - orderB;
+        return a.name.localeCompare(b.name);
+    });
+    sorted.forEach(ws => {
+        const item = document.createElement('div');
+        item.className = `ws-chip-dropdown-item ${ws.id === currentWorkspaceId ? 'active' : ''}`;
+        const name = document.createElement('span');
+        name.textContent = ws.name;
+        const count = document.createElement('span');
+        count.className = 'ws-chip-count';
+        count.textContent = `${getWorkspaceTabCount(ws.id)} list${getWorkspaceTabCount(ws.id) !== 1 ? 's' : ''}`;
+        item.appendChild(name);
+        item.appendChild(count);
+        item.onclick = (e) => {
+            e.stopPropagation();
+            switchWorkspace(ws.id);
+            dropdown.classList.add('hidden');
+            const chip = document.getElementById('ws-chip');
+            if (chip) chip.classList.remove('open');
+        };
+        dropdown.appendChild(item);
+    });
+}
+
+const wsChip = document.getElementById('ws-chip');
+const wsChipDropdown = document.getElementById('ws-chip-dropdown');
+if (wsChip) {
+    wsChip.onclick = (e) => {
+        e.stopPropagation();
+        const isOpen = !wsChipDropdown.classList.contains('hidden');
+        wsChipDropdown.classList.toggle('hidden');
+        wsChip.classList.toggle('open', !isOpen);
+        if (!isOpen) renderWsChipDropdown();
+    };
+}
+if (wsChipDropdown) {
+    document.addEventListener('click', (e) => {
+        if (!wsChipDropdown.contains(e.target) && e.target !== wsChip) {
+            wsChipDropdown.classList.add('hidden');
+            if (wsChip) wsChip.classList.remove('open');
+        }
+    });
 }
 
 function toggleWorkspaceDropdown(show) {
@@ -654,10 +714,17 @@ function renderGroupsList() {
     
     if (tabGroups.length === 0) {
         const emptyState = document.createElement('div');
-        emptyState.style.textAlign = 'center';
-        emptyState.style.padding = '20px';
-        emptyState.style.color = 'var(--text-muted)';
-        emptyState.textContent = 'No groups yet. Create one to organize your tabs.';
+        emptyState.className = 'ws-empty-state';
+        emptyState.innerHTML = `
+            <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <strong>No groups yet</strong>
+            <span>Create a group to organize your tabs by category</span>
+        `;
         groupsList.appendChild(emptyState);
         return;
     }
@@ -957,10 +1024,16 @@ function renderArchiveList() {
     
     if (archivedWorkspaces.length === 0 && archivedItems.length === 0) {
         const emptyState = document.createElement('div');
-        emptyState.style.textAlign = 'center';
-        emptyState.style.padding = '20px';
-        emptyState.style.color = 'var(--text-muted)';
-        emptyState.textContent = 'No archived items yet.';
+        emptyState.className = 'ws-empty-state';
+        emptyState.innerHTML = `
+            <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none">
+                <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polyline points="10 12 15 12 15 7"></polyline>
+            </svg>
+            <strong>No archived items yet</strong>
+            <span>Archive workspaces or tabs to keep them safe without cluttering your active list</span>
+        `;
         archiveList.appendChild(emptyState);
         return;
     }
@@ -1766,9 +1839,7 @@ const inputLines = document.getElementById('input-lines');
 const outputLines = document.getElementById('output-lines');
 const outputMirror = document.getElementById('output-mirror');
 const saveStatusEl = document.getElementById('save-status');
-const undoToast = document.getElementById('undo-toast');
-const undoToastMessage = document.getElementById('undo-toast-message');
-const undoToastBtn = document.getElementById('undo-toast-btn');
+const undoToast = document.getElementById('toast-container');
 const TAB_REORDER_HOLD_MS = 220;
 const TAB_REORDER_MOVE_TOLERANCE = 6;
 
@@ -1882,22 +1953,52 @@ function setSaveStatus(state, message) {
 }
 
 function showUndoToast(message, onUndo, timeout = 6000) {
-    if (!undoToast || !undoToastMessage || !undoToastBtn) return;
+    if (!undoToast) return;
 
-    clearTimeout(undoToastTimer);
-    undoToastAction = typeof onUndo === 'function' ? onUndo : null;
-    undoToastMessage.textContent = message;
-    undoToast.classList.remove('hidden');
-    undoToastTimer = setTimeout(() => {
-        hideUndoToast();
-    }, timeout);
+    const item = document.createElement('div');
+    item.className = 'toast-item';
+
+    const msg = document.createElement('span');
+    msg.className = 'toast-message';
+    msg.textContent = message;
+    item.appendChild(msg);
+
+    if (typeof onUndo === 'function') {
+        const undoBtn = document.createElement('button');
+        undoBtn.className = 'toast-undo-btn';
+        undoBtn.textContent = 'Undo';
+        undoBtn.onclick = () => {
+            onUndo();
+            removeToast(item);
+        };
+        item.appendChild(undoBtn);
+    }
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'toast-close-btn';
+    closeBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+    closeBtn.onclick = () => removeToast(item);
+    item.appendChild(closeBtn);
+
+    undoToast.appendChild(item);
+
+    const timer = setTimeout(() => removeToast(item), timeout);
+    item._timer = timer;
+}
+
+function removeToast(item) {
+    if (!item || !item.parentNode) return;
+    clearTimeout(item._timer);
+    item.classList.add('removing');
+    setTimeout(() => {
+        if (item.parentNode) item.parentNode.removeChild(item);
+    }, 250);
 }
 
 function hideUndoToast() {
     if (!undoToast) return;
-    clearTimeout(undoToastTimer);
-    undoToast.classList.add('hidden');
-    undoToastAction = null;
+    const items = undoToast.querySelectorAll('.toast-item');
+    items.forEach(item => removeToast(item));
 }
 
 // Context Menu Functions
@@ -2147,14 +2248,6 @@ function populateTabCopySubmenu(tabId) {
         disabledItem.textContent = 'No other workspaces';
         tabCopySubmenu.appendChild(disabledItem);
     }
-}
-
-if (undoToastBtn) {
-    undoToastBtn.addEventListener('click', () => {
-        const action = undoToastAction;
-        hideUndoToast();
-        if (action) action();
-    });
 }
 
 // Create Group Modal Event Listeners
@@ -5114,8 +5207,33 @@ viewToggleBtn.onclick = () => {
 document.querySelectorAll('.ban-section-toggle').forEach(btn => {
     btn.addEventListener('click', () => {
         const section = document.getElementById(btn.dataset.target);
-        if (section) section.classList.toggle('collapsed');
+        if (section) {
+            section.classList.toggle('collapsed');
+            const storageKey = {
+                'ban-cmd-section': 'multiCheckBanCmdCollapsed',
+                'ban-opts-section': 'multiCheckBanOptsCollapsed',
+                'preset-chips-section': 'multiCheckPresetChipsCollapsed'
+            }[section.id];
+            if (storageKey) {
+                localStorage.setItem(storageKey, section.classList.contains('collapsed'));
+            }
+        }
     });
+});
+
+// Restore ban section collapsed states
+['ban-cmd-section', 'ban-opts-section', 'preset-chips-section'].forEach(id => {
+    const section = document.getElementById(id);
+    if (section) {
+        const key = {
+            'ban-cmd-section': 'multiCheckBanCmdCollapsed',
+            'ban-opts-section': 'multiCheckBanOptsCollapsed',
+            'preset-chips-section': 'multiCheckPresetChipsCollapsed'
+        }[id];
+        if (localStorage.getItem(key) === 'true') {
+            section.classList.add('collapsed');
+        }
+    }
 });
 
 document.querySelectorAll('.ws-settings-toggle-btn').forEach(btn => {
@@ -5124,6 +5242,48 @@ document.querySelectorAll('.ws-settings-toggle-btn').forEach(btn => {
         if (section) section.classList.toggle('collapsed');
     });
 });
+
+// Ban Generator Pane Resizer
+(function() {
+    const divider = document.getElementById('ban-pane-divider');
+    const panesContainer = document.getElementById('ban-panes');
+    const inputPane = document.getElementById('ban-input-pane');
+    if (!divider || !panesContainer || !inputPane) return;
+
+    const savedRatio = localStorage.getItem('multiCheckBanPaneRatio');
+    if (savedRatio) {
+        inputPane.style.flex = 'none';
+        inputPane.style.width = savedRatio;
+    }
+
+    let dragging = false;
+    divider.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        dragging = true;
+        divider.classList.add('dragging');
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!dragging) return;
+        const rect = panesContainer.getBoundingClientRect();
+        const offset = e.clientX - rect.left;
+        const total = rect.width;
+        const pct = Math.min(Math.max((offset / total) * 100, 10), 90);
+        inputPane.style.flex = 'none';
+        inputPane.style.width = pct + '%';
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (!dragging) return;
+        dragging = false;
+        divider.classList.remove('dragging');
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        localStorage.setItem('multiCheckBanPaneRatio', inputPane.style.width);
+    });
+})();
 
 const BAN_PRESETS = [
     {
@@ -5242,6 +5402,54 @@ function rebuildPresetSelect() {
         
         banPresetMenu.appendChild(item);
     });
+    if (typeof renderPresetChips === 'function') renderPresetChips();
+}
+
+// Quick Preset Chips
+function renderPresetChips() {
+    const bar = document.getElementById('preset-chips-bar');
+    if (!bar) return;
+    bar.innerHTML = '';
+    const allPresets = [...BAN_PRESETS, ...customPresets];
+    allPresets.forEach(preset => {
+        const chip = document.createElement('button');
+        chip.className = `preset-chip ${preset.id === currentPresetId ? 'active' : ''}`;
+        const isBuiltIn = BAN_PRESETS.some(bp => bp.id === preset.id);
+        chip.innerHTML = `<span>${preset.name}</span>${isBuiltIn ? '' : '<span class="chip-type">Custom</span>'}`;
+        chip.onclick = () => {
+            currentPresetId = preset.id;
+            banPresetLabel.textContent = preset.name;
+            document.querySelectorAll('.preset-dropdown-item').forEach(el => el.classList.remove('active'));
+            rebuildPresetSelect();
+            renderPresetChips();
+            saveBanGeneratorState();
+        };
+        bar.appendChild(chip);
+    });
+}
+
+renderPresetChips();
+
+// Ban Progress Bar
+function updateBanProgress() {
+    const bar = document.getElementById('ban-progress-bar');
+    const fill = document.getElementById('ban-progress-fill');
+    const text = document.getElementById('ban-progress-text');
+    if (!bar || !fill || !text) return;
+
+    const lines = banOutputArea.querySelectorAll('.ban-line');
+    const total = lines.length;
+    if (total === 0) {
+        bar.classList.add('hidden');
+        return;
+    }
+
+    bar.classList.remove('hidden');
+    const copied = window.banCopyIndex || 0;
+    const pct = total > 0 ? Math.round((copied / total) * 100) : 0;
+    fill.style.width = pct + '%';
+    fill.classList.toggle('complete', copied >= total);
+    text.textContent = `${copied}/${total}`;
 }
 
 // Initialize preset dropdown
@@ -5640,6 +5848,7 @@ if (banClearBtn) {
             banOutputArea.innerHTML = '';
             if (banCountBadge) banCountBadge.style.display = 'none';
             window.banCopyIndex = 0;
+            updateBanProgress();
             if (typeof saveBanGeneratorState === 'function') saveBanGeneratorState();
         }, true); // true for danger style
     };
@@ -5708,6 +5917,7 @@ generateBansBtn.onclick = () => {
         }
 
         window.banCopyIndex = 0;
+        updateBanProgress();
 
         // Ban count badge
         if (banCountBadge) {
@@ -5796,6 +6006,7 @@ generateBansBtn.onclick = () => {
         }
 
         window.banCopyIndex = 0;
+        updateBanProgress();
 
         // Ban count badge
         if (banCountBadge) {
@@ -5916,6 +6127,7 @@ generateBansBtn.onclick = () => {
     }
 
     window.banCopyIndex = 0;
+    updateBanProgress();
 
     // Ban count badge
     if (banCountBadge) {
@@ -5991,6 +6203,7 @@ if (banCopyNextBtn) {
                 banCopyNextBtn.textContent = 'Copied!';
                 setTimeout(() => banCopyNextBtn.textContent = orig, 1000);
 
+                updateBanProgress();
                 if (typeof saveBanGeneratorState === 'function') saveBanGeneratorState();
             });
         }

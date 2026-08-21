@@ -118,6 +118,14 @@
                     <div style="display: flex; align-items: center; gap: 10px; padding-left: 8px; border-left: 1px solid var(--glass-border);">
                         <h1 id="current-tab-title" style="font-size: 1.1rem; font-weight: 600; margin: 0;">Tab 1</h1>
                         <span id="page-state-indicator" class="page-state-indicator">Multi Checker</span>
+                        <div style="position: relative;" id="ws-chip-wrapper">
+                            <button id="ws-chip" class="ws-chip" title="Switch workspace">
+                                <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                                <span id="ws-chip-label">Default</span>
+                                <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" stroke-width="2" fill="none"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </button>
+                            <div id="ws-chip-dropdown" class="ws-chip-dropdown hidden"></div>
+                        </div>
                     </div>
                     <div id="save-status" class="save-status" aria-live="polite" style="margin-left: auto;">Autosaved</div>
                 </div>
@@ -351,12 +359,12 @@
             <div class="editor-container" id="ban-generator-view" style="display: none; flex-direction: column;">
                 <!-- Action Bar (always visible) -->
                 <div class="ban-actions-bar">
+                    <button id="import-from-tab-btn" class="secondary-btn"
+                        style="white-space: nowrap; padding: 8px 12px;">&#8601; Import Tab</button>
+                    <div style="flex: 1;"></div>
                     <button id="generate-bans-btn" class="primary-btn" style="white-space: nowrap;">Generate Bans</button>
                     <button id="ban-clear-btn" class="secondary-btn"
                         style="white-space: nowrap; padding: 8px 12px; color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">&#10005; Clear</button>
-                    <div style="flex: 1;"></div>
-                    <button id="import-from-tab-btn" class="secondary-btn"
-                        style="white-space: nowrap; padding: 8px 12px;">&#8601; Import Tab</button>
                 </div>
 
                 <!-- Section: Command -->
@@ -396,6 +404,18 @@
                             </div>
                             <button id="open-preset-builder-btn" class="secondary-btn"
                                 style="white-space: nowrap; padding: 8px 12px;">&#9881; Presets</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Quick Preset Chips -->
+                <div class="ban-section" id="preset-chips-section">
+                    <div class="ban-section-header ban-section-toggle" data-target="preset-chips-section">
+                        <span class="chevron"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        <span class="section-label">Quick Presets</span>
+                    </div>
+                    <div class="ban-section-body" style="padding-top: 0;">
+                        <div class="preset-chips-bar" id="preset-chips-bar">
+                            <!-- Populated by JS -->
                         </div>
                     </div>
                 </div>
@@ -457,8 +477,8 @@
                         </div>
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; flex: 1; min-height: 0; overflow: hidden;">
-                    <div class="pane" style="border-right: 1px solid var(--glass-border); overflow: hidden; display: flex; flex-direction: column;">
+                <div id="ban-panes" style="display: flex; flex: 1; min-height: 0; overflow: hidden;">
+                    <div class="pane" id="ban-input-pane" style="overflow: hidden; display: flex; flex-direction: column; min-width: 100px;">
                         <label id="ban-input-label">Input (List of Accounts)</label>
                         <div class="textarea-wrapper" id="ban-account-input-wrapper" style="flex: 1; display: flex;">
                             <textarea id="ban-input-area" placeholder="Paste account list here..." style="height: 100%;"></textarea>
@@ -467,7 +487,8 @@
                             <textarea id="ban-manual-input-area" placeholder="Paste manual ban commands here...&#10;/ban player_name 60 GR 1.9 (reason)&#10;/ban another_player 60 GR 1.9 (reason)" style="height: 100%;"></textarea>
                         </div>
                     </div>
-                    <div class="pane" style="overflow: hidden; display: flex; flex-direction: column;">
+                    <div id="ban-pane-divider" class="ban-pane-divider" title="Drag to resize"></div>
+                    <div class="pane" id="ban-output-pane" style="overflow: hidden; display: flex; flex-direction: column; min-width: 100px; flex: 1;">
                         <label style="display: flex; justify-content: space-between; align-items: center;">
                             <span>Generated Commands <span id="ban-count-badge" class="ban-badge"
                                     style="display:none;"></span></span>
@@ -479,6 +500,12 @@
                                 <button id="ban-send-btn" class="icon-btn small" title="Send to Discord">Send</button>
                             </div>
                         </label>
+                        <div class="ban-progress-bar hidden" id="ban-progress-bar">
+                            <span id="ban-progress-text" class="ban-progress-text">0/0</span>
+                            <div class="ban-progress-track">
+                                <div class="ban-progress-fill" id="ban-progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
                         <div class="textarea-wrapper" style="flex: 1; min-height: 0;">
                             <div class="line-numbers" id="ban-line-numbers" style="overflow-y: auto; scrollbar-width: none;">1</div>
                             <div id="ban-output-area" class="ban-output-list"
@@ -766,10 +793,7 @@
         Copy <span id="hover-copy-type"></span>
     </button>
 
-    <div id="undo-toast" class="undo-toast hidden" role="status" aria-live="polite">
-        <span id="undo-toast-message">Changes saved</span>
-        <button id="undo-toast-btn" class="secondary-btn">Undo</button>
-    </div>
+    <div id="toast-container" class="toast-container"></div>
 
     <!-- Tab Context Menu -->
     <div id="tab-context-menu" class="context-menu hidden">
