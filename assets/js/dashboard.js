@@ -1,6 +1,9 @@
 (() => {
     'use strict';
 
+    const currentTheme = localStorage.getItem('multiCheckTheme') || 'dark';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+
     const KEYS = {
         workspaces: 'multiCheckWorkspaces',
         current: 'multiCheckCurrentWorkspace',
@@ -97,7 +100,7 @@
     }
 
     function safeColor(color) {
-        return typeof color === 'string' && /^#[0-9a-f]{3,8}$/i.test(color.trim()) ? color.trim() : '#6366f1';
+        return typeof color === 'string' && /^#[0-9a-f]{3,8}$/i.test(color.trim()) ? color.trim() : '#38bdf8';
     }
 
     function analyzeOutput(output) {

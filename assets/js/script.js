@@ -525,7 +525,7 @@ function formatBytes(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-function createTabGroup(name, color = '#6366f1') {
+function createTabGroup(name, color = '#38bdf8') {
     const group = {
         id: 'group-' + Date.now(),
         name: name,
@@ -642,7 +642,7 @@ function populateTabGroupSubmenu(tabId) {
 function openCreateGroupModal(tabId) {
     tabToAddToGroup = tabId;
     groupNameInput.value = '';
-    selectedGroupColor = '#6366f1';
+    selectedGroupColor = '#38bdf8';
     populateGroupColorPicker();
     createGroupModal.classList.remove('hidden');
     groupNameInput.focus();
@@ -658,7 +658,7 @@ function populateGroupColorPicker() {
     
     groupColorPicker.innerHTML = '';
     
-    const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#06b6d4', '#3b82f6'];
+    const colors = ['#38bdf8', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#06b6d4', '#3b82f6'];
     
     colors.forEach(color => {
         const colorOption = document.createElement('div');
@@ -958,7 +958,7 @@ function startEditGroupColor(groupId) {
     if (!group) return;
     
     editingGroupId = groupId;
-    const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#06b6d4', '#3b82f6'];
+    const colors = ['#38bdf8', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#06b6d4', '#3b82f6'];
     const currentIndex = colors.indexOf(group.color);
     const nextIndex = (currentIndex + 1) % colors.length;
     group.color = colors[nextIndex];
@@ -1015,7 +1015,7 @@ function renderArchiveList() {
     const storageHeader = document.createElement('div');
     storageHeader.style.padding = '10px 12px';
     storageHeader.style.marginBottom = '12px';
-    storageHeader.style.background = 'rgba(99, 102, 241, 0.1)';
+    storageHeader.style.background = 'rgba(56, 189, 248, 0.1)';
     storageHeader.style.borderRadius = '8px';
     storageHeader.style.fontSize = '0.85rem';
     storageHeader.style.color = 'var(--primary-color)';
@@ -1056,7 +1056,7 @@ function renderArchiveList() {
         
         const type = document.createElement('span');
         type.className = 'workspace-item-tag';
-        type.style.background = 'rgba(99, 102, 241, 0.1)';
+        type.style.background = 'rgba(56, 189, 248, 0.1)';
         type.style.color = 'var(--primary-color)';
         type.textContent = 'Workspace';
         
@@ -1621,7 +1621,7 @@ function renderWorkspaceList() {
         
         const storageUsage = document.createElement('span');
         storageUsage.className = 'workspace-item-tag';
-        storageUsage.style.background = 'rgba(99, 102, 241, 0.15)';
+        storageUsage.style.background = 'rgba(56, 189, 248, 0.15)';
         storageUsage.style.color = 'var(--primary-color)';
         storageUsage.style.fontSize = '0.7rem';
         storageUsage.textContent = formatBytes(getWorkspaceStorageUsage(workspace.id));
@@ -1857,7 +1857,7 @@ let contextMenuTargetTabId = null;
 let contextMenuTargetWorkspaceId = null;
 let draggedTabId = null;
 let tabGroups = JSON.parse(localStorage.getItem(getWorkspaceStorageKey('multiCheckTabGroups'))) || [];
-let selectedGroupColor = '#6366f1';
+let selectedGroupColor = '#38bdf8';
 let tabToAddToGroup = null;
 let editingGroupId = null;
 let inlineRenamingGroupId = null;
@@ -2321,7 +2321,7 @@ if (createGroupBtn) {
     createGroupBtn.addEventListener('click', () => {
         const groupName = newGroupNameInput.value.trim();
         if (groupName) {
-            const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#06b6d4', '#3b82f6'];
+            const colors = ['#38bdf8', '#8b5cf6', '#ec4899', '#f43f5e', '#f97316', '#eab308', '#22c55e', '#14b8a6', '#06b6d4', '#3b82f6'];
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
             createTabGroup(groupName, randomColor);
             newGroupNameInput.value = '';
@@ -2573,6 +2573,9 @@ themeToggleBtn.onclick = () => {
     currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
     localStorage.setItem('multiCheckTheme', currentTheme);
     applyTheme();
+    editorTheme = currentTheme;
+    localStorage.setItem('multiCheckEditorTheme', editorTheme);
+    applyEditorTheme();
 };
 
 applyTheme();
@@ -6459,7 +6462,7 @@ function renderPresetList() {
 
         const editBtn = document.createElement('button');
         editBtn.className = 'btn-edit';
-        editBtn.innerHTML = '✎';
+        editBtn.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>';
         editBtn.title = 'Edit';
         editBtn.onclick = () => {
             presetNameInput.value = p.name;
@@ -6471,7 +6474,7 @@ function renderPresetList() {
 
         const duplicateBtn = document.createElement('button');
         duplicateBtn.className = 'btn-duplicate';
-        duplicateBtn.innerHTML = '📋';
+        duplicateBtn.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
         duplicateBtn.title = 'Duplicate';
         duplicateBtn.onclick = () => {
             const newPreset = {
@@ -6487,7 +6490,7 @@ function renderPresetList() {
 
         const delBtn = document.createElement('button');
         delBtn.className = 'btn-delete';
-        delBtn.innerHTML = '✕';
+        delBtn.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
         delBtn.title = 'Delete';
         delBtn.onclick = () => {
             showConfirm('Delete Preset', `Delete preset "${p.name}"? This cannot be undone.`, () => {
