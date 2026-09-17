@@ -1315,6 +1315,15 @@ input[type="checkbox"][style*="--danger"]:checked {
 
 .pin-btn.active {
     color: #fbbf24;
+    filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.6));
+}
+
+.pin-btn.active svg {
+    fill: #fbbf24;
+}
+
+.tab-item.pinned {
+    border-left: 3px solid #f59e0b !important;
 }
 
 .tab-empty-state {

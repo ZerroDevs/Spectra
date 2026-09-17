@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#070711">
+    <meta name="description" content="Spectra Security Audit & Blacklist Database — Centralized repository of flagged griefers, rule violators, incident notes, and blocklist exports.">
+    <title>Spectra · Security Audit &amp; Blacklist Database</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/logo1.png">
+    <link rel="apple-touch-icon" href="assets/images/logo1.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('multiCheckTheme') || localStorage.getItem('spectraTheme') || 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) { }
+        })();
+    </script>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/audit.css">
+</head>
+
+<body>
+    <div class="orbs" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation Topbar -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <a href="index.html" class="brand-link" title="Spectra Intelligence Dashboard">
+                <div class="brand-icon" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.05)); border-color: rgba(239, 68, 68, 0.4); color: #f87171;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <span class="brand-name">Spectra</span>
+                <span class="brand-pill" style="background: rgba(239, 68, 68, 0.12); color: #f87171; border-color: rgba(239, 68, 68, 0.3);">Audit &amp; Blacklist</span>
+            </a>
+            <a href="index.html" class="btn btn-ghost btn-sm" id="dashboard-nav-btn" title="Back to Dashboard">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span class="btn-label">Dashboard</span>
+            </a>
+            <a href="workspace.html#main" class="btn btn-ghost btn-sm" id="workspace-nav-btn" title="Open Workspace Inspector (#main)">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                <span class="btn-label">Workspace (#main)</span>
+            </a>
+            <a href="analytics.html" class="btn btn-ghost btn-sm" id="analytics-nav-btn" title="Deep Forensics &amp; Historical Trends">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span class="btn-label">Analytics</span>
+            </a>
+            <a href="about.html" class="btn btn-ghost btn-sm" id="about-nav-btn" title="About &amp; Documentation">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="btn-label">About</span>
+            </a>
+        </div>
+        <div class="topbar-actions">
+            <button class="btn btn-secondary btn-sm" id="open-export-modal-btn" title="Export blacklist ruleset">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span class="btn-label">Export Blocklist</span>
+            </button>
+            <button class="btn btn-ghost btn-sm" id="theme-toggle-btn" title="Toggle Dark/Light Theme">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+            <button class="btn btn-primary btn-sm" id="refresh-btn">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                <span class="btn-label">Refresh</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="audit-container">
+        <!-- Hero Section -->
+        <section class="hero" style="margin-bottom: 24px;">
+            <span class="pill" style="color: #f87171; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.1);">Security &amp; Moderation Repository</span>
+            <h1>Security <span>Audit &amp; Blacklist</span></h1>
+            <p>Centralized database of flagged griefers, rule violators, incident notes, and reusable firewall/userscript blocklist rules.</p>
+        </section>
+
+        <!-- Security Vitals Bar -->
+        <section class="audit-vitals-grid" aria-label="Security Overview">
+            <article class="audit-vital-card">
+                <div class="audit-vital-icon" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></polygon>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
+                <div>
+                    <div class="audit-vital-num" id="vital-total-griefers">0</div>
+                    <div class="audit-vital-lbl">Flagged Griefer Records</div>
+                </div>
+            </article>
+
+            <article class="audit-vital-card">
+                <div class="audit-vital-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="audit-vital-num" id="vital-unique-identities">0</div>
+                    <div class="audit-vital-lbl">Unique Violator Identities</div>
+                </div>
+            </article>
+
+            <article class="audit-vital-card">
+                <div class="audit-vital-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <div>
+                    <div class="audit-vital-num" id="vital-active-tags">0</div>
+                    <div class="audit-vital-lbl">Distinct Reason Tags</div>
+                </div>
+            </article>
+
+            <article class="audit-vital-card">
+                <div class="audit-vital-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="audit-vital-num" id="vital-workspaces-count">0</div>
+                    <div class="audit-vital-lbl">Workspaces Covered</div>
+                </div>
+            </article>
+        </section>
+
+        <!-- Filter Toolbar -->
+        <section class="audit-filter-bar">
+            <div class="audit-search-wrap">
+                <svg class="audit-search-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="search" class="audit-search-input" id="audit-search-input" placeholder="Search by identity name, ID, reason, or note text…" autocomplete="off">
+            </div>
+
+            <div class="audit-filter-selects">
+                <select class="audit-select" id="audit-filter-tag" aria-label="Filter by reason tag">
+                    <option value="all">All Reason Tags</option>
+                </select>
+
+                <select class="audit-select" id="audit-filter-ws" aria-label="Filter by workspace">
+                    <option value="all">All Workspaces</option>
+                </select>
+
+                <select class="audit-select" id="audit-filter-class" aria-label="Filter by classification">
+                    <option value="all">All Classifications</option>
+                    <option value="Main">Mains (M)</option>
+                    <option value="Twink">Twinks (T)</option>
+                    <option value="Unlabeled">Unlabeled</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Central Blacklist Database Table -->
+        <section class="card" style="margin-bottom: 28px;">
+            <div class="card-header">
+                <div class="card-icon" style="--ac: #ef4444; --ac2: #f87171;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <h2>Griefer &amp; Blacklisted Accounts Registry</h2>
+                <span class="header-meta" id="table-records-badge">0 records</span>
+            </div>
+
+            <div class="card-body">
+                <div class="blacklist-table-wrapper">
+                    <table class="blacklist-table">
+                        <thead>
+                            <tr>
+                                <th>Identity / ID</th>
+                                <th>Reason Tag</th>
+                                <th>Classification</th>
+                                <th>Source Environment</th>
+                                <th>Incident Note</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="blacklist-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Platform Footer -->
+        <footer class="footer" style="margin-top: 40px;">
+            <div style="margin-bottom: 10px;">
+                Spectra Security Audit Engine · Blacklist records are gathered and parsed entirely client-side without external telemetry.
+            </div>
+            <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+                <a href="index.html" style="color: var(--accent); text-decoration: none; font-weight: 600;">Dashboard</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="workspace.html#main" style="color: #38bdf8; text-decoration: none; font-weight: 600;">Workspace (#main)</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="analytics.html" style="color: #22d3ee; text-decoration: none; font-weight: 600;">Analytics</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="about.html" style="color: var(--text-2); text-decoration: none;">About &amp; Docs</a>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Blocklist Exporter Modal -->
+    <div class="modal-backdrop" id="export-blocklist-modal" style="display: none;">
+        <div class="layout-modal" style="max-width: 680px;" role="dialog" aria-labelledby="export-modal-title" aria-modal="true">
+            <div class="layout-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="card-icon" style="--ac: #ef4444; --ac2: #f87171; width: 34px; height: 34px; margin-bottom: 0;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="export-modal-title" style="margin: 0; font-size: 1.05rem; font-weight: 700;">Export Blacklist Ruleset</h3>
+                        <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-2);">Generate blocklist rules for Userscripts, Firewalls, or Discord.</p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-ghost btn-xs" id="close-export-modal-btn" aria-label="Close modal">✕</button>
+            </div>
+            <div class="layout-modal-body">
+                <div class="export-format-tabs">
+                    <button type="button" class="export-format-btn active" data-format="userscript">Userscript Set</button>
+                    <button type="button" class="export-format-btn" data-format="plain">Plain ID List</button>
+                    <button type="button" class="export-format-btn" data-format="json">JSON Ruleset</button>
+                    <button type="button" class="export-format-btn" data-format="discord">Discord Embed</button>
+                </div>
+                <textarea class="export-preview-area" id="export-code-preview" readonly></textarea>
+            </div>
+            <div class="layout-modal-footer">
+                <button type="button" class="btn btn-ghost btn-sm" id="download-export-code-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align: middle; margin-right: 4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Download File
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" id="copy-export-code-btn">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align: middle; margin-right: 4px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    Copy to Clipboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Incident Note Modal -->
+    <div class="modal-backdrop" id="edit-note-modal" style="display: none;">
+        <div class="layout-modal" role="dialog" aria-labelledby="note-modal-title" aria-modal="true">
+            <div class="layout-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="card-icon" style="--ac: #f59e0b; --ac2: #fbbf24; width: 34px; height: 34px; margin-bottom: 0;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="note-modal-title" style="margin: 0; font-size: 1.05rem; font-weight: 700;">Incident Note</h3>
+                        <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-2);">Add or update moderation notes for this flagged identity.</p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-ghost btn-xs" id="close-note-modal-btn" aria-label="Close modal">✕</button>
+            </div>
+            <div class="layout-modal-body">
+                <div class="modal-form-group">
+                    <label for="note-text-input">Moderation Context / Evidence Reference</label>
+                    <textarea id="note-text-input" class="modal-textarea" placeholder="Enter incident notes, ticket ID, forum report link, or reason context..."></textarea>
+                </div>
+            </div>
+            <div class="layout-modal-footer">
+                <button type="button" class="btn btn-ghost btn-sm" id="cancel-note-btn">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm" id="save-note-btn">Save Note</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="assets/js/audit.js"></script>
+</body>
+
+</html>

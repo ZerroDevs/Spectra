@@ -1,0 +1,371 @@
+/* ==========================================================================
+   Spectra Analytics Stylesheet (Deep Forensics & Historical Trends)
+   ========================================================================== */
+
+/* Page-specific Layout */
+.analytics-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 20px 80px 20px;
+}
+
+.analytics-header-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.analytics-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Stat Trend Cards */
+.trend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.trend-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="light"] .trend-card {
+    background: #ffffff;
+    box-shadow: 0 4px 20px -6px rgba(15, 23, 42, 0.05);
+}
+
+.trend-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+    box-shadow: 0 8px 30px -8px rgba(0, 0, 0, 0.4);
+}
+
+.trend-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.trend-card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trend-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.trend-badge.positive {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.trend-badge.negative {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.trend-badge.neutral {
+    background: var(--surface-2);
+    color: var(--text-2);
+    border: 1px solid var(--border);
+}
+
+.trend-val {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-1);
+    line-height: 1.1;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.trend-lbl {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-2);
+}
+
+/* Snapshots Section */
+.snapshot-table-wrapper {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    margin-top: 14px;
+}
+
+.snapshot-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    text-align: left;
+}
+
+.snapshot-table th {
+    padding: 12px 16px;
+    background: var(--surface-2);
+    color: var(--text-2);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border);
+}
+
+.snapshot-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-1);
+}
+
+.snapshot-table tr:last-child td {
+    border-bottom: none;
+}
+
+.snapshot-table tr:hover td {
+    background: var(--surface-hover);
+}
+
+.snapshot-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+}
+
+.snapshot-del-btn {
+    background: none;
+    border: none;
+    color: var(--text-3);
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: all 0.18s ease;
+}
+
+.snapshot-del-btn:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.12);
+}
+
+/* Cross-Workspace Collision Matrix */
+.collision-section {
+    margin-top: 32px;
+}
+
+.collision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.collision-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+[data-theme="light"] .collision-card {
+    background: #ffffff;
+    box-shadow: 0 4px 18px -4px rgba(15, 23, 42, 0.05);
+}
+
+.collision-card:hover {
+    border-color: rgba(56, 189, 248, 0.4);
+    transform: translateY(-2px);
+}
+
+.collision-card.has-conflict {
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.collision-card.has-conflict::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    bottom: 0;
+    background: #f59e0b;
+}
+
+.collision-identity {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.collision-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.collision-conflict-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 12px;
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    white-space: nowrap;
+}
+
+.collision-occurrences {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.collision-occurrence-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+}
+
+.collision-ws-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-1);
+    font-weight: 600;
+}
+
+.collision-tab-tag {
+    color: var(--text-2);
+    font-size: 0.74rem;
+}
+
+.collision-class-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+}
+
+/* Activity Timeline */
+.timeline-section {
+    margin-top: 32px;
+}
+
+.timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.timeline-list::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 7px;
+    bottom: 6px;
+    width: 2px;
+    background: var(--border);
+}
+
+.timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    position: relative;
+}
+
+.timeline-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid var(--bg-0);
+    position: absolute;
+    left: -20px;
+    top: 3px;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+}
+
+.timeline-dot.dot-amber {
+    background: #f59e0b;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+.timeline-dot.dot-green {
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.timeline-content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.82rem;
+}
+
+.timeline-desc {
+    color: var(--text-1);
+    font-weight: 500;
+}
+
+.timeline-time {
+    font-size: 0.74rem;
+    color: var(--text-3);
+    white-space: nowrap;
+    font-family: 'JetBrains Mono', monospace;
+}

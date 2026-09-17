@@ -1,0 +1,810 @@
+/* ==========================================================================
+   Spectra Dashboard Widgets & Telemetry Stylesheet
+   Modular styles for: Quick Action Bar, Health Radar, Storage Quota
+   Breakdown, Pinned Forensics, Drag & Drop, and Modals.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Quick Action Bar (Top of Dashboard)
+   -------------------------------------------------------------------------- */
+.quick-action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px 18px;
+    margin-bottom: 24px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 24px -6px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+}
+
+[data-theme="light"] .quick-action-bar {
+    background: #ffffff;
+    border-color: var(--border);
+    box-shadow: 0 4px 20px -6px rgba(15, 23, 42, 0.06);
+}
+
+.quick-action-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #38bdf8, #818cf8, #34d399, #f59e0b);
+    opacity: 0.85;
+}
+
+.quick-action-label-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quick-action-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(129, 140, 248, 0.1));
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.quick-action-titles {
+    display: flex;
+    flex-direction: column;
+}
+
+.quick-action-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-1);
+    letter-spacing: -0.01em;
+}
+
+.quick-action-sub {
+    font-size: 0.74rem;
+    color: var(--text-2);
+}
+
+.quick-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.quick-act-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: inherit;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text-1);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.quick-act-btn:hover {
+    transform: translateY(-1px);
+    border-color: var(--border-strong);
+    background: var(--surface-hover);
+}
+
+.quick-act-btn:active {
+    transform: translateY(0);
+}
+
+.quick-act-btn-primary {
+    background: linear-gradient(135deg, #0284c7, #38bdf8);
+    border-color: rgba(56, 189, 248, 0.5);
+    color: #ffffff;
+    box-shadow: 0 4px 16px -4px rgba(56, 189, 248, 0.4);
+}
+
+.quick-act-btn-primary:hover {
+    background: linear-gradient(135deg, #0369a1, #0284c7);
+    border-color: #38bdf8;
+    box-shadow: 0 6px 20px -4px rgba(56, 189, 248, 0.55);
+}
+
+.quick-act-btn-emerald {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.35);
+    color: #34d399;
+}
+
+.quick-act-btn-emerald:hover {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: #34d399;
+}
+
+.quick-act-btn-amber {
+    background: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.35);
+    color: #fbbf24;
+}
+
+.quick-act-btn-amber:hover {
+    background: rgba(245, 158, 11, 0.2);
+    border-color: #fbbf24;
+}
+
+.quick-act-btn-danger {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #f87171;
+}
+
+.quick-act-btn-danger:hover {
+    background: rgba(239, 68, 68, 0.18);
+    border-color: #f87171;
+}
+
+.quick-act-badge {
+    font-size: 0.68rem;
+    padding: 1px 6px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.12);
+    color: inherit;
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   2. Global Drag & Drop Overlay
+   -------------------------------------------------------------------------- */
+.drag-drop-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(7, 7, 17, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+}
+
+.drag-drop-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.drag-drop-box {
+    width: 90%;
+    max-width: 520px;
+    padding: 48px 32px;
+    border: 2px dashed #38bdf8;
+    border-radius: var(--radius-lg);
+    background: rgba(56, 189, 248, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+    animation: dropPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes dropPulse {
+    0%, 100% {
+        border-color: #38bdf8;
+        transform: scale(1);
+    }
+    50% {
+        border-color: #818cf8;
+        transform: scale(1.02);
+    }
+}
+
+.drag-drop-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.drag-drop-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-1);
+    margin: 0;
+}
+
+.drag-drop-sub {
+    font-size: 0.88rem;
+    color: var(--text-2);
+    margin: 0;
+    max-width: 420px;
+    line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   3. Telemetry Widgets Section (Health Radar & Storage Quota Breakdown)
+   -------------------------------------------------------------------------- */
+.telemetry-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 980px) {
+    .telemetry-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Health Radar Card */
+.health-radar-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.health-radar-body {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 10px 0 6px 0;
+    flex-wrap: wrap;
+}
+
+.health-radar-gauge {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.health-radar-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.health-circle-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.08);
+    stroke-width: 10;
+}
+
+[data-theme="light"] .health-circle-bg {
+    stroke: rgba(15, 23, 42, 0.08);
+}
+
+.health-circle-bar {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    stroke: #10b981;
+    stroke-dasharray: 377;
+    stroke-dashoffset: 377;
+    transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.4s ease;
+    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
+}
+
+.health-gauge-center {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.health-score-number {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-1);
+    line-height: 1;
+    font-family: 'JetBrains Mono', monospace, sans-serif;
+}
+
+.health-score-unit {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-2);
+}
+
+.health-score-status {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 4px;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.status-optimal {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+}
+
+.status-good {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+}
+
+.status-moderate {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+}
+
+.status-critical {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+}
+
+.health-breakdown {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hygiene-factor {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    padding: 5px 8px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+}
+
+.hygiene-factor-name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-2);
+}
+
+.hygiene-factor-status {
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.hygiene-pass {
+    color: #34d399;
+}
+
+.hygiene-warn {
+    color: #fbbf24;
+}
+
+.hygiene-fail {
+    color: #f87171;
+}
+
+/* Storage Quota Breakdown Card */
+.storage-quota-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.storage-quota-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: var(--text-2);
+    margin-bottom: 12px;
+}
+
+.storage-quota-bar-wrapper {
+    position: relative;
+    width: 100%;
+    height: 22px;
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    display: flex;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+}
+
+[data-theme="light"] .storage-quota-bar-wrapper {
+    background: #e2e8f0;
+}
+
+.storage-quota-segment {
+    height: 100%;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    cursor: pointer;
+}
+
+.storage-quota-segment:hover {
+    filter: brightness(1.2);
+}
+
+.storage-quota-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px 14px;
+    max-height: 150px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.storage-legend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.77rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+}
+
+.storage-legend-item:hover {
+    border-color: var(--border-strong);
+    background: var(--surface-hover);
+}
+
+.storage-legend-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.storage-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.storage-legend-name {
+    font-weight: 600;
+    color: var(--text-1);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 110px;
+}
+
+.storage-legend-size {
+    font-family: 'JetBrains Mono', monospace, sans-serif;
+    color: var(--text-2);
+    font-weight: 500;
+    font-size: 0.72rem;
+}
+
+/* --------------------------------------------------------------------------
+   4. Pinned / Favorite Tabs Widget
+   -------------------------------------------------------------------------- */
+.pinned-tabs-section {
+    margin-bottom: 24px;
+}
+
+.pinned-tabs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.pinned-tab-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+[data-theme="light"] .pinned-tab-card {
+    background: #ffffff;
+    border-color: var(--border);
+    box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.05);
+}
+
+.pinned-tab-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.45);
+}
+
+.pinned-tab-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    bottom: 0;
+    background: linear-gradient(180deg, #f59e0b, #fbbf24);
+}
+
+.pinned-tab-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.pinned-tab-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+}
+
+.pinned-tab-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-1);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pinned-tab-ws-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.72rem;
+    color: var(--text-2);
+    font-weight: 500;
+}
+
+.pinned-ws-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.pinned-tab-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.pinned-unpin-btn {
+    background: none;
+    border: none;
+    color: #fbbf24;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.pinned-unpin-btn:hover {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    transform: scale(1.1);
+}
+
+.pinned-tab-stats {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pinned-stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+}
+
+.pinned-stat-pill strong {
+    color: var(--text-1);
+}
+
+.pinned-tab-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+}
+
+.pinned-tab-time {
+    font-size: 0.72rem;
+    color: var(--text-3);
+}
+
+.pinned-tab-links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pinned-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.73rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text-1);
+    transition: all 0.18s ease;
+}
+
+.pinned-link-btn:hover {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.pinned-link-btn.accent-amber:hover {
+    border-color: #f59e0b;
+    color: #fbbf24;
+}
+
+/* Empty state for pinned tabs */
+.pinned-empty-state {
+    padding: 32px 20px;
+    text-align: center;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.pinned-empty-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pinned-empty-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-1);
+    margin: 0;
+}
+
+.pinned-empty-desc {
+    font-size: 0.8rem;
+    color: var(--text-2);
+    margin: 0;
+    max-width: 440px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Modals for Quick Tab & Wipe Stale Tabs
+   -------------------------------------------------------------------------- */
+.modal-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.modal-form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-2);
+}
+
+.modal-input,
+.modal-select,
+.modal-textarea {
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-1);
+    font-family: inherit;
+    font-size: 0.85rem;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-input:focus,
+.modal-select:focus,
+.modal-textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
+.modal-textarea {
+    resize: vertical;
+    min-height: 90px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+}
+
+.stale-tabs-list {
+    max-height: 180px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 12px 0;
+}
+
+.stale-tab-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    padding: 6px 8px;
+    border-radius: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+}
+
+.stale-tab-item-name {
+    font-weight: 600;
+    color: var(--text-1);
+}
+
+.stale-tab-item-ws {
+    font-size: 0.72rem;
+    color: var(--text-3);
+}

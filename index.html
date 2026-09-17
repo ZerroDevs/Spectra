@@ -22,6 +22,7 @@
         })();
     </script>
     <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/dashboard-widgets.css">
 </head>
 
 <body>
@@ -52,6 +53,22 @@
                     <polyline points="8 6 2 12 8 18"></polyline>
                 </svg>
                 <span class="btn-label">Workspace (#main)</span>
+            </a>
+            <a href="analytics.html" class="btn btn-ghost btn-sm" id="analytics-nav-btn" title="Deep Forensics &amp; Historical Trends">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span class="btn-label">Analytics</span>
+            </a>
+            <a href="audit.html" class="btn btn-ghost btn-sm" id="audit-nav-btn" title="Griefer &amp; Flagged Account Database">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span class="btn-label">Audit</span>
             </a>
             <a href="about.html" class="btn btn-ghost btn-sm" id="about-nav-btn" title="About &amp; Documentation">
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
@@ -107,6 +124,36 @@
             <span class="pill">Local Intelligence Overview</span>
             <h1>Spectra <span>Dashboard</span></h1>
             <p>Real-time analytics, forensic account logs, and browser-isolated workspace management.</p>
+        </section>
+
+        <!-- Quick Action Bar (Top of Dashboard) -->
+        <section class="quick-action-bar" aria-label="One-Click Quick Actions">
+            <div class="quick-action-label-group">
+                <div class="quick-action-icon">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                </div>
+                <div class="quick-action-titles">
+                    <span class="quick-action-title">Quick Actions</span>
+                    <span class="quick-action-sub">Rapid workspace forensics &amp; hygiene shortcuts</span>
+                </div>
+            </div>
+            <div class="quick-action-buttons">
+                <button type="button" class="quick-act-btn quick-act-btn-primary" id="quick-add-tab-btn" title="Create a new tab directly without leaving the dashboard">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.4" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span>+ Quick Tab</span>
+                </button>
+                <button type="button" class="quick-act-btn quick-act-btn-emerald" id="quick-import-json-btn" title="Import backup or tab data (or drag &amp; drop file anywhere)">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <span>Import JSON</span>
+                    <span class="quick-act-badge">Dropzone</span>
+                </button>
+                <button type="button" class="quick-act-btn quick-act-btn-danger" id="wipe-stale-tabs-btn" title="Detect and purge 0-account empty tabs across all workspaces">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <span>Wipe Stale Tabs</span>
+                </button>
+            </div>
         </section>
 
         <!-- Primary Workspace Launchpad Banner -->
@@ -247,6 +294,110 @@
                     <div class="vital-value">Strict Zero-Outbound</div>
                 </div>
             </div>
+        </section>
+
+        <!-- Interactive Telemetry Widgets -->
+        <section class="telemetry-grid" aria-label="Interactive Workspace Telemetry">
+            <!-- Quick Health Radar -->
+            <article class="card health-radar-card" id="card-health-radar">
+                <div class="card-header">
+                    <div class="card-icon" style="--ac: #10b981; --ac2: #34d399;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                        </svg>
+                    </div>
+                    <h2>Workspace Health Radar <span class="h2-sub">Hygiene &amp; Integrity</span></h2>
+                </div>
+                <div class="card-body">
+                    <div class="health-radar-body">
+                        <div class="health-radar-gauge">
+                            <svg class="health-radar-svg" viewBox="0 0 140 140">
+                                <circle class="health-circle-bg" cx="70" cy="70" r="60"></circle>
+                                <circle class="health-circle-bar" id="health-gauge-bar" cx="70" cy="70" r="60"></circle>
+                            </svg>
+                            <div class="health-gauge-center">
+                                <div style="display: flex; align-items: baseline;">
+                                    <span class="health-score-number" id="health-score-num">--</span>
+                                    <span class="health-score-unit">%</span>
+                                </div>
+                                <span class="health-score-status status-optimal" id="health-score-status">Healthy</span>
+                            </div>
+                        </div>
+                        <div class="health-breakdown">
+                            <div class="hygiene-factor" id="factor-storage">
+                                <span class="hygiene-factor-name">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                    Storage Footprint
+                                </span>
+                                <span class="hygiene-factor-status hygiene-pass">Optimal</span>
+                            </div>
+                            <div class="hygiene-factor" id="factor-dups">
+                                <span class="hygiene-factor-name">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                    Duplicate Tab Names
+                                </span>
+                                <span class="hygiene-factor-status hygiene-pass">Clean (0)</span>
+                            </div>
+                            <div class="hygiene-factor" id="factor-stale">
+                                <span class="hygiene-factor-name">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                    Stale / Empty Tabs
+                                </span>
+                                <span class="hygiene-factor-status hygiene-pass">0 Empty</span>
+                            </div>
+                            <div class="hygiene-factor" id="factor-griefers">
+                                <span class="hygiene-factor-name">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><polygon points="10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></polygon><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                    Flagged Griefer Density
+                                </span>
+                                <span class="hygiene-factor-status hygiene-pass">Optimal</span>
+                            </div>
+                            <div class="hygiene-factor" id="factor-format">
+                                <span class="hygiene-factor-name">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
+                                    Log Normalization
+                                </span>
+                                <span class="hygiene-factor-status hygiene-pass">Optimal</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Storage Quota Breakdown by Workspace -->
+            <article class="card storage-quota-card" id="card-storage-breakdown">
+                <div class="card-header">
+                    <div class="card-icon" style="--ac: #38bdf8; --ac2: #818cf8;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                        </svg>
+                    </div>
+                    <h2>Storage Quota Breakdown <span class="h2-sub">by Workspace</span></h2>
+                </div>
+                <div class="card-body">
+                    <div class="storage-quota-summary">
+                        <span>Workspace Memory Distribution</span>
+                        <span id="ws-storage-summary-text">0 KB of 5.0 MB quota (0%)</span>
+                    </div>
+                    <div class="storage-quota-bar-wrapper" id="ws-storage-bar-segments" title="Workspace storage usage distribution"></div>
+                    <div class="storage-quota-legend" id="ws-storage-legend"></div>
+                </div>
+            </article>
+        </section>
+
+        <!-- Pinned / Favorite Tabs Priority Forensics Widget -->
+        <section class="pinned-tabs-section" aria-label="Pinned Forensic Tabs">
+            <div class="metrics-section-header" style="margin-bottom: 0;">
+                <div class="metrics-section-title">
+                    <span class="metrics-dot" style="background: #f59e0b; box-shadow: 0 0 10px #f59e0b;"></span>
+                    <span class="metrics-title-text">Pinned Forensics · Priority Tabs</span>
+                    <span class="metrics-counter" id="pinned-tabs-count" style="border-color: rgba(245, 158, 11, 0.35); color: #fbbf24; background: rgba(245, 158, 11, 0.1);">0 pinned</span>
+                </div>
+            </div>
+            <div id="pinned-tabs-container"></div>
         </section>
 
         <!-- Platform Navigation Portal (Organized Tools) -->
@@ -857,9 +1008,101 @@
         </div>
     </div>
 
+    <!-- Quick Tab Creation Modal -->
+    <div class="modal-backdrop" id="quick-tab-modal" style="display: none;">
+        <div class="layout-modal" role="dialog" aria-labelledby="quick-tab-modal-title" aria-modal="true">
+            <div class="layout-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="card-icon" style="--ac: #0284c7; --ac2: #38bdf8; width: 34px; height: 34px; margin-bottom: 0;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="quick-tab-modal-title" style="margin: 0; font-size: 1.05rem; font-weight: 700;">Create Quick Tab</h3>
+                        <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-2);">Directly add a new tab into any workspace.</p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-ghost btn-xs" id="close-quick-tab-modal" aria-label="Close modal">✕</button>
+            </div>
+            <div class="layout-modal-body">
+                <div class="modal-form-group">
+                    <label for="quick-tab-ws">Target Workspace</label>
+                    <select id="quick-tab-ws" class="modal-select"></select>
+                </div>
+                <div class="modal-form-group">
+                    <label for="quick-tab-name">Tab Name</label>
+                    <input type="text" id="quick-tab-name" class="modal-input" placeholder="e.g. List 1" autocomplete="off">
+                </div>
+                <div class="modal-form-group">
+                    <label for="quick-tab-data">Initial Account Data (Optional)</label>
+                    <textarea id="quick-tab-data" class="modal-textarea" placeholder="Paste initial raw player logs or accounts (optional)..."></textarea>
+                </div>
+            </div>
+            <div class="layout-modal-footer">
+                <button type="button" class="btn btn-ghost btn-sm" id="cancel-quick-tab-btn">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm" id="submit-quick-tab-btn">+ Create Tab</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wipe Stale Tabs Confirmation Modal -->
+    <div class="modal-backdrop" id="wipe-stale-modal" style="display: none;">
+        <div class="layout-modal" role="dialog" aria-labelledby="wipe-stale-modal-title" aria-modal="true">
+            <div class="layout-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="card-icon" style="--ac: #ef4444; --ac2: #f87171; width: 34px; height: 34px; margin-bottom: 0;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="wipe-stale-modal-title" style="margin: 0; font-size: 1.05rem; font-weight: 700;">Purge Stale Tabs</h3>
+                        <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-2);">Clean empty or unpopulated tabs to boost workspace hygiene.</p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-ghost btn-xs" id="close-wipe-stale-modal" aria-label="Close modal">✕</button>
+            </div>
+            <div class="layout-modal-body">
+                <p id="stale-tabs-count-text" style="margin: 0 0 8px 0; font-size: 0.85rem; color: var(--text-1);"></p>
+                <div class="stale-tabs-list" id="stale-tabs-preview-list"></div>
+                <p style="margin: 8px 0 0 0; font-size: 0.78rem; color: var(--text-2);">
+                    Tabs with 0 accounts or blank output will be permanently purged. If a workspace becomes empty, a fresh "Main List" tab will automatically take its place.
+                </p>
+            </div>
+            <div class="layout-modal-footer">
+                <button type="button" class="btn btn-ghost btn-sm" id="cancel-wipe-stale-btn">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm" id="confirm-wipe-stale-btn" style="background: linear-gradient(135deg, #dc2626, #ef4444);">
+                    Wipe Tabs
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Drag & Drop Overlay -->
+    <div class="drag-drop-overlay" id="drag-drop-overlay">
+        <div class="drag-drop-box">
+            <div class="drag-drop-icon">
+                <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            </div>
+            <h3 class="drag-drop-title">Drop Spectra Backup JSON</h3>
+            <p class="drag-drop-sub">Release your file anywhere on the dashboard to immediately inspect, restore, or merge workspace forensics.</p>
+        </div>
+    </div>
+
+    <!-- Hidden File Input for Global Backup JSON Import -->
+    <input type="file" id="global-json-file-input" accept=".json,application/json" style="display: none;">
+
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/dashboard-widgets.js"></script>
 </body>
 
 </html>

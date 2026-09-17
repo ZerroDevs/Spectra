@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#070711">
+    <meta name="description" content="Spectra Analytics — Deep forensics, historical trend snapshots, cross-workspace collision matrix, and timeline.">
+    <title>Spectra · Deep Forensics &amp; Historical Analytics</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/logo1.png">
+    <link rel="apple-touch-icon" href="assets/images/logo1.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('multiCheckTheme') || localStorage.getItem('spectraTheme') || 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) { }
+        })();
+    </script>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/analytics.css">
+</head>
+
+<body>
+    <div class="orbs" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation Topbar -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <a href="index.html" class="brand-link" title="Spectra Intelligence Dashboard">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <span class="brand-name">Spectra</span>
+                <span class="brand-pill" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">Analytics</span>
+            </a>
+            <a href="index.html" class="btn btn-ghost btn-sm" id="dashboard-nav-btn" title="Back to Dashboard">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span class="btn-label">Dashboard</span>
+            </a>
+            <a href="workspace.html#main" class="btn btn-ghost btn-sm" id="workspace-nav-btn" title="Open Workspace Inspector (#main)">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                <span class="btn-label">Workspace (#main)</span>
+            </a>
+            <a href="audit.html" class="btn btn-ghost btn-sm" id="audit-nav-btn" title="Griefer &amp; Flagged Account Database">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span class="btn-label">Audit</span>
+            </a>
+            <a href="about.html" class="btn btn-ghost btn-sm" id="about-nav-btn" title="About &amp; Documentation">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="btn-label">About</span>
+            </a>
+        </div>
+        <div class="topbar-actions">
+            <button class="btn btn-ghost btn-sm" id="theme-toggle-btn" title="Toggle Dark/Light Theme">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+            <button class="btn btn-primary btn-sm" id="refresh-btn">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                <span class="btn-label">Refresh</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="analytics-container">
+        <!-- Hero Section -->
+        <section class="hero" style="margin-bottom: 24px;">
+            <span class="pill">Forensic Intelligence &amp; Longitudinal Trends</span>
+            <h1>Deep <span>Analytics</span></h1>
+            <p>Historical account velocity snapshots, cross-workspace collision matrix, and temporal activity logs.</p>
+        </section>
+
+        <!-- Velocity & Trajectory Trend Grid -->
+        <section class="trend-grid" aria-label="Key Forensic Trends">
+            <article class="trend-card">
+                <div class="trend-card-top">
+                    <div class="trend-card-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                            <polyline points="17 6 23 6 23 12"></polyline>
+                        </svg>
+                    </div>
+                    <span class="trend-badge positive" id="velocity-badge">--</span>
+                </div>
+                <div class="trend-val" id="velocity-value">0</div>
+                <div class="trend-lbl">Account Velocity Delta</div>
+            </article>
+
+            <article class="trend-card">
+                <div class="trend-card-top">
+                    <div class="trend-card-icon" style="background: rgba(34, 211, 238, 0.15); color: #22d3ee;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="7" r="4"></circle>
+                            <path d="M5.5 21a6.5 6.5 0 0 1 13 0"></path>
+                        </svg>
+                    </div>
+                    <span class="trend-badge neutral">Mains (M)</span>
+                </div>
+                <div class="trend-val" id="mains-trend-value">0%</div>
+                <div class="trend-lbl">Main Account Ratio</div>
+            </article>
+
+            <article class="trend-card">
+                <div class="trend-card-top">
+                    <div class="trend-card-icon" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></polygon>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </div>
+                    <span class="trend-badge negative">Griefers</span>
+                </div>
+                <div class="trend-val" id="griefer-trend-value">0%</div>
+                <div class="trend-lbl">Griefer Flagged Trajectory</div>
+            </article>
+
+            <article class="trend-card">
+                <div class="trend-card-top">
+                    <div class="trend-card-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <span class="trend-badge positive">Snapshots</span>
+                </div>
+                <div class="trend-val" id="snapshots-total-badge">0</div>
+                <div class="trend-lbl">Total Forensic Snapshots</div>
+            </article>
+        </section>
+
+        <!-- Section 1: Historical Snapshots Timeline -->
+        <section class="card" style="margin-bottom: 28px;">
+            <div class="card-header">
+                <div class="card-icon" style="--ac: #0284c7; --ac2: #38bdf8;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                </div>
+                <h2>Forensic Snapshots Timeline <span class="h2-sub">Local History</span></h2>
+                <div class="card-header-actions" style="margin-left: auto; display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-ghost btn-sm" id="export-snapshots-btn" title="Export snapshots JSON">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <span>Export JSON</span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" id="capture-snapshot-btn" title="Record an immediate forensic snapshot">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <span>+ Capture Snapshot</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="snapshot-table-wrapper">
+                    <table class="snapshot-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Accounts</th>
+                                <th>Delta</th>
+                                <th>Classification</th>
+                                <th>Griefers</th>
+                                <th>Storage</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="snapshots-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Cross-Workspace Collision Matrix -->
+        <section class="card collision-section" style="margin-bottom: 28px;">
+            <div class="card-header">
+                <div class="card-icon" style="--ac: #f59e0b; --ac2: #fbbf24;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </div>
+                <h2>Cross-Workspace Collision Matrix <span class="h2-sub">Duplicate &amp; Conflict Detection</span></h2>
+                <span class="header-meta" id="collision-count-badge">0 shared identities</span>
+                <div class="section-controls" style="margin-left: auto;">
+                    <input type="search" class="search-input" id="collision-search-input" placeholder="Search shared accounts…" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="card-body">
+                <p style="font-size: 0.82rem; color: var(--text-2); margin-top: 0; margin-bottom: 14px;">
+                    This audit matrix scans all workspaces to locate duplicate accounts that exist across multiple tenancy environments, highlighting classification discrepancies (e.g. an identity labeled Main in one workspace and Twink or Griefer in another).
+                </p>
+                <div class="collision-grid" id="collision-cards-container"></div>
+            </div>
+        </section>
+
+        <!-- Section 3: Temporal Activity Timeline -->
+        <section class="card timeline-section">
+            <div class="card-header">
+                <div class="card-icon" style="--ac: #8b5cf6; --ac2: #a78bfa;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 14 14"></polyline>
+                    </svg>
+                </div>
+                <h2>Temporal Activity Timeline <span class="h2-sub">Recent Mutations</span></h2>
+            </div>
+            <div class="card-body">
+                <div class="timeline-list" id="timeline-list"></div>
+            </div>
+        </section>
+
+        <!-- Platform Footer -->
+        <footer class="footer" style="margin-top: 40px;">
+            <div style="margin-bottom: 10px;">
+                Spectra Analytics Engine · Historical forensic snapshots are calculated and stored locally in browser localStorage.
+            </div>
+            <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+                <a href="index.html" style="color: var(--accent); text-decoration: none; font-weight: 600;">Dashboard</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="workspace.html#main" style="color: #38bdf8; text-decoration: none; font-weight: 600;">Workspace (#main)</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="audit.html" style="color: #f87171; text-decoration: none; font-weight: 600;">Audit &amp; Blacklist</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="about.html" style="color: var(--text-2); text-decoration: none;">About &amp; Docs</a>
+            </div>
+        </footer>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="assets/js/analytics.js"></script>
+</body>
+
+</html>
