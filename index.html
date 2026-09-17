@@ -63,6 +63,38 @@
                 </svg>
                 <span class="btn-label">Analytics</span>
             </a>
+            <a href="diff.html" class="btn btn-ghost btn-sm" id="diff-nav-btn" title="Forensic Visual Diff &amp; Log Comparator">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 3 21 3 21 8"></polyline>
+                    <line x1="4" y1="20" x2="21" y2="3"></line>
+                    <polyline points="21 16 21 21 16 21"></polyline>
+                    <line x1="15" y1="15" x2="21" y2="21"></line>
+                    <line x1="4" y1="4" x2="9" y2="9"></line>
+                </svg>
+                <span class="btn-label">Diff</span>
+            </a>
+            <a href="graph.html" class="btn btn-ghost btn-sm" id="graph-nav-btn" title="Network Alt Graph &amp; Syndicate Visualizer">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+                <span class="btn-label">Alt Graph</span>
+            </a>
+            <a href="rules.html" class="btn btn-ghost btn-sm" id="rules-nav-btn" title="Server Rulebook &amp; Ban Matrix Customizer">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    <line x1="9" y1="7" x2="15" y2="7"></line>
+                    <line x1="9" y1="11" x2="13" y2="11"></line>
+                </svg>
+                <span class="btn-label">Rulebook</span>
+            </a>
             <a href="audit.html" class="btn btn-ghost btn-sm" id="audit-nav-btn" title="Griefer &amp; Flagged Account Database">
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -152,6 +184,11 @@
                 <button type="button" class="quick-act-btn quick-act-btn-danger" id="wipe-stale-tabs-btn" title="Detect and purge 0-account empty tabs across all workspaces">
                     <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     <span>Wipe Stale Tabs</span>
+                </button>
+                <button type="button" class="quick-act-btn quick-act-btn-amber" id="staff-sync-btn" title="AES-256 encrypted URL hash sharing and staff webhook dispatch">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <span>Staff Sync</span>
+                    <span class="quick-act-badge" style="background: rgba(245, 158, 11, 0.25); color: #fbbf24;">AES-256</span>
                 </button>
             </div>
         </section>
@@ -945,19 +982,21 @@
             <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
                 <a href="workspace.html#main" style="color: var(--accent); text-decoration: none; font-weight: 600;">Workspace (#main)</a>
                 <span style="color: var(--text-3);">·</span>
-                <a href="workspace.html#ban" style="color: #f59e0b; text-decoration: none; font-weight: 600;">Ban Generator (#ban)</a>
+                <a href="workspace.html#ban" style="color: #f59e0b; text-decoration: none; font-weight: 600;">Ban Matrix (#ban)</a>
                 <span style="color: var(--text-3);">·</span>
-                <a href="workspace.html#workspaces" style="color: #10b981; text-decoration: none; font-weight: 600;">Workspaces (#workspaces)</a>
+                <a href="analytics.html" style="color: #38bdf8; text-decoration: none; font-weight: 600;">Analytics</a>
                 <span style="color: var(--text-3);">·</span>
-                <a href="about.html" style="color: var(--accent); text-decoration: none; font-weight: 500;">About &amp; Docs</a>
+                <a href="audit.html" style="color: #f87171; text-decoration: none; font-weight: 600;">Audit &amp; Blacklist</a>
                 <span style="color: var(--text-3);">·</span>
-                <a href="https://github.com/ZerroDevs/Spectra" target="_blank" rel="noopener" style="color: var(--text-2); text-decoration: none;">Spectra Repo</a>
+                <a href="diff.html" style="color: #10b981; text-decoration: none; font-weight: 600;">Visual Diff</a>
                 <span style="color: var(--text-3);">·</span>
-                <a href="https://github.com/ZerroDevs/Spectra/blob/main/README.md" target="_blank" rel="noopener" style="color: var(--text-2); text-decoration: none;">README</a>
+                <a href="graph.html" style="color: #06b6d4; text-decoration: none; font-weight: 600;">Alt Graph</a>
                 <span style="color: var(--text-3);">·</span>
-                <a href="https://github.com/ZerroDevs/Spectra/blob/main/LICENSE" target="_blank" rel="noopener" style="color: var(--text-2); text-decoration: none;">License</a>
+                <a href="rules.html" style="color: #fbbf24; text-decoration: none; font-weight: 600;">Rulebook</a>
                 <span style="color: var(--text-3);">·</span>
-                <a href="https://github.com/ZerroDevs" target="_blank" rel="noopener" style="color: var(--text-2); text-decoration: none;">@ZerroDevs</a>
+                <a href="about.html" style="color: var(--text-2); text-decoration: none; font-weight: 500;">About &amp; Docs</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="https://github.com/ZerroDevs/Spectra" target="_blank" rel="noopener" style="color: var(--text-2); text-decoration: none;">GitHub</a>
             </div>
         </footer>
     </main>
@@ -1077,6 +1116,127 @@
                 <button type="button" class="btn btn-primary btn-sm" id="confirm-wipe-stale-btn" style="background: linear-gradient(135deg, #dc2626, #ef4444);">
                     Wipe Tabs
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff Sync & Encrypted Backup Modal -->
+    <div class="modal-backdrop" id="staff-sync-modal" style="display: none;">
+        <div class="layout-modal" role="dialog" aria-labelledby="staff-sync-title" aria-modal="true" style="max-width: 540px;">
+            <div class="layout-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="card-icon" style="--ac: #f59e0b; --ac2: #d97706; width: 34px; height: 34px; margin-bottom: 0;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="#fff" stroke-width="2.2" fill="none">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="staff-sync-title" style="margin: 0; font-size: 1.05rem; font-weight: 700;">Staff Sync &amp; Encrypted Backup</h3>
+                        <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-2);">Client-side AES-256 encrypted link sharing &amp; Discord webhook dispatch.</p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-ghost btn-xs" id="close-staff-sync-modal" aria-label="Close modal">✕</button>
+            </div>
+            <div class="layout-modal-body">
+                <!-- Sync Tabs -->
+                <div style="display: flex; gap: 6px; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+                    <button type="button" class="btn btn-secondary btn-xs active" id="sync-tab-link-btn">🔐 Encrypted URL Link</button>
+                    <button type="button" class="btn btn-secondary btn-xs" id="sync-tab-webhook-btn">📡 Discord Webhook</button>
+                </div>
+
+                <!-- Panel 1: Encrypted URL Hash -->
+                <div id="sync-panel-link">
+                    <div class="modal-form-group">
+                        <label for="sync-scope-select">Scope to Encrypt</label>
+                        <select id="sync-scope-select" class="modal-select">
+                            <option value="all">Full Database (All Workspaces &amp; Tabs)</option>
+                            <option value="current">Current Active Workspace Only</option>
+                        </select>
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="sync-passphrase-input">Staff Secret Passphrase *</label>
+                        <input type="password" id="sync-passphrase-input" class="modal-input" placeholder="Enter a secure shared passphrase..." autocomplete="off">
+                        <span style="font-size: 0.72rem; color: var(--text-3); margin-top: 4px;">Only peers with this passphrase can decrypt the data. Zero server storage.</span>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm" id="generate-sync-link-btn" style="width: 100%; margin-top: 6px;">
+                        Generate Encrypted Link (AES-GCM)
+                    </button>
+
+                    <div id="sync-link-output-group" style="display: none; margin-top: 14px;">
+                        <label style="font-size: 0.75rem; font-weight: 700; color: #38bdf8;">Encrypted Shareable URL:</label>
+                        <textarea id="sync-url-output" class="modal-textarea" readonly style="height: 64px; font-family: monospace; font-size: 0.74rem;"></textarea>
+                        <button type="button" class="btn btn-secondary btn-sm" id="copy-sync-link-btn" style="width: 100%; margin-top: 6px;">
+                            📋 Copy Shareable Link
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Panel 2: Discord Webhook -->
+                <div id="sync-panel-webhook" style="display: none;">
+                    <div class="modal-form-group">
+                        <label for="sync-webhook-url">Discord Staff Webhook URL *</label>
+                        <input type="url" id="sync-webhook-url" class="modal-input" placeholder="https://discord.com/api/webhooks/..." autocomplete="off">
+                    </div>
+                    <div class="modal-form-group">
+                        <label for="sync-webhook-author">Operative / Admin Name</label>
+                        <input type="text" id="sync-webhook-author" class="modal-input" placeholder="e.g. Inspector #1042" autocomplete="off">
+                    </div>
+                    <p style="font-size: 0.76rem; color: var(--text-3); margin: 6px 0 12px 0;">
+                        Dispatches a dark-mode embed report detailing total accounts, twink ratios, griefer counts, and storage hygiene directly into your staff channel.
+                    </p>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn btn-secondary btn-sm" id="test-webhook-btn" style="flex: 1;">
+                            Ping Webhook
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" id="dispatch-webhook-btn" style="flex: 2; background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                            Dispatch Intel Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="layout-modal-footer">
+                <button type="button" class="btn btn-ghost btn-sm" id="close-staff-sync-footer-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Incoming Encrypted Sync Prompt Modal -->
+    <div class="modal-backdrop" id="incoming-sync-modal" style="display: none;">
+        <div class="layout-modal" role="dialog" aria-labelledby="incoming-sync-title" aria-modal="true" style="max-width: 500px;">
+            <div class="layout-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="card-icon" style="--ac: #a855f7; --ac2: #9333ea; width: 34px; height: 34px; margin-bottom: 0;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="#fff" stroke-width="2.2" fill="none">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="incoming-sync-title" style="margin: 0; font-size: 1.05rem; font-weight: 700;">Encrypted Staff Sync Detected</h3>
+                        <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-2);">This link contains an encrypted forensic payload.</p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-ghost btn-xs" id="close-incoming-sync-modal">✕</button>
+            </div>
+            <div class="layout-modal-body">
+                <div class="modal-form-group">
+                    <label for="incoming-passphrase-input">Enter Passphrase to Decrypt</label>
+                    <input type="password" id="incoming-passphrase-input" class="modal-input" placeholder="Enter passphrase..." autocomplete="off">
+                </div>
+                <button type="button" class="btn btn-primary btn-sm" id="decrypt-sync-btn" style="width: 100%;">
+                    Unlock &amp; Inspect Payload
+                </button>
+
+                <div id="incoming-preview-area" style="display: none; margin-top: 14px; background: var(--surface-2); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
+                    <div style="font-weight: 700; color: #34d399; font-size: 0.85rem; margin-bottom: 4px;">✓ Successfully Decrypted</div>
+                    <div id="incoming-stats-text" style="font-size: 0.78rem; color: var(--text-2);"></div>
+                </div>
+            </div>
+            <div class="layout-modal-footer" id="incoming-footer-actions" style="display: none;">
+                <button type="button" class="btn btn-ghost btn-sm" id="dismiss-incoming-btn">Dismiss</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="merge-incoming-btn">Merge with Existing</button>
+                <button type="button" class="btn btn-primary btn-sm" id="overwrite-incoming-btn">Replace Database</button>
             </div>
         </div>
     </div>

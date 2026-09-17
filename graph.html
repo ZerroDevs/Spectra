@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#070711">
+    <meta name="description" content="Spectra Alt Graph — Interactive network relationship and syndicate visualizer for player accounts, twinks, and griefers.">
+    <title>Spectra · Network Alt Graph &amp; Syndicate Visualizer</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/logo1.png">
+    <link rel="apple-touch-icon" href="assets/images/logo1.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('multiCheckTheme') || localStorage.getItem('spectraTheme') || 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) { }
+        })();
+    </script>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/graph.css">
+</head>
+
+<body>
+    <div class="orbs" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation Topbar -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <a href="index.html" class="brand-link" title="Spectra Intelligence Dashboard">
+                <div class="brand-icon" style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(8, 145, 178, 0.1)); border-color: rgba(6, 182, 212, 0.4); color: #22d3ee;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                    </svg>
+                </div>
+                <span class="brand-name">Spectra</span>
+                <span class="brand-pill" style="background: rgba(6, 182, 212, 0.12); color: #22d3ee; border-color: rgba(6, 182, 212, 0.3);">Alt Graph</span>
+            </a>
+            <a href="index.html" class="btn btn-ghost btn-sm" id="dashboard-nav-btn" title="Back to Dashboard">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span class="btn-label">Dashboard</span>
+            </a>
+            <a href="workspace.html#main" class="btn btn-ghost btn-sm" id="workspace-nav-btn" title="Open Workspace Inspector (#main)">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                <span class="btn-label">Workspace (#main)</span>
+            </a>
+            <a href="analytics.html" class="btn btn-ghost btn-sm" id="analytics-nav-btn" title="Deep Forensics &amp; Historical Trends">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span class="btn-label">Analytics</span>
+            </a>
+            <a href="diff.html" class="btn btn-ghost btn-sm" id="diff-nav-btn" title="Forensic Visual Diff &amp; Log Comparator">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 3 21 3 21 8"></polyline>
+                    <line x1="4" y1="20" x2="21" y2="3"></line>
+                    <polyline points="21 16 21 21 16 21"></polyline>
+                    <line x1="15" y1="15" x2="21" y2="21"></line>
+                    <line x1="4" y1="4" x2="9" y2="9"></line>
+                </svg>
+                <span class="btn-label">Diff</span>
+            </a>
+            <a href="graph.html" class="btn btn-ghost btn-sm" id="graph-nav-btn" title="Network Alt Graph &amp; Syndicate Visualizer" style="border-color: rgba(6, 182, 212, 0.4); background: rgba(6, 182, 212, 0.12); color: #22d3ee;">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+                <span class="btn-label">Alt Graph</span>
+            </a>
+            <a href="rules.html" class="btn btn-ghost btn-sm" id="rules-nav-btn" title="Server Rulebook &amp; Ban Matrix Customizer">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    <line x1="9" y1="7" x2="15" y2="7"></line>
+                    <line x1="9" y1="11" x2="13" y2="11"></line>
+                </svg>
+                <span class="btn-label">Rulebook</span>
+            </a>
+            <a href="audit.html" class="btn btn-ghost btn-sm" id="audit-nav-btn" title="Griefer &amp; Flagged Account Database">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span class="btn-label">Audit</span>
+            </a>
+            <a href="about.html" class="btn btn-ghost btn-sm" id="about-nav-btn" title="About &amp; Documentation">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="btn-label">About</span>
+            </a>
+        </div>
+
+        <div class="topbar-actions">
+            <button class="btn btn-ghost btn-sm" id="theme-toggle-btn" title="Toggle Dark/Light Theme">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="container graph-container">
+        <!-- Hero Header -->
+        <section class="hero" style="margin-bottom: 20px;">
+            <span class="pill" style="background: rgba(6, 182, 212, 0.12); border-color: rgba(6, 182, 212, 0.35); color: #22d3ee;">Force-Directed Physics Radar</span>
+            <h1>Network Alt Graph &amp; <span style="background: linear-gradient(135deg, #06b6d4, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Syndicate Visualizer</span></h1>
+            <p>Cluster player identities, detect alt account networks, and trace shared hardware serials in real-time.</p>
+        </section>
+
+        <!-- Viewport Container -->
+        <div class="graph-viewport-wrapper">
+            <!-- Floating Top HUD -->
+            <div class="graph-top-hud">
+                <div class="graph-hud-card">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--accent)" stroke-width="2" fill="none">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                    <select id="graph-ws-select" class="search-input" style="padding: 4px 10px; font-size: 0.8rem; width: 160px;"></select>
+                </div>
+
+                <div class="graph-hud-card" style="flex: 1; max-width: 300px;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="search" id="graph-search-input" placeholder="Search node or ID…" style="background: transparent; border: none; outline: none; color: var(--text-1); font-size: 0.82rem; width: 100%;" autocomplete="off">
+                </div>
+
+                <div class="graph-hud-card">
+                    <span class="badge" id="graph-node-count" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">0 nodes</span>
+                    <span class="badge" id="graph-cluster-count" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">0 links</span>
+                    <button type="button" class="btn btn-secondary btn-xs" id="hud-demo-btn" title="Toggle Demo Syndicate Network" style="height: 26px; padding: 0 8px; font-size: 0.72rem; border-radius: 6px;">
+                        ⚡ Demo
+                    </button>
+                    <button type="button" class="icon-btn" id="reset-camera-btn" title="Re-center Camera" style="width: 28px; height: 28px;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="22" y1="12" x2="18" y2="12"></line>
+                            <line x1="6" y1="12" x2="2" y2="12"></line>
+                            <line x1="12" y1="6" x2="12" y2="2"></line>
+                            <line x1="12" y1="22" x2="12" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Empty State Overlay -->
+            <div class="graph-empty-overlay" id="graph-empty-overlay" style="display: none;">
+                <div class="graph-empty-box">
+                    <div class="graph-empty-icon">
+                        <svg viewBox="0 0 24 24" width="32" height="32" stroke="#22d3ee" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                    </div>
+                    <h3>No Syndicate Records Found</h3>
+                    <p>Your current workspace tabs don't contain any account logs yet. Load the forensic demo syndicate to explore interactive physics clustering, alt linking, and player dossiers.</p>
+                    <div class="graph-empty-actions">
+                        <button type="button" class="btn btn-primary btn-sm" id="load-demo-overlay-btn">
+                            ⚡ Load Demo Syndicate Network
+                        </button>
+                        <a href="workspace.html#main" class="btn btn-ghost btn-sm">
+                            Open Workspace (#main)
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canvas Engine -->
+            <canvas id="graph-canvas"></canvas>
+
+            <!-- Floating Bottom Controls Toolbar -->
+            <div class="graph-bottom-toolbar">
+                <span class="graph-legend-pill active" id="toggle-mains">
+                    <span class="graph-legend-dot" style="background: #06b6d4;"></span>
+                    <span>Mains</span>
+                </span>
+                <span class="graph-legend-pill active" id="toggle-twinks">
+                    <span class="graph-legend-dot" style="background: #ec4899;"></span>
+                    <span>Twinks</span>
+                </span>
+                <span class="graph-legend-pill active" id="toggle-griefers">
+                    <span class="graph-legend-dot" style="background: #ef4444;"></span>
+                    <span>Griefers</span>
+                </span>
+                <span style="color: var(--border); margin: 0 4px;">|</span>
+                <span style="font-size: 0.72rem; color: var(--text-3);">Scroll to zoom · Drag canvas to pan</span>
+            </div>
+
+            <!-- Slide-out Player Dossier Drawer -->
+            <aside class="dossier-drawer" id="dossier-drawer" aria-label="Player Dossier">
+                <div class="dossier-header">
+                    <div>
+                        <div class="dossier-identity" id="dossier-name">Player Name</div>
+                        <div class="dossier-sub" id="dossier-id">ID #0000</div>
+                    </div>
+                    <button type="button" class="icon-btn" id="close-dossier-btn" title="Close Drawer" style="width: 32px; height: 32px;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="dossier-body">
+                    <div>
+                        <div class="dossier-section-title">Classification &amp; Source</div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <span class="badge" id="dossier-class-badge" style="font-size: 0.78rem;">Main</span>
+                            <span style="font-size: 0.8rem; color: var(--text-2);" id="dossier-workspace">Workspace · Tab</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="dossier-section-title">Associated Network Alts</div>
+                        <div class="dossier-alts-list" id="dossier-alts-list"></div>
+                    </div>
+
+                    <div>
+                        <div class="dossier-section-title">Raw Log Line</div>
+                        <div class="dossier-raw-box" id="dossier-raw-box"></div>
+                    </div>
+                </div>
+
+                <div class="dossier-footer">
+                    <button type="button" class="btn btn-secondary" id="dossier-ban-btn" style="flex: 1;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                        Copy /ban
+                    </button>
+                    <button type="button" class="btn btn-primary" id="dossier-inspect-btn" style="flex: 1;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                        Inspect
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="assets/js/graph.js"></script>
+</body>
+
+</html>

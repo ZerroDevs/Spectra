@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#070711">
+    <meta name="description" content="Spectra Server Rulebook &amp; Ban Matrix Customizer — Configure custom server rules, punishment durations, and command templates.">
+    <title>Spectra · Server Rulebook &amp; Ban Matrix Customizer</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/logo1.png">
+    <link rel="apple-touch-icon" href="assets/images/logo1.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('multiCheckTheme') || localStorage.getItem('spectraTheme') || 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) { }
+        })();
+    </script>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/rules.css">
+</head>
+
+<body>
+    <div class="orbs" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation Topbar -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <a href="index.html" class="brand-link" title="Spectra Intelligence Dashboard">
+                <div class="brand-icon" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.1)); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        <line x1="9" y1="7" x2="15" y2="7"></line>
+                        <line x1="9" y1="11" x2="13" y2="11"></line>
+                    </svg>
+                </div>
+                <span class="brand-name">Spectra</span>
+                <span class="brand-pill" style="background: rgba(245, 158, 11, 0.12); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">Rulebook</span>
+            </a>
+            <a href="index.html" class="btn btn-ghost btn-sm" id="dashboard-nav-btn" title="Back to Dashboard">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span class="btn-label">Dashboard</span>
+            </a>
+            <a href="workspace.html#main" class="btn btn-ghost btn-sm" id="workspace-nav-btn" title="Open Workspace Inspector (#main)">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                <span class="btn-label">Workspace (#main)</span>
+            </a>
+            <a href="analytics.html" class="btn btn-ghost btn-sm" id="analytics-nav-btn" title="Deep Forensics &amp; Historical Trends">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span class="btn-label">Analytics</span>
+            </a>
+            <a href="diff.html" class="btn btn-ghost btn-sm" id="diff-nav-btn" title="Forensic Visual Diff &amp; Log Comparator">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 3 21 3 21 8"></polyline>
+                    <line x1="4" y1="20" x2="21" y2="3"></line>
+                    <polyline points="21 16 21 21 16 21"></polyline>
+                    <line x1="15" y1="15" x2="21" y2="21"></line>
+                    <line x1="4" y1="4" x2="9" y2="9"></line>
+                </svg>
+                <span class="btn-label">Diff</span>
+            </a>
+            <a href="graph.html" class="btn btn-ghost btn-sm" id="graph-nav-btn" title="Network Alt Graph &amp; Syndicate Visualizer">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+                <span class="btn-label">Alt Graph</span>
+            </a>
+            <a href="rules.html" class="btn btn-ghost btn-sm" id="rules-nav-btn" title="Server Rulebook &amp; Ban Matrix Customizer" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.12); color: #fbbf24;">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    <line x1="9" y1="7" x2="15" y2="7"></line>
+                    <line x1="9" y1="11" x2="13" y2="11"></line>
+                </svg>
+                <span class="btn-label">Rulebook</span>
+            </a>
+            <a href="audit.html" class="btn btn-ghost btn-sm" id="audit-nav-btn" title="Griefer &amp; Flagged Account Database">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span class="btn-label">Audit</span>
+            </a>
+            <a href="about.html" class="btn btn-ghost btn-sm" id="about-nav-btn" title="About &amp; Documentation">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="btn-label">About</span>
+            </a>
+        </div>
+
+        <div class="topbar-actions">
+            <button class="btn btn-ghost btn-sm" id="theme-toggle-btn" title="Toggle Dark/Light Theme">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="container rules-container">
+        <!-- Hero Header -->
+        <section class="hero">
+            <span class="pill" style="background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.35); color: #fbbf24;">Jurisdiction &amp; Penalty Architecture</span>
+            <h1>Server Rulebook &amp; <span style="background: linear-gradient(135deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Ban Matrix</span></h1>
+            <p>Tailor moderation codes, penalties, and command templates to your community's specific rulebook. Changes automatically sync to the Ban Matrix in Workspace and Audit.</p>
+        </section>
+
+        <!-- Rulebook Profile Bar -->
+        <div class="rules-profile-bar">
+            <div class="rules-profile-left">
+                <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-2);">Active Rule Profile:</span>
+                <select id="profile-select" class="search-input" style="padding: 6px 12px; font-weight: 600; min-width: 240px; cursor: pointer;"></select>
+            </div>
+            <div class="rules-profile-right">
+                <button type="button" class="btn btn-secondary" id="new-profile-btn" style="font-size: 0.78rem;">+ New Profile</button>
+                <button type="button" class="btn btn-secondary" id="duplicate-profile-btn" style="font-size: 0.78rem;">Duplicate</button>
+                <button type="button" class="btn btn-secondary" id="export-rules-json-btn" style="font-size: 0.78rem;">Export JSON</button>
+            </div>
+        </div>
+
+        <!-- Command Template Card -->
+        <section class="card" style="margin-bottom: 24px;">
+            <div class="card-header">
+                <div class="card-icon" style="--ac: #f59e0b; --ac2: #d97706;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none">
+                        <polyline points="4 17 10 11 4 5"></polyline>
+                        <line x1="12" y1="19" x2="20" y2="19"></line>
+                    </svg>
+                </div>
+                <h2>Console Command Template <span class="h2-sub">Live Syntax Formatting</span></h2>
+            </div>
+            <div class="card-body">
+                <p style="font-size: 0.82rem; color: var(--text-2); margin-top: 0; margin-bottom: 12px;">
+                    Define the command structure used across all 1-click ban copy buttons. Supported placeholders: <code>{id}</code>, <code>{duration}</code>, <code>{reason}</code>, <code>{code}</code>.
+                </p>
+
+                <div class="template-syntax-card">
+                    <div class="template-syntax-row">
+                        <div>
+                            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-3); margin-bottom: 4px; display: block;">Command Pattern</label>
+                            <input type="text" id="cmd-template-input" class="search-input" value="/ban {id} {duration} {reason}" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.74rem; font-weight: 700; color: var(--text-3); margin-bottom: 4px; display: block;">Live Preview (Alex_Hunter #1042)</label>
+                            <div class="syntax-preview-box">
+                                <span id="cmd-preview-output">/ban 1042 3 GR 3.1 Insulting Parents</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rules Directory Card -->
+        <section class="card">
+            <div class="card-header">
+                <div class="card-icon" style="--ac: #ec4899; --ac2: #db2777;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                </div>
+                <h2>Configured Server Rules</h2>
+                <span class="badge" id="rules-count-badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">0 rules</span>
+                <div style="margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <select id="rules-category-filter" class="search-input" style="padding: 4px 10px; font-size: 0.78rem;">
+                        <option value="all">All Categories</option>
+                        <option value="Chat">Chat</option>
+                        <option value="Combat">Combat</option>
+                        <option value="Roleplay">Roleplay</option>
+                        <option value="General">General</option>
+                    </select>
+                    <input type="search" id="rules-search-input" class="search-input" placeholder="Search rules…" style="padding: 4px 10px; font-size: 0.78rem; width: 140px;">
+                    <button type="button" class="btn btn-primary" id="add-rule-btn" style="font-size: 0.78rem;">+ Add Rule</button>
+                </div>
+            </div>
+
+            <div class="card-body" style="padding: 0; overflow-x: auto;">
+                <table class="rules-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 120px;">Code</th>
+                            <th>Rule Name &amp; Reason</th>
+                            <th style="width: 110px;">Category</th>
+                            <th style="width: 110px;">Duration</th>
+                            <th style="width: 90px;">Severity</th>
+                            <th style="text-align: right; width: 140px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rules-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Platform Footer -->
+        <footer class="footer" style="margin-top: 40px;">
+            <div style="margin-bottom: 10px;">
+                Spectra Rulebook Engine · Rule profiles are stored and processed 100% locally in browser memory.
+            </div>
+            <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+                <a href="index.html" style="color: var(--accent); text-decoration: none; font-weight: 600;">Dashboard</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="workspace.html#main" style="color: #38bdf8; text-decoration: none; font-weight: 600;">Workspace (#main)</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="analytics.html" style="color: #a78bfa; text-decoration: none; font-weight: 600;">Analytics</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="audit.html" style="color: #f87171; text-decoration: none; font-weight: 600;">Audit &amp; Blacklist</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="diff.html" style="color: #10b981; text-decoration: none; font-weight: 600;">Visual Diff</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="graph.html" style="color: #06b6d4; text-decoration: none; font-weight: 600;">Alt Graph</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="about.html" style="color: var(--text-2); text-decoration: none;">About &amp; Docs</a>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Rule Add/Edit Modal -->
+    <div class="rule-modal-overlay" id="rule-modal">
+        <div class="rule-modal-card">
+            <div class="rule-modal-header">
+                <h3 id="modal-title" style="margin: 0; font-size: 1.1rem; color: var(--text-1);">Add Server Rule</h3>
+                <button type="button" class="icon-btn" id="close-rule-modal" style="width: 28px; height: 28px;">✕</button>
+            </div>
+            <div class="rule-modal-body">
+                <div class="rule-form-row">
+                    <div class="rule-form-group">
+                        <label>Rule Code *</label>
+                        <input type="text" id="rule-code-input" class="search-input" placeholder="e.g. GR 3.1 or RDM">
+                    </div>
+                    <div class="rule-form-group">
+                        <label>Category</label>
+                        <select id="rule-category-select" class="search-input">
+                            <option value="General">General</option>
+                            <option value="Roleplay">Roleplay</option>
+                            <option value="Combat">Combat</option>
+                            <option value="Chat">Chat</option>
+                            <option value="Exploits">Exploits</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="rule-form-group">
+                    <label>Rule Description / Title *</label>
+                    <input type="text" id="rule-name-input" class="search-input" placeholder="e.g. Random Deathmatching without Initiation">
+                </div>
+
+                <div class="rule-form-row">
+                    <div class="rule-form-group">
+                        <label>Default Duration</label>
+                        <input type="text" id="rule-duration-input" class="search-input" placeholder="e.g. 3 or 120 or Perm">
+                    </div>
+                    <div class="rule-form-group">
+                        <label>Unit</label>
+                        <select id="rule-unit-select" class="search-input">
+                            <option value="Days">Days</option>
+                            <option value="Minutes">Minutes</option>
+                            <option value="Hours">Hours</option>
+                            <option value="Permanent">Permanent</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="rule-form-group">
+                    <label>Severity Level</label>
+                    <select id="rule-severity-select" class="search-input">
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+
+                <div class="rule-form-group">
+                    <label>Default Ban Reason Template</label>
+                    <input type="text" id="rule-reason-input" class="search-input" placeholder="e.g. GR 3.1 Insulting Parents | By Spectra">
+                </div>
+            </div>
+            <div class="rule-modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancel-rule-btn">Cancel</button>
+                <button type="button" class="btn btn-primary" id="save-rule-btn">Save Rule</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="assets/js/rules.js"></script>
+</body>
+
+</html>

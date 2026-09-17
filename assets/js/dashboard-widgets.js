@@ -935,6 +935,403 @@
     }
 
     // --------------------------------------------------------------------------
+    // 7. Encrypted Staff Sync & Discord Webhook Engine
+    // --------------------------------------------------------------------------
+    async function deriveCryptoKey(passphrase, salt) {
+        const enc = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey(
+            'raw',
+            enc.encode(passphrase),
+            { name: 'PBKDF2' },
+            false,
+            ['deriveKey']
+        );
+        return crypto.subtle.deriveKey(
+            {
+                name: 'PBKDF2',
+                salt: salt,
+                iterations: 100000,
+                hash: 'SHA-256'
+            },
+            keyMaterial,
+            { name: 'AES-GCM', length: 256 },
+            false,
+            ['encrypt', 'decrypt']
+        );
+    }
+
+    async function encryptPayload(plainText, passphrase) {
+        const enc = new TextEncoder();
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const key = await deriveCryptoKey(passphrase, salt);
+        const ciphertext = await crypto.subtle.encrypt(
+            { name: 'AES-GCM', iv: iv },
+            key,
+            enc.encode(plainText)
+        );
+
+        const combined = new Uint8Array(salt.byteLength + iv.byteLength + ciphertext.byteLength);
+        combined.set(salt, 0);
+        combined.set(iv, salt.byteLength);
+        combined.set(new Uint8Array(ciphertext), salt.byteLength + iv.byteLength);
+
+        let binary = '';
+        for (let i = 0; i < combined.byteLength; i++) {
+            binary += String.fromCharCode(combined[i]);
+        }
+        return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    async function decryptPayload(cipherB64, passphrase) {
+        let b64 = cipherB64.replace(/-/g, '+').replace(/_/g, '/');
+        while (b64.length % 4) b64 += '=';
+        const binary = atob(b64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+
+        const salt = bytes.slice(0, 16);
+        const iv = bytes.slice(16, 28);
+        const data = bytes.slice(28);
+
+        const key = await deriveCryptoKey(passphrase, salt);
+        const decrypted = await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: iv },
+            key,
+            data
+        );
+
+        const dec = new TextDecoder();
+        return dec.decode(decrypted);
+    }
+
+    function initStaffSync() {
+        const btn = document.getElementById('staff-sync-btn');
+        const modal = document.getElementById('staff-sync-modal');
+        const closeBtn = document.getElementById('close-staff-sync-modal');
+        const footerCloseBtn = document.getElementById('close-staff-sync-footer-btn');
+
+        const tabLinkBtn = document.getElementById('sync-tab-link-btn');
+        const tabWebhookBtn = document.getElementById('sync-tab-webhook-btn');
+        const panelLink = document.getElementById('sync-panel-link');
+        const panelWebhook = document.getElementById('sync-panel-webhook');
+
+        const generateBtn = document.getElementById('generate-sync-link-btn');
+        const scopeSelect = document.getElementById('sync-scope-select');
+        const passphraseInput = document.getElementById('sync-passphrase-input');
+        const outputGroup = document.getElementById('sync-link-output-group');
+        const urlOutput = document.getElementById('sync-url-output');
+        const copyBtn = document.getElementById('copy-sync-link-btn');
+
+        const webhookInput = document.getElementById('sync-webhook-url');
+        const authorInput = document.getElementById('sync-webhook-author');
+        const testWebhookBtn = document.getElementById('test-webhook-btn');
+        const dispatchWebhookBtn = document.getElementById('dispatch-webhook-btn');
+
+        if (!btn || !modal) return;
+
+        // Load saved webhook URL
+        if (webhookInput) webhookInput.value = localStorage.getItem('multiCheckStaffWebhookUrl') || '';
+        if (authorInput) authorInput.value = localStorage.getItem('multiCheckStaffOperativeName') || '';
+
+        function openModal() {
+            modal.style.display = 'flex';
+        }
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        btn.addEventListener('click', openModal);
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (footerCloseBtn) footerCloseBtn.addEventListener('click', closeModal);
+
+        // Tab Switching
+        if (tabLinkBtn && tabWebhookBtn) {
+            tabLinkBtn.addEventListener('click', () => {
+                tabLinkBtn.classList.add('active');
+                tabWebhookBtn.classList.remove('active');
+                panelLink.style.display = 'block';
+                panelWebhook.style.display = 'none';
+            });
+            tabWebhookBtn.addEventListener('click', () => {
+                tabWebhookBtn.classList.add('active');
+                tabLinkBtn.classList.remove('active');
+                panelLink.style.display = 'none';
+                panelWebhook.style.display = 'block';
+            });
+        }
+
+        // Generate Encrypted Link
+        if (generateBtn) {
+            generateBtn.addEventListener('click', async () => {
+                const pass = (passphraseInput?.value || '').trim();
+                if (!pass) {
+                    showToast('⚠️ Please enter a secret passphrase to encrypt.');
+                    return;
+                }
+
+                generateBtn.textContent = 'Encrypting (AES-256 GCM)...';
+                generateBtn.disabled = true;
+
+                try {
+                    const scope = scopeSelect?.value || 'all';
+                    let exportData = {};
+
+                    if (scope === 'all') {
+                        exportData.workspaces = parseJSON(lsGet(KEYS.workspaces, '[]'), []);
+                        exportData.current = lsGet(KEYS.current, 'workspace-default');
+                        exportData.version = 2;
+                        exportData.timestamp = Date.now();
+                        exportData.tabsMap = {};
+
+                        exportData.workspaces.forEach(ws => {
+                            const tKey = wsKey(KEYS.tabs, ws.id);
+                            exportData.tabsMap[tKey] = parseJSON(lsGet(tKey, '[]'), []);
+                        });
+                    } else {
+                        const curId = lsGet(KEYS.current, 'workspace-default');
+                        const wsList = parseJSON(lsGet(KEYS.workspaces, '[]'), []);
+                        const curWs = wsList.find(w => w.id === curId) || { id: curId, name: 'Default' };
+                        const tKey = wsKey(KEYS.tabs, curId);
+                        exportData.workspaces = [curWs];
+                        exportData.current = curId;
+                        exportData.tabsMap = {};
+                        exportData.tabsMap[tKey] = parseJSON(lsGet(tKey, '[]'), []);
+                    }
+
+                    const jsonStr = JSON.stringify(exportData);
+                    const cipher = await encryptPayload(jsonStr, pass);
+                    const shareUrl = `${window.location.origin}${window.location.pathname}#sync=${cipher}`;
+
+                    if (urlOutput) urlOutput.value = shareUrl;
+                    if (outputGroup) outputGroup.style.display = 'block';
+                    recordMutation(`Generated AES-256 encrypted staff sync link (${scope})`, 'create');
+                    showToast('🔐 Encrypted shareable URL generated!');
+                } catch (err) {
+                    console.error('Encryption failed:', err);
+                    showToast('❌ Encryption error: ' + err.message);
+                } finally {
+                    generateBtn.textContent = 'Generate Encrypted Link (AES-GCM)';
+                    generateBtn.disabled = false;
+                }
+            });
+        }
+
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                if (urlOutput && urlOutput.value) {
+                    navigator.clipboard.writeText(urlOutput.value).then(() => {
+                        showToast('📋 Copied encrypted staff link to clipboard!');
+                    });
+                }
+            });
+        }
+
+        // Webhook Dispatch
+        if (testWebhookBtn) {
+            testWebhookBtn.addEventListener('click', async () => {
+                const url = (webhookInput?.value || '').trim();
+                if (!url.startsWith('https://discord.com/api/webhooks/')) {
+                    showToast('⚠️ Please provide a valid Discord Webhook URL.');
+                    return;
+                }
+                localStorage.setItem('multiCheckStaffWebhookUrl', url);
+
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            content: '📡 **Spectra Intelligence:** Webhook channel handshake verified successfully!'
+                        })
+                    });
+                    if (res.ok) showToast('✅ Test webhook ping delivered!');
+                    else showToast('❌ Webhook error: ' + res.statusText);
+                } catch (e) {
+                    showToast('❌ Webhook connection failed: ' + e.message);
+                }
+            });
+        }
+
+        if (dispatchWebhookBtn) {
+            dispatchWebhookBtn.addEventListener('click', async () => {
+                const url = (webhookInput?.value || '').trim();
+                const author = (authorInput?.value || 'Staff Operative').trim();
+                if (!url.startsWith('https://discord.com/api/webhooks/')) {
+                    showToast('⚠️ Please provide a valid Discord Webhook URL.');
+                    return;
+                }
+                localStorage.setItem('multiCheckStaffWebhookUrl', url);
+                localStorage.setItem('multiCheckStaffOperativeName', author);
+
+                const scan = scanAllWorkspaceData();
+                const embed = {
+                    title: '🛡️ Spectra Forensic Intelligence Report',
+                    description: `Automated telemetry dispatch submitted by **${author}**.`,
+                    color: 0x38bdf8,
+                    fields: [
+                        { name: '👥 Total Accounts', value: String(scan.totalAccounts), inline: true },
+                        { name: '🚨 Flagged Griefers', value: String(scan.totalGriefers), inline: true },
+                        { name: '📁 Workspaces', value: String(scan.workspaces.length), inline: true },
+                        { name: '📑 Active Tabs', value: String(scan.allTabs.length), inline: true },
+                        { name: '⭐ Pinned Forensics', value: String(scan.pinnedTabs.length), inline: true },
+                        { name: '💾 Storage Memory', value: formatBytes(scan.totalBytes), inline: true }
+                    ],
+                    footer: { text: 'Spectra Forensics Suite · Zero-Server Security' },
+                    timestamp: new Date().toISOString()
+                };
+
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ embeds: [embed] })
+                    });
+                    if (res.ok) {
+                        recordMutation('Dispatched forensic intelligence report to Discord webhook', 'create');
+                        showToast('📡 Dispatched forensic report to Discord!');
+                    } else {
+                        showToast('❌ Webhook dispatch failed: ' + res.statusText);
+                    }
+                } catch (e) {
+                    showToast('❌ Dispatch failed: ' + e.message);
+                }
+            });
+        }
+    }
+
+    // Handle Incoming Encrypted Hash on Page Load (#sync=...)
+    function checkIncomingSync() {
+        if (!window.location.hash.startsWith('#sync=')) return;
+
+        const cipher = window.location.hash.replace('#sync=', '').trim();
+        if (!cipher) return;
+
+        const modal = document.getElementById('incoming-sync-modal');
+        const closeBtn = document.getElementById('close-incoming-sync-modal');
+        const dismissBtn = document.getElementById('dismiss-incoming-btn');
+        const decryptBtn = document.getElementById('decrypt-sync-btn');
+        const passInput = document.getElementById('incoming-passphrase-input');
+        const previewArea = document.getElementById('incoming-preview-area');
+        const statsText = document.getElementById('incoming-stats-text');
+        const footerActions = document.getElementById('incoming-footer-actions');
+        const mergeBtn = document.getElementById('merge-incoming-btn');
+        const overwriteBtn = document.getElementById('overwrite-incoming-btn');
+
+        if (!modal) return;
+        modal.style.display = 'flex';
+
+        let decryptedPayload = null;
+
+        function cleanupHash() {
+            modal.style.display = 'none';
+            history.replaceState(null, '', window.location.pathname);
+        }
+
+        if (closeBtn) closeBtn.onclick = cleanupHash;
+        if (dismissBtn) dismissBtn.onclick = cleanupHash;
+
+        if (decryptBtn) {
+            decryptBtn.addEventListener('click', async () => {
+                const pass = (passInput?.value || '').trim();
+                if (!pass) {
+                    showToast('⚠️ Enter passphrase to unlock payload.');
+                    return;
+                }
+
+                decryptBtn.textContent = 'Decrypting...';
+                decryptBtn.disabled = true;
+
+                try {
+                    const jsonStr = await decryptPayload(cipher, pass);
+                    decryptedPayload = JSON.parse(jsonStr);
+
+                    if (previewArea) previewArea.style.display = 'block';
+                    if (footerActions) footerActions.style.display = 'flex';
+                    if (statsText) {
+                        const wsCount = decryptedPayload.workspaces ? decryptedPayload.workspaces.length : 1;
+                        let tabCount = 0;
+                        if (decryptedPayload.tabsMap) {
+                            Object.values(decryptedPayload.tabsMap).forEach(arr => {
+                                if (Array.isArray(arr)) tabCount += arr.length;
+                            });
+                        }
+                        statsText.innerHTML = `Contains <strong>${wsCount} workspace${wsCount === 1 ? '' : 's'}</strong> with <strong>${tabCount} total forensic tabs</strong>.`;
+                    }
+                    showToast('🔓 Payload decrypted successfully!');
+                } catch (err) {
+                    console.error(err);
+                    showToast('❌ Decryption failed. Incorrect passphrase or corrupted payload.');
+                } finally {
+                    decryptBtn.textContent = 'Unlock & Inspect Payload';
+                    decryptBtn.disabled = false;
+                }
+            });
+        }
+
+        if (mergeBtn) {
+            mergeBtn.addEventListener('click', () => {
+                if (!decryptedPayload) return;
+                // Merge tabs and workspaces
+                if (decryptedPayload.workspaces) {
+                    const existingWs = parseJSON(lsGet(KEYS.workspaces, '[]'), []);
+                    decryptedPayload.workspaces.forEach(ws => {
+                        if (!existingWs.some(w => w.id === ws.id)) {
+                            existingWs.push(ws);
+                        }
+                    });
+                    lsSet(KEYS.workspaces, existingWs);
+                }
+
+                if (decryptedPayload.tabsMap) {
+                    Object.entries(decryptedPayload.tabsMap).forEach(([tKey, tabsArr]) => {
+                        const existingTabs = parseJSON(lsGet(tKey, '[]'), []);
+                        tabsArr.forEach(tab => {
+                            if (!existingTabs.some(t => t.id === tab.id)) {
+                                existingTabs.push(tab);
+                            }
+                        });
+                        lsSet(tKey, existingTabs);
+                    });
+                }
+
+                cleanupHash();
+                recordMutation('Merged incoming encrypted staff sync payload', 'create');
+                showToast('✅ Merged encrypted staff sync data!');
+                refreshAllWidgets();
+                if (typeof window.refreshDashboardData === 'function') window.refreshDashboardData();
+            });
+        }
+
+        if (overwriteBtn) {
+            overwriteBtn.addEventListener('click', () => {
+                if (!decryptedPayload) return;
+                if (!confirm('Warning: This will overwrite your current workspaces with the incoming payload. Continue?')) return;
+
+                if (decryptedPayload.workspaces) {
+                    lsSet(KEYS.workspaces, decryptedPayload.workspaces);
+                }
+                if (decryptedPayload.current) {
+                    lsSet(KEYS.current, decryptedPayload.current);
+                }
+                if (decryptedPayload.tabsMap) {
+                    Object.entries(decryptedPayload.tabsMap).forEach(([tKey, tabsArr]) => {
+                        lsSet(tKey, tabsArr);
+                    });
+                }
+
+                cleanupHash();
+                recordMutation('Restored entire database from encrypted staff sync payload', 'create');
+                showToast('✅ Database restored from staff sync payload!');
+                refreshAllWidgets();
+                if (typeof window.refreshDashboardData === 'function') window.refreshDashboardData();
+            });
+        }
+    }
+
+    // --------------------------------------------------------------------------
     // Refresh All Widgets
     // --------------------------------------------------------------------------
     function refreshAllWidgets() {
@@ -956,6 +1353,8 @@
         initQuickTabAction();
         initWipeStaleAction();
         initImportJsonAction();
+        initStaffSync();
+        checkIncomingSync();
         refreshAllWidgets();
 
         // Listen for workspace switches, tab focus, or storage events
@@ -982,3 +1381,4 @@
         init();
     }
 })();
+
