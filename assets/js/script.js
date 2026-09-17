@@ -5125,7 +5125,7 @@ let currentView = 'multi';
 
 function updatePageStateIndicator() {
     if (pageStateIndicator) {
-        pageStateIndicator.textContent = currentView === 'multi' ? 'Multi Checker' : 'Ban Generator';
+        pageStateIndicator.textContent = currentView === 'multi' ? 'Inspector' : 'Ban Generator';
     }
 }
 
@@ -5139,7 +5139,7 @@ viewToggleBtn.onclick = () => {
         currentView = 'bans';
         multiCheckerView.style.display = 'none';
         banGeneratorView.style.display = 'flex';
-        viewToggleBtn.textContent = 'Switch to Multi-Checker';
+        viewToggleBtn.textContent = 'Switch to Inspector';
     } else {
         currentView = 'multi';
         banGeneratorView.style.display = 'none';

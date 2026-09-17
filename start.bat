@@ -1,6 +1,6 @@
 @echo off
-title Multi-Checker Server
-echo Starting Multi-Checker Server on port 5500...
+title Spectra Server
+echo Starting Spectra Server on port 5500...
 echo.
 echo The application will run in this window.
 echo Keep this window open to use the application.
