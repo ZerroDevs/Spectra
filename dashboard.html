@@ -4,14 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="dark">
+    <meta name="color-scheme" content="dark light">
     <meta name="theme-color" content="#070711">
     <meta name="description" content="Spectra Dashboard — overview of your workspaces, tabs and accounts">
     <title>Dashboard · Spectra</title>
-    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/logo1.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('multiCheckTheme') || localStorage.getItem('spectraTheme') || 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) { }
+        })();
+    </script>
     <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 
@@ -23,18 +31,55 @@
     </div>
 
     <header class="topbar">
-        <button class="btn btn-ghost" id="back-btn">
-            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"
-                stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            <span class="btn-label">App</span>
-        </button>
+        <div class="topbar-brand">
+            <a href="dashboard.html" class="brand-link" title="Spectra Intelligence Dashboard">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+                <span class="brand-name">Spectra</span>
+                <span class="brand-pill">Dashboard</span>
+            </a>
+            <a href="index.html" class="btn btn-ghost btn-sm" id="back-btn" title="Return to Workspace">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span class="btn-label">Workspace</span>
+            </a>
+            <a href="about.html" class="btn btn-ghost btn-sm" id="about-nav-btn" title="About &amp; Documentation">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span class="btn-label">About</span>
+            </a>
+        </div>
         <div class="topbar-actions">
             <span class="last-updated" id="last-updated">Loading…</span>
-            <button class="btn btn-primary" id="refresh-btn">
-                <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"
+            <button class="btn btn-ghost btn-sm" id="theme-toggle-btn" title="Toggle Dark/Light Theme">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+            <button class="btn btn-primary btn-sm" id="refresh-btn">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="23 4 23 10 17 10"></polyline>
                     <polyline points="1 20 1 14 7 14"></polyline>
@@ -47,9 +92,105 @@
 
     <main class="container">
         <section class="hero">
-            <span class="pill">Local data overview</span>
+            <span class="pill">Local Intelligence Overview</span>
             <h1>Spectra <span>Dashboard</span></h1>
-            <p>Workspaces, tabs and account statistics — everything stored right in your browser.</p>
+            <p>Real-time analytics, forensic account logs, and browser-isolated workspace management.</p>
+        </section>
+
+        <!-- Platform Navigation Portal -->
+        <section class="portal-grid" aria-label="Spectra platform navigation">
+            <a href="index.html" class="portal-card" id="portal-inspector">
+                <div class="portal-card-top">
+                    <div class="portal-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                    </div>
+                    <span class="portal-badge">Primary App</span>
+                </div>
+                <h3>Inspector Workspace</h3>
+                <p>Log normalization, syntax processing, Discord markdown formatter, and real-time mirror editor.</p>
+                <span class="portal-action">
+                    <span>Launch Workspace</span>
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </span>
+            </a>
+
+            <a href="index.html" class="portal-card accent-amber" id="portal-ban-gen">
+                <div class="portal-card-top">
+                    <div class="portal-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </div>
+                    <span class="portal-badge">Moderation</span>
+                </div>
+                <h3>Ban Generator</h3>
+                <p>Automated server commands (/ban and /unban), preset rules, durations, and serial copy queue.</p>
+                <span class="portal-action">
+                    <span>Open Command Matrix</span>
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </span>
+            </a>
+
+            <a href="about.html" class="portal-card accent-indigo" id="portal-about">
+                <div class="portal-card-top">
+                    <div class="portal-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </div>
+                    <span class="portal-badge">Documentation</span>
+                </div>
+                <h3>About &amp; Architecture</h3>
+                <p>System architecture, detection heuristics, client-side security policies, and developer specs.</p>
+                <span class="portal-action">
+                    <span>Read Docs</span>
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </span>
+            </a>
+
+            <a href="404.html" class="portal-card accent-rose" id="portal-404">
+                <div class="portal-card-top">
+                    <div class="portal-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <span class="portal-badge">Diagnostics</span>
+                </div>
+                <h3>Error / 404 Portal</h3>
+                <p>Preview the custom system error recovery screen and missing route diagnostic handler.</p>
+                <span class="portal-action">
+                    <span>Test 404 Route</span>
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </span>
+            </a>
         </section>
 
         <section class="stats-grid" aria-label="Key statistics">
@@ -294,7 +435,24 @@
         </section>
 
         <footer class="footer">
-            Spectra Dashboard · All data is stored locally in your browser · Press <kbd>R</kbd> to refresh
+            <div style="margin-bottom: 10px;">
+                Spectra Intelligence Dashboard · All data is processed &amp; stored locally in your browser · Press <kbd>R</kbd> to refresh · <kbd>T</kbd> for Theme · <kbd>W</kbd> for Workspace · <kbd>A</kbd> for About
+            </div>
+            <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+                <a href="index.html" style="color: var(--accent); text-decoration: none; font-weight: 500;">Workspace</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="about.html" style="color: var(--accent); text-decoration: none; font-weight: 500;">About &amp; Docs</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="404.html" style="color: var(--text-2); text-decoration: none;">Status / 404</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="https://github.com/ZerroDevs/Spectra" target="_blank" rel="noopener" style="color: var(--text-2); text-decoration: none;">Spectra Repo</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="https://github.com/ZerroDevs/Spectra/blob/main/README.md" target="_blank" rel="noopener" style="color: var(--text-2); text-decoration: none;">README</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="https://github.com/ZerroDevs/Spectra/blob/main/LICENSE" target="_blank" rel="noopener" style="color: var(--text-2); text-decoration: none;">License</a>
+                <span style="color: var(--text-3);">·</span>
+                <a href="https://github.com/ZerroDevs" target="_blank" rel="noopener" style="color: var(--text-2); text-decoration: none;">@ZerroDevs</a>
+            </div>
         </footer>
     </main>
 

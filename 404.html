@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#0b0f17">
+    <meta name="description" content="404 - Page Not Found · Spectra Intelligence Workspace">
+    <title>404 · Signal Lost — Spectra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/logo1.png">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-0: #07090e;
+            --bg-1: #0b0f17;
+            --surface: rgba(255, 255, 255, 0.04);
+            --surface-hover: rgba(255, 255, 255, 0.07);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(56, 189, 248, 0.28);
+            --text-1: #f1f5f9;
+            --text-2: #94a3b8;
+            --text-3: #64748b;
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --accent-glow: rgba(56, 189, 248, 0.25);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        [data-theme="light"] {
+            --bg-0: #edf2f7;
+            --bg-1: #e2e8f0;
+            --surface: #ffffff;
+            --surface-hover: #f8fafc;
+            --border: #cbd5e1;
+            --border-strong: rgba(2, 132, 199, 0.35);
+            --text-1: #0f172a;
+            --text-2: #475569;
+            --text-3: #64748b;
+            --accent: #0284c7;
+            --accent-hover: #0369a1;
+            --accent-glow: rgba(2, 132, 199, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', system-ui, sans-serif;
+            background:
+                radial-gradient(1200px 600px at 80% -10%, var(--accent-glow), transparent 60%),
+                radial-gradient(900px 500px at -10% 40%, rgba(100, 116, 139, 0.1), transparent 55%),
+                linear-gradient(160deg, var(--bg-0), var(--bg-1) 60%, var(--bg-0));
+            color: var(--text-1);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .ambient-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        header.nav-header {
+            width: 100%;
+            max-width: 1100px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        .brand-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-1);
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0.05));
+            border: 1px solid var(--border-strong);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            box-shadow: 0 4px 14px var(--accent-glow);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .theme-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .theme-btn:hover {
+            color: var(--text-1);
+            border-color: var(--border-strong);
+            background: var(--surface-hover);
+        }
+
+        main.hero-container {
+            z-index: 10;
+            max-width: 680px;
+            width: 90%;
+            margin: auto;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .error-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            color: var(--accent);
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .error-badge svg {
+            stroke: var(--accent);
+        }
+
+        .code-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(5rem, 14vw, 8.5rem);
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.05em;
+            background: linear-gradient(180deg, var(--text-1) 20%, rgba(56, 189, 248, 0.3) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            text-shadow: 0 10px 40px var(--accent-glow);
+        }
+
+        h1.title {
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-1);
+            margin-bottom: 14px;
+        }
+
+        p.desc {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--text-2);
+            margin-bottom: 32px;
+            max-width: 520px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .card-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            backdrop-filter: blur(14px);
+            margin-bottom: 32px;
+            box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.4);
+        }
+
+        .diagnostics-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--text-3);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+
+        .diagnostics-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .diag-status {
+            color: #ef4444;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .diag-status::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+        }
+
+        .actions-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 22px;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.92rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: #0b0f17;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 18px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--accent-glow);
+            filter: brightness(1.1);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-1);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-strong);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-2);
+            border: 1px solid transparent;
+        }
+
+        .btn-ghost:hover {
+            color: var(--text-1);
+            background: var(--surface);
+        }
+
+        footer.site-footer {
+            width: 100%;
+            max-width: 1100px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-3);
+            border-top: 1px solid var(--border);
+            z-index: 10;
+        }
+
+        footer a {
+            color: var(--text-2);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        footer a:hover {
+            color: var(--accent);
+        }
+
+        @media (max-width: 600px) {
+            header.nav-header {
+                padding: 16px 18px;
+            }
+
+            .actions-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            footer.site-footer {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+                padding: 20px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ambient-grid" aria-hidden="true"></div>
+
+    <header class="nav-header">
+        <a href="dashboard.html" class="brand-link" title="Spectra Dashboard">
+            <div class="brand-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    <polyline points="2 17 12 22 22 17"></polyline>
+                    <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+            </div>
+            <span>Spectra</span>
+        </a>
+        <div class="header-actions">
+            <button id="theme-toggle" class="theme-btn" title="Toggle Theme">
+                <svg id="theme-icon" viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2"
+                    fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <span id="theme-label">Theme</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="hero-container">
+        <div class="error-badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke-width="2" fill="none" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>Error 404 · Route Unresolved</span>
+        </div>
+
+        <div class="code-display">404</div>
+        <h1 class="title">Resource Not Located</h1>
+        <p class="desc">The target route, investigation tab, or asset does not exist in the active Spectra workspace session.</p>
+
+        <div class="card-panel">
+            <div class="diagnostics-row">
+                <span>System Status</span>
+                <span class="diag-status">Resource Missing (ERR_404)</span>
+            </div>
+            <div class="diagnostics-row">
+                <span>Active Engine</span>
+                <span style="color: var(--text-2);">Spectra Platform Core v2.5.0</span>
+            </div>
+            <div class="diagnostics-row">
+                <span>Client Session</span>
+                <span style="color: var(--accent);">Secure Browser Sandbox</span>
+            </div>
+        </div>
+
+        <div class="actions-group">
+            <a href="index.html" class="btn btn-primary" id="return-app-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Return to Workspace</span>
+            </a>
+            <a href="dashboard.html" class="btn btn-secondary">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Open Dashboard</span>
+            </a>
+            <a href="about.html" class="btn btn-ghost">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>About &amp; Docs</span>
+            </a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div>Spectra · Built by <a href="https://github.com/ZerroDevs" target="_blank" rel="noopener">@ZerroDevs</a></div>
+        <div><a href="https://github.com/ZerroDevs/Spectra/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a> · <a href="https://github.com/ZerroDevs/Spectra" target="_blank" rel="noopener">Spectra Repository</a></div>
+    </footer>
+
+    <script>
+        const currentTheme = localStorage.getItem('multiCheckTheme') || 'dark';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+
+        const themeBtn = document.getElementById('theme-toggle');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const active = document.documentElement.getAttribute('data-theme') || 'dark';
+                const next = active === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('multiCheckTheme', next);
+            });
+        }
+    </script>
+</body>
+
+</html>

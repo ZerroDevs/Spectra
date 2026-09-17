@@ -1,7 +1,10 @@
 (() => {
     'use strict';
 
-    const currentTheme = localStorage.getItem('multiCheckTheme') || 'dark';
+    let currentTheme = 'dark';
+    try {
+        currentTheme = localStorage.getItem('multiCheckTheme') || localStorage.getItem('spectraTheme') || 'dark';
+    } catch (e) { }
     document.documentElement.setAttribute('data-theme', currentTheme);
 
     const KEYS = {
@@ -66,6 +69,8 @@
         storageProgress: $('storage-progress'),
         storageKeys: $('storage-keys'),
         exportBtn: $('export-btn'),
+        themeToggleBtn: $('theme-toggle-btn'),
+        portalBanGen: $('portal-ban-gen'),
         toast: $('toast')
     };
 
@@ -552,10 +557,55 @@
         toast(`Exported ${Object.keys(dump).length} keys`);
     }
 
+    function applyTheme(theme) {
+        currentTheme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        try {
+            localStorage.setItem('multiCheckTheme', theme);
+            localStorage.setItem('spectraTheme', theme);
+        } catch (e) { }
+        if (els.themeToggleBtn) {
+            if (theme === 'light') {
+                els.themeToggleBtn.title = 'Switch to Dark Theme';
+                els.themeToggleBtn.setAttribute('aria-label', 'Switch to Dark Theme');
+                els.themeToggleBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+            } else {
+                els.themeToggleBtn.title = 'Switch to Light Theme';
+                els.themeToggleBtn.setAttribute('aria-label', 'Switch to Light Theme');
+                els.themeToggleBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+            }
+        }
+    }
+
     function bindEvents() {
-        els.backBtn.addEventListener('click', () => {
-            window.location.href = 'index.html';
+        applyTheme(currentTheme);
+
+        if (els.backBtn) {
+            els.backBtn.addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+        }
+
+        if (els.themeToggleBtn) {
+            els.themeToggleBtn.addEventListener('click', () => {
+                const active = document.documentElement.getAttribute('data-theme') || 'dark';
+                const next = active === 'dark' ? 'light' : 'dark';
+                applyTheme(next);
+                toast(`Switched to ${next} theme`);
+            });
+        }
+
+        window.addEventListener('storage', (e) => {
+            if ((e.key === 'multiCheckTheme' || e.key === 'spectraTheme') && e.newValue) {
+                applyTheme(e.newValue);
+            }
         });
+
+        if (els.portalBanGen) {
+            els.portalBanGen.addEventListener('click', () => {
+                localStorage.setItem('multiCheckView', 'ban-generator');
+            });
+        }
 
         els.refreshBtn.addEventListener('click', () => refresh());
         els.exportBtn.addEventListener('click', exportData);
@@ -584,9 +634,16 @@
             const tag = (e.target.tagName || '').toLowerCase();
             if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
             if (e.ctrlKey || e.metaKey || e.altKey) return;
-            if (e.key.toLowerCase() === 'r') {
+            const key = e.key.toLowerCase();
+            if (key === 'r') {
                 e.preventDefault();
                 refresh();
+            } else if (key === 'w') {
+                window.location.href = 'index.html';
+            } else if (key === 'a') {
+                window.location.href = 'about.html';
+            } else if (key === 't') {
+                if (els.themeToggleBtn) els.themeToggleBtn.click();
             }
         });
 

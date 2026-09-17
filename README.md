@@ -60,8 +60,8 @@ No build steps, installations, or dependencies are required. Spectra is complete
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/ZerroDevs/multi-checkers.git
-cd multi-checkers
+git clone https://github.com/ZerroDevs/Spectra.git
+cd Spectra
 ```
 
 ### 2. Launch
@@ -104,10 +104,10 @@ cd multi-checkers
 Developed with care by **[@ZerroDevs](https://github.com/ZerroDevs)**.
 
 - **GitHub Profile**: [@ZerroDevs](https://github.com/ZerroDevs)
-- **Repository**: [multi-checkers](https://github.com/ZerroDevs/multi-checkers)
+- **Repository**: [Spectra](https://github.com/ZerroDevs/Spectra)
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](https://github.com/ZerroDevs/Spectra/blob/main/LICENSE) file for details.
