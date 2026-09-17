@@ -144,7 +144,7 @@
                 <div class="trend-card-top">
                     <div class="trend-card-icon" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">
                         <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></polygon>
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                             <line x1="12" y1="9" x2="12" y2="13"></line>
                             <line x1="12" y1="17" x2="12.01" y2="17"></line>
                         </svg>
@@ -246,6 +246,16 @@
                     </svg>
                 </div>
                 <h2>Temporal Activity Timeline <span class="h2-sub">Recent Mutations</span></h2>
+                <div class="timeline-header-actions">
+                    <span class="timeline-retention-pill" id="timeline-retention-pill" title="Automatic storage maintenance: mutations and events older than 7 days are automatically purged">
+                        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                        Auto-Prune &gt;7d
+                    </span>
+                    <button type="button" class="btn btn-secondary" id="clear-timeline-btn" title="Clear all recorded mutations and reset activity timeline">
+                        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        Clear Timeline
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 <div class="timeline-list" id="timeline-list"></div>

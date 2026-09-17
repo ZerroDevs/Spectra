@@ -369,3 +369,92 @@
     white-space: nowrap;
     font-family: 'JetBrains Mono', monospace;
 }
+
+.timeline-dot.dot-red {
+    background: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+}
+
+.timeline-header-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.timeline-retention-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 12px;
+    background: rgba(139, 92, 246, 0.12);
+    color: #c4b5fd;
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+[data-theme="light"] .timeline-retention-pill {
+    background: rgba(139, 92, 246, 0.08);
+    color: #7c3aed;
+    border-color: rgba(139, 92, 246, 0.2);
+}
+
+.timeline-empty-state {
+    text-align: center;
+    padding: 36px 16px;
+    background: var(--surface-2);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.timeline-empty-state svg {
+    color: var(--text-3);
+    margin-bottom: 2px;
+}
+
+/* Toast & Roast Notification Styles */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translate(-50%, 20px);
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #f8fafc;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.2);
+    border-radius: 12px;
+    padding: 12px 22px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    max-width: 90vw;
+    text-align: center;
+}
+
+.toast.show,
+.toast.visible {
+    opacity: 1 !important;
+    transform: translate(-50%, 0) !important;
+    pointer-events: auto !important;
+}
+
+.toast.roast {
+    border-color: rgba(245, 158, 11, 0.5) !important;
+    box-shadow: 0 12px 35px -5px rgba(245, 158, 11, 0.35), 0 0 25px rgba(239, 68, 68, 0.25) !important;
+    background: linear-gradient(135deg, rgba(28, 18, 8, 0.96), rgba(15, 23, 42, 0.98)) !important;
+    color: #fef08a !important;
+}

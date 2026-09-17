@@ -179,7 +179,10 @@
     }
 
     function collectData() {
-        const workspacesRaw = parseJSON(lsGet(KEYS.workspaces, '[]'), []);
+        let workspacesRaw = parseJSON(lsGet(KEYS.workspaces, '[]'), []);
+        if (!Array.isArray(workspacesRaw) || workspacesRaw.length === 0) {
+            workspacesRaw = [{ id: DEFAULT_WORKSPACE_ID, name: 'Default', color: '#38bdf8' }];
+        }
         const currentId = lsGet(KEYS.current, DEFAULT_WORKSPACE_ID);
 
         const totals = { accounts: 0, mains: 0, twinks: 0, griefers: 0, tabs: 0, groups: 0 };
@@ -188,7 +191,12 @@
 
         for (const ws of workspacesRaw) {
             if (!ws || !ws.id) continue;
-            const tabs = parseJSON(lsGet(wsKey(KEYS.tabs, ws.id), '[]'), []);
+            let tabsStr = lsGet(wsKey(KEYS.tabs, ws.id), null);
+            if ((!tabsStr || tabsStr === '[]') && ws.id === DEFAULT_WORKSPACE_ID) {
+                const legacy = lsGet(KEYS.tabs, null);
+                if (legacy && legacy !== '[]') tabsStr = legacy;
+            }
+            const tabs = parseJSON(tabsStr || '[]', []);
             const groups = parseJSON(lsGet(wsKey(KEYS.groups, ws.id), '[]'), []);
             const wsStats = { accounts: 0, mains: 0, twinks: 0, griefers: 0 };
             const tabRows = tabs.map(tab => {
@@ -206,7 +214,12 @@
             wsRows.push({ ws, tabRows, groupCount: Array.isArray(groups) ? groups.length : 0, stats: wsStats });
         }
 
-        const curTabs = parseJSON(lsGet(wsKey(KEYS.tabs, currentId), '[]'), []);
+        let curTabsStr = lsGet(wsKey(KEYS.tabs, currentId), null);
+        if ((!curTabsStr || curTabsStr === '[]') && currentId === DEFAULT_WORKSPACE_ID) {
+            const legacy = lsGet(KEYS.tabs, null);
+            if (legacy && legacy !== '[]') curTabsStr = legacy;
+        }
+        const curTabs = parseJSON(curTabsStr || '[]', []);
         const curGroups = parseJSON(lsGet(wsKey(KEYS.groups, currentId), '[]'), []);
         const curTabRows = curTabs.map(tab => ({ tab, stats: analyzeOutput(tab && tab.output) }));
 

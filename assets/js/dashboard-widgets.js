@@ -84,11 +84,31 @@
         const toast = document.getElementById('toast');
         if (!toast) return;
         toast.innerHTML = msg;
+        toast.classList.add('show');
         toast.classList.add('visible');
         clearTimeout(toast._timer);
         toast._timer = setTimeout(() => {
+            toast.classList.remove('show');
             toast.classList.remove('visible');
         }, duration);
+    }
+
+    function recordMutation(title, type = 'mutation') {
+        try {
+            const MUTATION_KEY = 'multiCheckTemporalMutations';
+            const now = Date.now();
+            const raw = localStorage.getItem(MUTATION_KEY);
+            const list = raw ? JSON.parse(raw) : [];
+            list.unshift({
+                id: 'mut-' + now + '-' + Math.random().toString(36).substr(2, 4),
+                title,
+                type,
+                time: now
+            });
+            // auto prune > 7 days, max 50
+            const pruned = list.filter(m => (now - Number(m.time || 0)) <= 7 * 24 * 60 * 60 * 1000).slice(0, 50);
+            localStorage.setItem(MUTATION_KEY, JSON.stringify(pruned));
+        } catch (e) { }
     }
 
     function analyzeTabContent(output) {
@@ -110,11 +130,52 @@
         return stats;
     }
 
+    function getAvailableWorkspaces() {
+        let ws = [];
+        try {
+            const raw = localStorage.getItem(KEYS.workspaces);
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    ws = parsed;
+                }
+            }
+        } catch (e) { }
+
+        // Also check if any workspaces exist in localStorage by keys
+        if (ws.length === 0) {
+            const discovered = new Set();
+            try {
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith('multiCheckTabs_')) {
+                        const id = k.replace('multiCheckTabs_', '');
+                        if (id) discovered.add(id);
+                    }
+                }
+            } catch (e) { }
+
+            if (discovered.size > 0) {
+                discovered.forEach(id => {
+                    ws.push({
+                        id: id,
+                        name: id === 'workspace-default' ? 'Default' : id.replace(/^workspace-/, 'Workspace '),
+                        color: '#38bdf8'
+                    });
+                });
+            }
+        }
+
+        if (ws.length === 0) {
+            ws = [{ id: 'workspace-default', name: 'Default', color: '#38bdf8' }];
+        }
+
+        return ws;
+    }
+
     // Comprehensive Workspace & Tab Scanner
     function scanAllWorkspaceData() {
-        const workspaces = parseJSON(lsGet(KEYS.workspaces, '[]'), [
-            { id: 'workspace-default', name: 'Default', color: '#38bdf8' }
-        ]);
+        const workspaces = getAvailableWorkspaces();
         const currentId = lsGet(KEYS.current, 'workspace-default');
 
         const result = {
@@ -145,7 +206,12 @@
             if (!ws || !ws.id) return;
             const tabsKey = wsKey(KEYS.tabs, ws.id);
             const groupsKey = wsKey(KEYS.groups, ws.id);
-            const tabsStr = lsGet(tabsKey, '[]');
+            let tabsStr = lsGet(tabsKey, null);
+            if ((!tabsStr || tabsStr === '[]') && ws.id === 'workspace-default') {
+                const legacy = lsGet(KEYS.tabs, null);
+                if (legacy && legacy !== '[]') tabsStr = legacy;
+            }
+            tabsStr = tabsStr || '[]';
             const groupsStr = lsGet(groupsKey, '[]');
             const tabs = parseJSON(tabsStr, []);
 
@@ -170,6 +236,7 @@
                 }
 
                 const isStale = stats.accounts === 0 && (!tab.output || !tab.output.trim());
+                const isPinned = !!(tab.pinned || tab.isPinned || tab.starred || tab.favorite);
                 const item = {
                     wsId: ws.id,
                     wsName: ws.name || 'Workspace',
@@ -177,11 +244,11 @@
                     tab,
                     stats,
                     isStale,
-                    isPinned: !!tab.pinned
+                    isPinned
                 };
 
                 result.allTabs.push(item);
-                if (item.isPinned) result.pinnedTabs.push(item);
+                if (isPinned) result.pinnedTabs.push(item);
                 if (isStale) result.staleTabs.push(item);
 
                 return item;
@@ -357,7 +424,7 @@
             const grieferPct = scan.totalAccounts > 0 ? Math.round((scan.totalGriefers / scan.totalAccounts) * 100) : 0;
             factorGriefers.innerHTML = `
                 <span class="hygiene-factor-name">
-                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><polygon points="10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></polygon><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                     Flagged Griefer Density
                 </span>
                 <span class="hygiene-factor-status ${grieferPct > 15 ? 'hygiene-fail' : grieferPct > 5 ? 'hygiene-warn' : 'hygiene-pass'}">
@@ -543,6 +610,7 @@
         if (target) {
             target.pinned = false;
             lsSet(tabsKey, tabs);
+            recordMutation(`Unpinned forensic tab "${target.name || 'Tab'}"`, 'mutation');
             showToast(`Unpinned "<strong>${target.name || 'Tab'}</strong>"`);
             refreshAllWidgets();
             if (typeof window.refreshDashboardData === 'function') {
@@ -569,9 +637,7 @@
 
         function openModal() {
             // Populate workspaces dropdown
-            const workspaces = parseJSON(lsGet(KEYS.workspaces, '[]'), [
-                { id: 'workspace-default', name: 'Default' }
-            ]);
+            const workspaces = getAvailableWorkspaces();
             const currentWsId = lsGet(KEYS.current, 'workspace-default');
 
             if (wsSelect) {
@@ -624,6 +690,7 @@
                 lsSet(wsKey('multiCheckActiveTab', targetWsId), newTab.id);
 
                 closeModal();
+                recordMutation(`Created quick tab "${tabName}" in workspace`, 'create');
                 showToast(`Created tab "<strong>${tabName}</strong>" in workspace!`);
                 refreshAllWidgets();
 
@@ -653,7 +720,7 @@
             const stale = scan.staleTabs;
 
             if (stale.length === 0) {
-                showToast('✨ No stale tabs detected! Workspace hygiene is optimal.');
+                showToast('✨ No stale tabs detected! Workspace hygiene is optimal (100%).');
                 return;
             }
 
@@ -689,7 +756,12 @@
                 scan.workspaces.forEach(wItem => {
                     const wsId = wItem.ws.id;
                     const tabsKey = wsKey(KEYS.tabs, wsId);
-                    const tabs = parseJSON(lsGet(tabsKey, '[]'), []);
+                    let tabsStr = lsGet(tabsKey, null);
+                    if ((!tabsStr || tabsStr === '[]') && wsId === 'workspace-default') {
+                        const legacy = lsGet(KEYS.tabs, null);
+                        if (legacy && legacy !== '[]') tabsStr = legacy;
+                    }
+                    const tabs = parseJSON(tabsStr || '[]', []);
                     const before = tabs.length;
 
                     // Keep non-stale tabs
@@ -710,12 +782,13 @@
                         });
                     }
 
-                    wipedCount += (before - remaining.length);
+                    wipedCount += Math.max(0, before - remaining.length);
                     lsSet(tabsKey, remaining);
                 });
 
                 closeModal();
-                showToast(`Wiped <strong>${wipedCount}</strong> stale tabs! Telemetry hygiene updated.`);
+                recordMutation(`Purged ${wipedCount} stale tabs across workspaces`, 'delete');
+                showToast(`🧹 Wiped <strong>${wipedCount}</strong> stale tabs! Telemetry hygiene updated.`);
                 refreshAllWidgets();
 
                 if (typeof window.refreshDashboardData === 'function') {
@@ -885,9 +958,13 @@
         initImportJsonAction();
         refreshAllWidgets();
 
-        // Listen for workspace switches or storage events
-        window.addEventListener('storage', () => {
-            refreshAllWidgets();
+        // Listen for workspace switches, tab focus, or storage events
+        window.addEventListener('storage', refreshAllWidgets);
+        window.addEventListener('focus', refreshAllWidgets);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                refreshAllWidgets();
+            }
         });
 
         // Hook into dashboard refresh button

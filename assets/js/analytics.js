@@ -17,8 +17,67 @@
         workspaces: 'multiCheckWorkspaces',
         current: 'multiCheckCurrentWorkspace',
         tabs: 'multiCheckTabs',
-        snapshots: 'multiCheckHistoricalSnapshots'
+        snapshots: 'multiCheckHistoricalSnapshots',
+        mutations: 'multiCheckTemporalMutations',
+        clearedAt: 'multiCheckTimelineClearedAt'
     };
+
+    const RETENTION_DAYS = 7;
+    const RETENTION_MS = RETENTION_DAYS * 24 * 60 * 60 * 1000;
+    const MAX_MUTATIONS_COUNT = 50;
+
+    function logTemporalMutation(title, type = 'mutation') {
+        try {
+            const now = Date.now();
+            const raw = lsGet(KEYS.mutations, '[]');
+            const list = parseJSON(raw, []);
+            list.unshift({
+                id: 'mut-' + now + '-' + Math.random().toString(36).substr(2, 4),
+                title,
+                type,
+                time: now
+            });
+            // Auto-prune items older than 7 days, max 50 items
+            const pruned = list
+                .filter(item => (now - Number(item.time || 0)) <= RETENTION_MS)
+                .slice(0, MAX_MUTATIONS_COUNT);
+            lsSet(KEYS.mutations, pruned);
+        } catch (e) { }
+    }
+    window.logSpectraMutation = logTemporalMutation;
+
+    // Automatic storage maintenance: prunes mutations and snapshots older than threshold
+    function autoPruneOldData() {
+        const now = Date.now();
+        // 1. Auto-prune mutations older than 7 days and cap to MAX_MUTATIONS_COUNT
+        try {
+            const rawMutations = lsGet(KEYS.mutations, '[]');
+            const mutations = parseJSON(rawMutations, []);
+            if (Array.isArray(mutations) && mutations.length > 0) {
+                const pruned = mutations
+                    .filter(m => (now - Number(m.time || 0)) <= RETENTION_MS)
+                    .slice(0, MAX_MUTATIONS_COUNT);
+                if (pruned.length !== mutations.length) {
+                    lsSet(KEYS.mutations, pruned);
+                }
+            }
+        } catch (e) { }
+
+        // 2. Auto-prune snapshots older than 30 days to protect localStorage space
+        try {
+            const SNAPSHOT_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+            const rawSnaps = lsGet(KEYS.snapshots, '[]');
+            const snaps = parseJSON(rawSnaps, []);
+            if (Array.isArray(snaps) && snaps.length > 0) {
+                const prunedSnaps = snaps
+                    .filter(s => (now - Number(s.timestamp || 0)) <= SNAPSHOT_RETENTION_MS)
+                    .slice(-60);
+                if (prunedSnaps.length !== snaps.length) {
+                    lsSet(KEYS.snapshots, prunedSnaps);
+                }
+            }
+        } catch (e) { }
+    }
 
     const GRIEFER_TAGS = ['Non-RP', 'Fail-RP', 'Provoking', 'GR3.1', 'GR3.2', 'DM'];
     const escapeRegex = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -80,13 +139,21 @@
         return new Date(ts).toLocaleDateString();
     }
 
-    function showToast(msg, duration = 3000) {
+    function showToast(msg, duration = 3500, isRoast = false) {
         const toast = document.getElementById('toast');
         if (!toast) return;
         toast.innerHTML = msg;
+        toast.classList.add('show');
         toast.classList.add('visible');
+        if (isRoast) toast.classList.add('roast');
+        else toast.classList.remove('roast');
+
         clearTimeout(toast._timer);
-        toast._timer = setTimeout(() => toast.classList.remove('visible'), duration);
+        toast._timer = setTimeout(() => {
+            toast.classList.remove('show');
+            toast.classList.remove('visible');
+            toast.classList.remove('roast');
+        }, duration);
     }
 
     // --------------------------------------------------------------------------
@@ -224,6 +291,7 @@
         saveSnapshots(snapshots);
 
         if (manual) {
+            logTemporalMutation(`Forensic snapshot captured (${system.totalAccounts} accounts)`, 'create');
             showToast('📸 Forensic snapshot captured successfully!');
             renderAll();
         }
@@ -331,6 +399,7 @@
                 const id = btn.dataset.deleteSnap;
                 const updated = getSnapshots().filter(s => s.id !== id);
                 saveSnapshots(updated);
+                logTemporalMutation('Forensic snapshot record deleted', 'delete');
                 showToast('Deleted snapshot record.');
                 renderAll();
             });
@@ -433,10 +502,28 @@
         const container = document.getElementById('timeline-list');
         if (!container) return;
 
-        // Merge snapshot events into timeline
-        const snapshots = getSnapshots();
+        // Automatically delete / prune old entries
+        autoPruneOldData();
+
+        const now = Date.now();
+        const clearedAt = Number(lsGet(KEYS.clearedAt, '0')) || 0;
+
+        // 1. Workspace and Tab system events
         const events = [...system.timelineEvents];
 
+        // 2. Stored custom mutations
+        const storedMutations = parseJSON(lsGet(KEYS.mutations, '[]'), []);
+        storedMutations.forEach(m => {
+            events.push({
+                type: m.type || 'mutation',
+                title: m.title || 'Data mutation recorded',
+                time: m.time,
+                color: m.type === 'delete' ? 'dot-red' : m.type === 'create' ? 'dot-green' : 'timeline-dot'
+            });
+        });
+
+        // 3. Historical snapshots
+        const snapshots = getSnapshots();
         snapshots.forEach(s => {
             events.push({
                 type: 'snapshot',
@@ -446,13 +533,50 @@
             });
         });
 
-        // Sort descending
-        events.sort((a, b) => Number(b.time || 0) - Number(a.time || 0));
+        // 4. Auto-delete: filter out events older than 7 days, AND filter out events cleared before clearedAt
+        const validEvents = events.filter(e => {
+            const t = Number(e.time || 0);
+            if (!t) return false;
+            // Auto-delete / ignore events older than 7 days
+            if ((now - t) > RETENTION_MS) return false;
+            // Ignore events prior to user clearing
+            if (t <= clearedAt) return false;
+            return true;
+        });
 
-        const displayEvents = events.slice(0, 15);
+        // Sort descending (newest first)
+        validEvents.sort((a, b) => Number(b.time || 0) - Number(a.time || 0));
+
+        const displayEvents = validEvents.slice(0, 25);
 
         if (displayEvents.length === 0) {
-            container.innerHTML = '<p style="color: var(--text-3); font-size: 0.85rem;">No recent platform activity recorded.</p>';
+            const wasCleared = clearedAt > 0;
+            container.innerHTML = `
+                <div class="timeline-empty-state">
+                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="1.8" fill="none"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                    <div style="font-weight: 600; color: var(--text-1); font-size: 0.95rem;">${wasCleared ? 'Timeline Cleared' : 'No Recent Activity'}</div>
+                    <p style="color: var(--text-3); font-size: 0.8rem; margin: 0; max-width: 380px;">
+                        ${wasCleared 
+                            ? 'Past mutations and activity history were cleared. Auto-pruning (&gt;7d) is active. New mutations will record here automatically.'
+                            : 'No mutations recorded in the last 7 days. Modifying tabs or workspaces will record events here automatically.'}
+                    </p>
+                    ${wasCleared ? `
+                        <button type="button" class="btn btn-secondary" id="restore-timeline-btn" style="margin-top: 6px; font-size: 0.76rem; padding: 5px 12px;">
+                            Restore Full Activity History
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+
+            const restoreBtn = document.getElementById('restore-timeline-btn');
+            if (restoreBtn) {
+                restoreBtn.addEventListener('click', () => {
+                    localStorage.removeItem(KEYS.clearedAt);
+                    showToast('👀 Guilt got the better of you? Full activity history resurrected.', 3500, true);
+                    const updatedSystem = scanSystem();
+                    renderTimeline(updatedSystem);
+                });
+            }
             return;
         }
 
@@ -524,6 +648,35 @@
                 document.documentElement.setAttribute('data-theme', next);
                 lsSet('multiCheckTheme', next);
                 lsSet('spectraTheme', next);
+            });
+        }
+
+        let roastIndex = 0;
+        const CLEAR_ROASTS = [
+            "🔥 Timeline incinerated! What shady evidence were you trying to bury?",
+            "🧹 Running from your past faster than a griefer dodging a ban hammer, huh?",
+            "💀 Plausible deniability unlocked: Even the feds couldn't trace those mutations now.",
+            "🕵️‍♂️ Evidence shredded! Moving like a covert operative with zero paper trail.",
+            "✨ Poof! Wiped cleaner than an admin's search history before an audit.",
+            "🗑️ Timeline nuked! Pretending you never touched those tabs, are we?",
+            "🧼 Fresh slate! Your browser storage thanks you, but your conscience remembers.",
+            "⚡ Scorched earth! 0 logs, 0 traces, 100% suspicious behavior detected."
+        ];
+
+        // Bind Clear Timeline Button with Roast Notification
+        const clearTimelineBtn = document.getElementById('clear-timeline-btn');
+        if (clearTimelineBtn) {
+            clearTimelineBtn.addEventListener('click', () => {
+                const now = Date.now();
+                lsSet(KEYS.clearedAt, String(now));
+                lsSet(KEYS.mutations, []);
+
+                const roast = CLEAR_ROASTS[roastIndex % CLEAR_ROASTS.length];
+                roastIndex++;
+                showToast(roast, 4200, true);
+
+                const system = scanSystem();
+                renderTimeline(system);
             });
         }
 

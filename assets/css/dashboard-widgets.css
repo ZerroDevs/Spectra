@@ -808,3 +808,21 @@
     font-size: 0.72rem;
     color: var(--text-3);
 }
+
+.modal-select option {
+    background: #0f172a;
+    color: #f4f4fb;
+    padding: 8px 12px;
+}
+
+[data-theme="light"] .modal-select option {
+    background: #ffffff;
+    color: #0f172a;
+}
+
+.toast.show,
+.toast.visible {
+    opacity: 1 !important;
+    transform: translate(-50%, 0) !important;
+    pointer-events: auto !important;
+}

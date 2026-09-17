@@ -17,6 +17,10 @@ function saveWorkspaces() {
     localStorage.setItem('multiCheckCurrentWorkspace', currentWorkspaceId);
 }
 
+if (!localStorage.getItem('multiCheckWorkspaces')) {
+    saveWorkspaces();
+}
+
 // Migration: Move old localStorage data to default workspace
 function migrateOldDataToDefaultWorkspace() {
     const oldKeys = [
