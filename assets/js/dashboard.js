@@ -33,7 +33,9 @@
         tabSort: 'default',
         data: null,
         hiddenStats: new Set(),
-        statsCollapsed: false
+        statsCollapsed: false,
+        hiddenPanels: new Set(),
+        collapsedPanels: new Set()
     };
 
     const $ = id => document.getElementById(id);
@@ -60,6 +62,20 @@
         statsCollapsedBanner: $('stats-collapsed-banner'),
         statsCollapsedText: $('stats-collapsed-text'),
         statsExpandBtn: $('stats-expand-btn'),
+        panelsRestoreBar: $('panels-restore-bar'),
+        removedPanelsCount: $('removed-panels-count'),
+        panelsRestorePills: $('panels-restore-pills'),
+        restoreAllPanelsBtn: $('restore-all-panels-btn'),
+        customizeLayoutBtn: $('customize-layout-btn'),
+        hiddenTotalBadge: $('hidden-total-badge'),
+        layoutModalBackdrop: $('layout-modal-backdrop'),
+        closeLayoutModalBtn: $('close-layout-modal-btn'),
+        doneLayoutBtn: $('done-layout-btn'),
+        resetLayoutBtn: $('reset-layout-btn'),
+        panelToggleItems: $('panel-toggle-items'),
+        metricToggleItems: $('metric-toggle-items'),
+        panelsStatusText: $('panels-status-text'),
+        metricsStatusText: $('metrics-status-text'),
         distTotal: $('dist-total'),
         distMains: $('dist-mains'),
         distTwinks: $('dist-twinks'),
@@ -625,14 +641,14 @@
     }
 
     const STAT_META = {
-        accounts: { label: 'Total Accounts' },
-        tabs: { label: 'Total Tabs' },
-        workspaces: { label: 'Workspaces' },
-        groups: { label: 'Groups' },
-        mains: { label: 'Main Accounts (M)' },
-        twinks: { label: 'Twinks (T)' },
-        griefers: { label: 'Flagged Griefers' },
-        storage: { label: 'Storage Utilized' }
+        accounts: { label: 'Total Accounts', color: '#38bdf8' },
+        tabs: { label: 'Total Tabs', color: '#f59e0b' },
+        workspaces: { label: 'Workspaces', color: '#22c55e' },
+        groups: { label: 'Groups', color: '#ef4444' },
+        mains: { label: 'Main Accounts (M)', color: '#06b6d4' },
+        twinks: { label: 'Twinks (T)', color: '#ec4899' },
+        griefers: { label: 'Flagged Griefers', color: '#f97316' },
+        storage: { label: 'Storage Utilized', color: '#8b5cf6' }
     };
     const ALL_STAT_KEYS = Object.keys(STAT_META);
 
@@ -736,6 +752,7 @@
         saveHiddenStats();
         saveStatsCollapsed();
         updateMetricsUI();
+        updatePanelsUI();
         toast('All metric cards restored');
     }
 
@@ -752,37 +769,294 @@
         updateMetricsUI();
     }
 
+    const PANEL_META = {
+        'account-classification': {
+            label: 'Account Classification',
+            sub: 'Mains & Twinks distribution ratio',
+            color: '#06b6d4',
+            icon: '<svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>'
+        },
+        'browser-storage': {
+            label: 'Browser Storage',
+            sub: 'Local storage capacity & active keys',
+            color: '#8b5cf6',
+            icon: '<svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>'
+        },
+        'workspaces-directory': {
+            label: 'Workspaces Directory',
+            sub: 'Multi-isolated workspace manager',
+            color: '#22c55e',
+            icon: '<svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>'
+        },
+        'tabs-inventory': {
+            label: 'Active Tabs Inventory',
+            sub: 'Browser tabs, accounts & status',
+            color: '#f59e0b',
+            icon: '<svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line></svg>'
+        },
+        'groups-flags': {
+            label: 'Tag Groups & Flags',
+            sub: 'Category clustering & account flags',
+            color: '#ef4444',
+            icon: '<svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>'
+        }
+    };
+    const ALL_PANEL_KEYS = Object.keys(PANEL_META);
+
+    function saveHiddenPanels() {
+        try {
+            localStorage.setItem('spectraHiddenPanels', JSON.stringify([...state.hiddenPanels]));
+        } catch (e) {}
+    }
+
+    function saveCollapsedPanels() {
+        try {
+            localStorage.setItem('spectraCollapsedPanels', JSON.stringify([...state.collapsedPanels]));
+        } catch (e) {}
+    }
+
+    function updatePanelsUI() {
+        const panels = document.querySelectorAll('.card[data-panel-id]');
+        const totalPanels = panels.length || ALL_PANEL_KEYS.length;
+        let visibleCount = 0;
+
+        panels.forEach(panel => {
+            const id = panel.dataset.panelId;
+            const isHidden = state.hiddenPanels.has(id);
+            const isCollapsed = state.collapsedPanels.has(id);
+            panel.classList.toggle('is-hidden', isHidden);
+            panel.classList.toggle('is-collapsed', isCollapsed);
+            if (!isHidden) visibleCount++;
+        });
+
+        // Hide empty grid-2 sections
+        document.querySelectorAll('.grid-2').forEach(grid => {
+            const visibleCards = grid.querySelectorAll('.card:not(.is-hidden)');
+            grid.style.display = visibleCards.length === 0 ? 'none' : 'grid';
+        });
+
+        const hiddenCount = state.hiddenPanels.size;
+
+        if (els.panelsRestoreBar) {
+            if (hiddenCount > 0) {
+                els.panelsRestoreBar.style.display = 'flex';
+                if (els.removedPanelsCount) {
+                    els.removedPanelsCount.textContent = String(hiddenCount);
+                }
+                if (els.panelsRestorePills) {
+                    els.panelsRestorePills.innerHTML = '';
+                    state.hiddenPanels.forEach(id => {
+                        const meta = PANEL_META[id];
+                        const pill = document.createElement('button');
+                        pill.type = 'button';
+                        pill.className = 'restore-pill-btn';
+                        pill.dataset.restorePanel = id;
+                        pill.title = `Restore ${meta ? meta.label : id}`;
+                        pill.innerHTML = `<span>+ ${meta ? meta.label : id}</span>`;
+                        els.panelsRestorePills.appendChild(pill);
+                    });
+                }
+            } else {
+                els.panelsRestoreBar.style.display = 'none';
+            }
+        }
+
+        // Update topbar layout badge
+        const totalHidden = state.hiddenPanels.size + state.hiddenStats.size;
+        if (els.hiddenTotalBadge) {
+            if (totalHidden > 0) {
+                els.hiddenTotalBadge.textContent = String(totalHidden);
+                els.hiddenTotalBadge.style.display = 'inline-flex';
+            } else {
+                els.hiddenTotalBadge.style.display = 'none';
+            }
+        }
+
+        if (els.panelsStatusText) {
+            els.panelsStatusText.textContent = `${visibleCount} of ${totalPanels} visible`;
+        }
+    }
+
+    function hidePanel(id, cardEl) {
+        if (!id) return;
+        const meta = PANEL_META[id];
+        const card = cardEl || document.querySelector(`.card[data-panel-id="${id}"]`);
+
+        if (card) {
+            card.classList.add('closing');
+            setTimeout(() => {
+                card.classList.remove('closing');
+                state.hiddenPanels.add(id);
+                saveHiddenPanels();
+                updatePanelsUI();
+                toast(`"${meta ? meta.label : id}" removed from dashboard`);
+            }, 180);
+        } else {
+            state.hiddenPanels.add(id);
+            saveHiddenPanels();
+            updatePanelsUI();
+        }
+    }
+
+    function togglePanelCollapse(id) {
+        if (!id) return;
+        const meta = PANEL_META[id];
+        const isCollapsed = state.collapsedPanels.has(id);
+        if (isCollapsed) {
+            state.collapsedPanels.delete(id);
+        } else {
+            state.collapsedPanels.add(id);
+        }
+        saveCollapsedPanels();
+        updatePanelsUI();
+        toast(`"${meta ? meta.label : id}" ${isCollapsed ? 'expanded' : 'collapsed'}`);
+    }
+
+    function restorePanel(id) {
+        if (!id) return;
+        const meta = PANEL_META[id];
+        state.hiddenPanels.delete(id);
+        saveHiddenPanels();
+        updatePanelsUI();
+        toast(`"${meta ? meta.label : id}" restored to dashboard`);
+    }
+
+    function restoreAllPanels() {
+        state.hiddenPanels.clear();
+        saveHiddenPanels();
+        updatePanelsUI();
+        toast('All dashboard panels restored');
+    }
+
+    function initPanelsControls() {
+        const storedHidden = parseJSON(lsGet('spectraHiddenPanels', '[]'), []);
+        const storedCollapsed = parseJSON(lsGet('spectraCollapsedPanels', '[]'), []);
+        state.hiddenPanels = new Set(Array.isArray(storedHidden) ? storedHidden : []);
+        state.collapsedPanels = new Set(Array.isArray(storedCollapsed) ? storedCollapsed : []);
+        updatePanelsUI();
+    }
+
+    function renderLayoutModalItems() {
+        if (!els.panelToggleItems || !els.metricToggleItems) return;
+
+        // Render major panels
+        els.panelToggleItems.innerHTML = '';
+        ALL_PANEL_KEYS.forEach(key => {
+            const meta = PANEL_META[key];
+            const isVisible = !state.hiddenPanels.has(key);
+            const item = document.createElement('div');
+            item.className = 'layout-toggle-item';
+            item.innerHTML = `
+                <div class="layout-toggle-info">
+                    <div class="layout-toggle-icon" style="background: ${meta.color};">${meta.icon}</div>
+                    <div>
+                        <div class="layout-toggle-title">${meta.label}</div>
+                        <div class="layout-toggle-sub">${meta.sub}</div>
+                    </div>
+                </div>
+                <label class="switch-control" title="Toggle ${meta.label}">
+                    <input type="checkbox" data-toggle-panel="${key}" ${isVisible ? 'checked' : ''}>
+                    <span class="switch-slider"></span>
+                </label>
+            `;
+            els.panelToggleItems.appendChild(item);
+        });
+
+        // Render metric cards
+        els.metricToggleItems.innerHTML = '';
+        ALL_STAT_KEYS.forEach(key => {
+            const meta = STAT_META[key];
+            const isVisible = !state.hiddenStats.has(key);
+            const item = document.createElement('div');
+            item.className = 'layout-toggle-item';
+            item.innerHTML = `
+                <div class="layout-toggle-info">
+                    <span class="metrics-dot" style="background: ${meta.color || '#38bdf8'}; box-shadow: 0 0 10px ${meta.color || '#38bdf8'}; margin-right: 4px;"></span>
+                    <div>
+                        <div class="layout-toggle-title">${meta.label}</div>
+                    </div>
+                </div>
+                <label class="switch-control" title="Toggle ${meta.label}">
+                    <input type="checkbox" data-toggle-metric="${key}" ${isVisible ? 'checked' : ''}>
+                    <span class="switch-slider"></span>
+                </label>
+            `;
+            els.metricToggleItems.appendChild(item);
+        });
+
+        if (els.panelsStatusText) {
+            const visibleP = ALL_PANEL_KEYS.length - state.hiddenPanels.size;
+            els.panelsStatusText.textContent = `${visibleP} of ${ALL_PANEL_KEYS.length} visible`;
+        }
+        if (els.metricsStatusText) {
+            const visibleM = ALL_STAT_KEYS.length - state.hiddenStats.size;
+            els.metricsStatusText.textContent = `${visibleM} of ${ALL_STAT_KEYS.length} visible`;
+        }
+    }
+
+    function openLayoutModal() {
+        renderLayoutModalItems();
+        if (els.layoutModalBackdrop) {
+            els.layoutModalBackdrop.style.display = 'flex';
+        }
+    }
+
+    function closeLayoutModal() {
+        if (els.layoutModalBackdrop) {
+            els.layoutModalBackdrop.style.display = 'none';
+        }
+    }
+
+    function resetEntireLayout() {
+        state.hiddenPanels.clear();
+        state.collapsedPanels.clear();
+        state.hiddenStats.clear();
+        state.statsCollapsed = false;
+
+        saveHiddenPanels();
+        saveCollapsedPanels();
+        saveHiddenStats();
+        saveStatsCollapsed();
+
+        updateMetricsUI();
+        updatePanelsUI();
+        renderLayoutModalItems();
+        toast('Dashboard layout reset to default');
+    }
+
     function bindEvents() {
         applyTheme(currentTheme);
 
-        // Closeable metrics delegation
+        // Global click handling (metrics, panels, layout modal)
         document.addEventListener('click', e => {
-            const closeBtn = e.target.closest('.stat-card-close-btn');
-            if (closeBtn) {
+            // Stat cards actions
+            const statCloseBtn = e.target.closest('.stat-card-close-btn');
+            if (statCloseBtn) {
                 e.preventDefault();
                 e.stopPropagation();
-                const statId = closeBtn.dataset.closeStat;
-                const card = closeBtn.closest('.stat-card');
+                const statId = statCloseBtn.dataset.closeStat;
+                const card = statCloseBtn.closest('.stat-card');
                 hideStatCard(statId, card);
+                updatePanelsUI();
                 return;
             }
 
-            const restoreBtn = e.target.closest('#metrics-restore-btn');
-            if (restoreBtn) {
+            const restoreStatsBtn = e.target.closest('#metrics-restore-btn');
+            if (restoreStatsBtn) {
                 e.preventDefault();
                 restoreAllStats();
                 return;
             }
 
-            const toggleBtn = e.target.closest('#metrics-toggle-btn');
-            if (toggleBtn) {
+            const toggleStatsBtn = e.target.closest('#metrics-toggle-btn');
+            if (toggleStatsBtn) {
                 e.preventDefault();
                 toggleStatsCollapse();
                 return;
             }
 
-            const expandBtn = e.target.closest('#stats-expand-btn');
-            if (expandBtn) {
+            const expandStatsBtn = e.target.closest('#stats-expand-btn');
+            if (expandStatsBtn) {
                 e.preventDefault();
                 if (state.hiddenStats.size === ALL_STAT_KEYS.length) {
                     restoreAllStats();
@@ -790,6 +1064,106 @@
                     state.statsCollapsed = false;
                     saveStatsCollapsed();
                     updateMetricsUI();
+                }
+                return;
+            }
+
+            // Panel cards actions
+            const panelCloseBtn = e.target.closest('.panel-close-btn');
+            if (panelCloseBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const panelId = panelCloseBtn.dataset.panelClose;
+                const card = panelCloseBtn.closest('.card');
+                hidePanel(panelId, card);
+                return;
+            }
+
+            const panelCollapseBtn = e.target.closest('.panel-collapse-btn');
+            if (panelCollapseBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const panelId = panelCollapseBtn.dataset.panelCollapse;
+                togglePanelCollapse(panelId);
+                return;
+            }
+
+            const restorePill = e.target.closest('.restore-pill-btn');
+            if (restorePill) {
+                e.preventDefault();
+                const panelId = restorePill.dataset.restorePanel;
+                restorePanel(panelId);
+                return;
+            }
+
+            const restoreAllPanelsBtn = e.target.closest('#restore-all-panels-btn');
+            if (restoreAllPanelsBtn) {
+                e.preventDefault();
+                restoreAllPanels();
+                return;
+            }
+
+            // Layout modal actions
+            const customizeBtn = e.target.closest('#customize-layout-btn');
+            if (customizeBtn) {
+                e.preventDefault();
+                openLayoutModal();
+                return;
+            }
+
+            const closeLayoutBtn = e.target.closest('#close-layout-modal-btn') || e.target.closest('#done-layout-btn');
+            if (closeLayoutBtn) {
+                e.preventDefault();
+                closeLayoutModal();
+                return;
+            }
+
+            const resetLayoutBtn = e.target.closest('#reset-layout-btn');
+            if (resetLayoutBtn) {
+                e.preventDefault();
+                resetEntireLayout();
+                return;
+            }
+
+            if (e.target === els.layoutModalBackdrop) {
+                closeLayoutModal();
+                return;
+            }
+        });
+
+        // Toggle switches inside layout modal
+        document.addEventListener('change', e => {
+            const panelToggle = e.target.closest('input[data-toggle-panel]');
+            if (panelToggle) {
+                const key = panelToggle.dataset.togglePanel;
+                if (panelToggle.checked) {
+                    state.hiddenPanels.delete(key);
+                } else {
+                    state.hiddenPanels.add(key);
+                }
+                saveHiddenPanels();
+                updatePanelsUI();
+                if (els.panelsStatusText) {
+                    const visibleP = ALL_PANEL_KEYS.length - state.hiddenPanels.size;
+                    els.panelsStatusText.textContent = `${visibleP} of ${ALL_PANEL_KEYS.length} visible`;
+                }
+                return;
+            }
+
+            const metricToggle = e.target.closest('input[data-toggle-metric]');
+            if (metricToggle) {
+                const key = metricToggle.dataset.toggleMetric;
+                if (metricToggle.checked) {
+                    state.hiddenStats.delete(key);
+                } else {
+                    state.hiddenStats.add(key);
+                }
+                saveHiddenStats();
+                updateMetricsUI();
+                updatePanelsUI();
+                if (els.metricsStatusText) {
+                    const visibleM = ALL_STAT_KEYS.length - state.hiddenStats.size;
+                    els.metricsStatusText.textContent = `${visibleM} of ${ALL_STAT_KEYS.length} visible`;
                 }
                 return;
             }
@@ -852,6 +1226,11 @@
         });
 
         document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && els.layoutModalBackdrop && els.layoutModalBackdrop.style.display !== 'none') {
+                closeLayoutModal();
+                return;
+            }
+
             const tag = (e.target.tagName || '').toLowerCase();
             if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
             if (e.ctrlKey || e.metaKey || e.altKey) return;
@@ -865,6 +1244,9 @@
                 window.location.href = 'workspace.html#ban';
             } else if (key === 'a') {
                 window.location.href = 'about.html';
+            } else if (key === 'l') {
+                e.preventDefault();
+                openLayoutModal();
             } else if (key === 't') {
                 if (els.themeToggleBtn) els.themeToggleBtn.click();
             }
@@ -880,6 +1262,7 @@
     }
 
     initMetricsControls();
+    initPanelsControls();
     bindEvents();
     refresh({ silent: true });
 })();

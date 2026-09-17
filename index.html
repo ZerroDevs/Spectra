@@ -65,6 +65,17 @@
         </div>
         <div class="topbar-actions">
             <span class="last-updated" id="last-updated">Loading…</span>
+            <button class="btn btn-ghost btn-sm" id="customize-layout-btn" title="Customize dashboard layout & restore panels">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span class="btn-label">Layout</span>
+                <span class="badge-count" id="hidden-total-badge" style="display: none;">0</span>
+            </button>
             <button class="btn btn-ghost btn-sm" id="theme-toggle-btn" title="Toggle Dark/Light Theme">
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -524,9 +535,26 @@
             </article>
         </section>
 
+        <!-- Panels Restore Notification Banner -->
+        <div class="panels-restore-bar" id="panels-restore-bar" style="display: none;">
+            <div class="panels-restore-info">
+                <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span><strong id="removed-panels-count">0</strong> dashboard panel(s) hidden:</span>
+            </div>
+            <div class="panels-restore-pills" id="panels-restore-pills"></div>
+            <button type="button" class="btn btn-secondary btn-xs" id="restore-all-panels-btn" style="margin-left: auto;">
+                Restore All Panels
+            </button>
+        </div>
+
         <!-- Analytics & Storage Telemetry -->
-        <section class="grid-2">
-            <article class="card">
+        <section class="grid-2" id="grid-analytics-storage">
+            <article class="card" data-panel-id="account-classification">
                 <div class="card-header">
                     <div class="card-icon" style="--ac: #06b6d4; --ac2: #22d3ee;">
                         <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none"
@@ -537,35 +565,50 @@
                     </div>
                     <h2>Account Classification <span class="h2-sub">Distribution</span></h2>
                     <span class="header-meta"><strong id="dist-total">0</strong> classified</span>
-                </div>
-
-                <div class="dist-bar" aria-label="Account distribution bar">
-                    <div class="seg seg-mains" id="dist-mains" style="width: 0%;" title="Mains"></div>
-                    <div class="seg seg-twinks" id="dist-twinks" style="width: 0%;" title="Twinks"></div>
-                    <div class="seg seg-unlabeled" id="dist-unlabeled" style="width: 100%;" title="Unlabeled"></div>
-                </div>
-
-                <div class="legend">
-                    <div class="legend-item">
-                        <span class="legend-dot" style="--c: #22d3ee;"></span>
-                        <span>Mains: <strong id="dist-mains-count">0 (0%)</strong></span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="--c: #f472b6;"></span>
-                        <span>Twinks: <strong id="dist-twinks-count">0 (0%)</strong></span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot" style="--c: #64748b;"></span>
-                        <span>Unlabeled: <strong id="dist-unlabeled-count">0 (0%)</strong></span>
+                    <div class="card-header-actions">
+                        <button type="button" class="panel-action-btn panel-collapse-btn" data-panel-collapse="account-classification" title="Collapse or expand Account Classification" aria-label="Collapse Account Classification">
+                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="panel-collapse-icon">
+                                <polyline points="18 15 12 9 6 15"></polyline>
+                            </svg>
+                        </button>
+                        <button type="button" class="panel-action-btn panel-close-btn" data-panel-close="account-classification" title="Remove Account Classification from dashboard" aria-label="Remove Account Classification panel">
+                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
-                <p class="dist-note">
-                    Identified automatically via <code>(M)</code>, <code>(T)</code> tags and suffix markers in the Inspector.
-                </p>
+                <div class="card-body">
+                    <div class="dist-bar" aria-label="Account distribution bar">
+                        <div class="seg seg-mains" id="dist-mains" style="width: 0%;" title="Mains"></div>
+                        <div class="seg seg-twinks" id="dist-twinks" style="width: 0%;" title="Twinks"></div>
+                        <div class="seg seg-unlabeled" id="dist-unlabeled" style="width: 100%;" title="Unlabeled"></div>
+                    </div>
+
+                    <div class="legend">
+                        <div class="legend-item">
+                            <span class="legend-dot" style="--c: #22d3ee;"></span>
+                            <span>Mains: <strong id="dist-mains-count">0 (0%)</strong></span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="--c: #f472b6;"></span>
+                            <span>Twinks: <strong id="dist-twinks-count">0 (0%)</strong></span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="--c: #64748b;"></span>
+                            <span>Unlabeled: <strong id="dist-unlabeled-count">0 (0%)</strong></span>
+                        </div>
+                    </div>
+
+                    <p class="dist-note">
+                        Identified automatically via <code>(M)</code>, <code>(T)</code> tags and suffix markers in the Inspector.
+                    </p>
+                </div>
             </article>
 
-            <article class="card">
+            <article class="card" data-panel-id="browser-storage">
                 <div class="card-header">
                     <div class="card-icon" style="--ac: #8b5cf6; --ac2: #a78bfa;">
                         <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none"
@@ -585,37 +628,52 @@
                         </svg>
                         <span>Export Backup</span>
                     </button>
-                </div>
-
-                <div class="storage-top">
-                    <span class="storage-used-label">Used Capacity</span>
-                    <span class="storage-used-value" id="storage-used">0 KB</span>
-                    <span class="storage-percent" id="storage-percent">0% of 5 MB</span>
-                </div>
-
-                <div class="progress">
-                    <div class="progress-fill" id="storage-progress"></div>
-                </div>
-
-                <div class="info-grid">
-                    <div class="info-tile">
-                        <div class="info-label">Active Keys</div>
-                        <div class="info-value" id="storage-keys">0</div>
+                    <div class="card-header-actions">
+                        <button type="button" class="panel-action-btn panel-collapse-btn" data-panel-collapse="browser-storage" title="Collapse or expand Browser Storage" aria-label="Collapse Browser Storage">
+                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="panel-collapse-icon">
+                                <polyline points="18 15 12 9 6 15"></polyline>
+                            </svg>
+                        </button>
+                        <button type="button" class="panel-action-btn panel-close-btn" data-panel-close="browser-storage" title="Remove Browser Storage from dashboard" aria-label="Remove Browser Storage panel">
+                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="info-tile">
-                        <div class="info-label">Storage Quota</div>
-                        <div class="info-value">5.0 MB</div>
+                </div>
+
+                <div class="card-body">
+                    <div class="storage-top">
+                        <span class="storage-used-label">Used Capacity</span>
+                        <span class="storage-used-value" id="storage-used">0 KB</span>
+                        <span class="storage-percent" id="storage-percent">0% of 5 MB</span>
                     </div>
-                    <div class="info-tile">
-                        <div class="info-label">Engine Isolation</div>
-                        <div class="info-value" style="color: #22c55e;">100% Local</div>
+
+                    <div class="progress">
+                        <div class="progress-fill" id="storage-progress"></div>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-tile">
+                            <div class="info-label">Active Keys</div>
+                            <div class="info-value" id="storage-keys">0</div>
+                        </div>
+                        <div class="info-tile">
+                            <div class="info-label">Storage Quota</div>
+                            <div class="info-value">5.0 MB</div>
+                        </div>
+                        <div class="info-tile">
+                            <div class="info-label">Engine Isolation</div>
+                            <div class="info-value" style="color: #22c55e;">100% Local</div>
+                        </div>
                     </div>
                 </div>
             </article>
         </section>
 
         <!-- Workspaces Explorer -->
-        <section class="card">
+        <section class="card" data-panel-id="workspaces-directory">
             <div class="card-header">
                 <div class="card-icon" style="--ac: #22c55e; --ac2: #4ade80;">
                     <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none"
@@ -634,14 +692,29 @@
                         <option value="accounts-desc">Most accounts</option>
                     </select>
                 </div>
+                <div class="card-header-actions">
+                    <button type="button" class="panel-action-btn panel-collapse-btn" data-panel-collapse="workspaces-directory" title="Collapse or expand Workspaces Directory" aria-label="Collapse Workspaces Directory">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="panel-collapse-icon">
+                            <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                    </button>
+                    <button type="button" class="panel-action-btn panel-close-btn" data-panel-close="workspaces-directory" title="Remove Workspaces Directory from dashboard" aria-label="Remove Workspaces Directory panel">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <div class="item-list" id="workspaces-list" aria-live="polite"></div>
+            <div class="card-body">
+                <div class="item-list" id="workspaces-list" aria-live="polite"></div>
+            </div>
         </section>
 
         <!-- Tabs & Groups Directory -->
-        <section class="grid-2">
-            <article class="card">
+        <section class="grid-2" id="grid-tabs-groups">
+            <article class="card" data-panel-id="tabs-inventory">
                 <div class="card-header">
                     <div class="card-icon" style="--ac: #f59e0b; --ac2: #fbbf24;">
                         <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none"
@@ -660,12 +733,27 @@
                             <option value="accounts-desc">Most accounts</option>
                         </select>
                     </div>
+                    <div class="card-header-actions">
+                        <button type="button" class="panel-action-btn panel-collapse-btn" data-panel-collapse="tabs-inventory" title="Collapse or expand Active Tabs Inventory" aria-label="Collapse Active Tabs Inventory">
+                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="panel-collapse-icon">
+                                <polyline points="18 15 12 9 6 15"></polyline>
+                            </svg>
+                        </button>
+                        <button type="button" class="panel-action-btn panel-close-btn" data-panel-close="tabs-inventory" title="Remove Active Tabs Inventory from dashboard" aria-label="Remove Active Tabs Inventory panel">
+                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="item-list" id="tabs-list" aria-live="polite"></div>
+                <div class="card-body">
+                    <div class="item-list" id="tabs-list" aria-live="polite"></div>
+                </div>
             </article>
 
-            <article class="card">
+            <article class="card" data-panel-id="groups-flags">
                 <div class="card-header">
                     <div class="card-icon" style="--ac: #ef4444; --ac2: #f87171;">
                         <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" stroke-width="2" fill="none"
@@ -677,9 +765,24 @@
                     </div>
                     <h2>Tag Groups &amp; Flags</h2>
                     <span class="h2-sub" id="groups-workspace-name"></span>
+                    <div class="card-header-actions" style="margin-left: auto;">
+                        <button type="button" class="panel-action-btn panel-collapse-btn" data-panel-collapse="groups-flags" title="Collapse or expand Tag Groups & Flags" aria-label="Collapse Tag Groups & Flags">
+                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="panel-collapse-icon">
+                                <polyline points="18 15 12 9 6 15"></polyline>
+                            </svg>
+                        </button>
+                        <button type="button" class="panel-action-btn panel-close-btn" data-panel-close="groups-flags" title="Remove Tag Groups & Flags from dashboard" aria-label="Remove Tag Groups & Flags panel">
+                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="item-list" id="groups-list" aria-live="polite"></div>
+                <div class="card-body">
+                    <div class="item-list" id="groups-list" aria-live="polite"></div>
+                </div>
             </article>
         </section>
 
@@ -707,6 +810,52 @@
             </div>
         </footer>
     </main>
+
+    <!-- Dashboard Layout Customization Modal -->
+    <div class="modal-backdrop" id="layout-modal-backdrop" style="display: none;">
+        <div class="layout-modal" role="dialog" aria-labelledby="layout-modal-title" aria-modal="true">
+            <div class="layout-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="card-icon" style="--ac: #38bdf8; --ac2: #818cf8; width: 34px; height: 34px; margin-bottom: 0;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 id="layout-modal-title" style="margin: 0; font-size: 1.05rem; font-weight: 700;">Dashboard Customization</h3>
+                        <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-2);">Enable or disable dashboard panels and metrics.</p>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-ghost btn-xs" id="close-layout-modal-btn" aria-label="Close layout manager">
+                    ✕
+                </button>
+            </div>
+            <div class="layout-modal-body">
+                <div class="layout-group-heading">
+                    <span>Major Panels</span>
+                    <span class="layout-group-sub" id="panels-status-text">5 of 5 visible</span>
+                </div>
+                <div class="layout-items-list" id="panel-toggle-items"></div>
+
+                <div class="layout-group-heading" style="margin-top: 20px;">
+                    <span>Forensic Metric Cards</span>
+                    <span class="layout-group-sub" id="metrics-status-text">8 of 8 visible</span>
+                </div>
+                <div class="layout-items-list" id="metric-toggle-items"></div>
+            </div>
+            <div class="layout-modal-footer">
+                <button type="button" class="btn btn-ghost btn-sm" id="reset-layout-btn">
+                    Reset All to Default
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" id="done-layout-btn">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
