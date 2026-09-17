@@ -3502,6 +3502,13 @@ input[type="checkbox"][style*="--danger"]:checked {
 .mobile-only {
     display: none;
 }
+
+@media (min-width: 769px) {
+    .mobile-pane-switcher,
+    .mobile-only {
+        display: none !important;
+    }
+}
 .pane-header {
     display: flex;
     justify-content: space-between;

@@ -4026,7 +4026,7 @@ updateFullscreenState();
 
 if (dashboardBtn) {
     dashboardBtn.onclick = () => {
-        window.location.href = 'dashboard.html';
+        window.location.href = 'index.html';
     };
 }
 
@@ -5172,6 +5172,51 @@ function updatePageStateIndicator() {
     }
 }
 
+function switchToView(targetView, updateHash = false) {
+    if (targetView === 'bans' || targetView === 'ban') {
+        if (!activeTabId || tabs.length === 0) {
+            if (typeof addTab === 'function') {
+                addTab('Tab 1');
+            }
+        }
+        currentView = 'bans';
+        if (multiCheckerView) multiCheckerView.style.display = 'none';
+        if (banGeneratorView) banGeneratorView.style.display = 'flex';
+        if (viewToggleBtn) viewToggleBtn.textContent = 'Switch to Inspector';
+        if (processBtn) processBtn.style.display = 'none';
+        const mps = document.getElementById('mobile-pane-switcher');
+        const mbps = document.getElementById('mobile-ban-pane-switcher');
+        if (mps) mps.style.display = 'none';
+        if (mbps) mbps.style.display = '';
+        if (updateHash && window.location.hash !== '#ban') {
+            try {
+                history.replaceState(null, '', '#ban');
+            } catch (e) {
+                window.location.hash = 'ban';
+            }
+        }
+    } else {
+        currentView = 'multi';
+        if (banGeneratorView) banGeneratorView.style.display = 'none';
+        if (multiCheckerView) multiCheckerView.style.display = '';
+        if (viewToggleBtn) viewToggleBtn.textContent = 'Ban Generator';
+        if (processBtn) processBtn.style.display = '';
+        const mps = document.getElementById('mobile-pane-switcher');
+        const mbps = document.getElementById('mobile-ban-pane-switcher');
+        if (mbps) mbps.style.display = 'none';
+        if (mps) mps.style.display = '';
+        if (updateHash && window.location.hash !== '#main') {
+            try {
+                history.replaceState(null, '', '#main');
+            } catch (e) {
+                window.location.hash = 'main';
+            }
+        }
+    }
+    updatePageStateIndicator();
+    if (typeof saveBanGeneratorState === 'function') saveBanGeneratorState();
+}
+
 viewToggleBtn.onclick = () => {
     if (currentView === 'multi') {
         // Check if there's an active tab before switching to ban generator
@@ -5179,28 +5224,10 @@ viewToggleBtn.onclick = () => {
             showAlert('No List Selected', 'Please create or select a list before using the Ban Generator.');
             return;
         }
-        currentView = 'bans';
-        multiCheckerView.style.display = 'none';
-        banGeneratorView.style.display = 'flex';
-        viewToggleBtn.textContent = 'Switch to Inspector';
-        if (processBtn) processBtn.style.display = 'none';
-        const mps = document.getElementById('mobile-pane-switcher');
-        const mbps = document.getElementById('mobile-ban-pane-switcher');
-        if (mps) mps.style.display = 'none';
-        if (mbps) mbps.style.display = 'flex';
+        switchToView('bans', true);
     } else {
-        currentView = 'multi';
-        banGeneratorView.style.display = 'none';
-        multiCheckerView.style.display = '';
-        viewToggleBtn.textContent = 'Ban Generator';
-        if (processBtn) processBtn.style.display = '';
-        const mps = document.getElementById('mobile-pane-switcher');
-        const mbps = document.getElementById('mobile-ban-pane-switcher');
-        if (mbps) mbps.style.display = 'none';
-        if (mps) mps.style.display = 'flex';
+        switchToView('multi', true);
     }
-    updatePageStateIndicator();
-    if (typeof saveBanGeneratorState === 'function') saveBanGeneratorState();
 };
 
 document.querySelectorAll('.ban-section-toggle').forEach(btn => {
@@ -6714,12 +6741,15 @@ function loadBanGeneratorState() {
         if (saved) {
             const state = JSON.parse(saved);
 
-            // Restore View - only if workspace has tabs
+            // Restore View - only if workspace has tabs AND no explicit hash is in URL
             if (hasTabs) {
-                if (state.view === 'bans' && currentView === 'multi') {
-                    viewToggleBtn.click();
-                } else if (state.view === 'multi' && currentView === 'bans') {
-                    viewToggleBtn.click();
+                const hasExplicitHash = Boolean(window.location.hash && window.location.hash.length > 1);
+                if (!hasExplicitHash) {
+                    if (state.view === 'bans' && currentView === 'multi') {
+                        switchToView('bans', false);
+                    } else if (state.view === 'multi' && currentView === 'bans') {
+                        switchToView('multi', false);
+                    }
                 }
             }
 
@@ -6944,4 +6974,175 @@ window.addEventListener('resize', () => {
         }
     }
 });
+
+// ============================================
+// Workspace Hash Routing & Deep-Linking System
+// Tags: #main, #ban, #workspaces, #groups, #archive, #presets, #duplicates, #merge
+// ============================================
+function resetHashToActiveView() {
+    const activeHash = currentView === 'bans' ? '#ban' : '#main';
+    if (window.location.hash && window.location.hash !== activeHash && !window.location.hash.startsWith('#tab=') && !window.location.hash.startsWith('#workspace=')) {
+        try {
+            history.replaceState(null, '', activeHash);
+        } catch (e) {
+            window.location.hash = activeHash;
+        }
+    }
+}
+
+function handleHashRoute(rawHash) {
+    const activeHash = rawHash || window.location.hash || '';
+    if (!activeHash || activeHash === '#' || activeHash.length <= 1) {
+        return;
+    }
+    const hash = activeHash.toLowerCase().trim();
+
+    // Helper to close floating modals
+    const closeModals = () => {
+        if (workspaceModal) workspaceModal.classList.add('hidden');
+        if (presetModal) presetModal.classList.add('hidden');
+        if (mergeDataModal) mergeDataModal.classList.add('hidden');
+        if (removeDuplicatesModal) removeDuplicatesModal.classList.add('hidden');
+    };
+
+    // 1. #main / #inspector / #editor / #raw
+    if (hash === '#main' || hash === '#inspector' || hash === '#editor' || hash === '#raw' || hash === '#input' || hash === '#output') {
+        closeModals();
+        switchToView('multi', false);
+        if (hash === '#input' && typeof setMobileInspectorPane === 'function') {
+            setMobileInspectorPane('input');
+        } else if (hash === '#output' && typeof setMobileInspectorPane === 'function') {
+            setMobileInspectorPane('output');
+        }
+        return;
+    }
+
+    // 2. #ban / #bans / #bangen / #ban-generator / #commands
+    if (hash === '#ban' || hash === '#bans' || hash === '#bangen' || hash === '#ban-generator' || hash === '#commands') {
+        closeModals();
+        switchToView('bans', false);
+        if (hash === '#commands' && typeof setMobileBanPane === 'function') {
+            setMobileBanPane('output');
+        }
+        return;
+    }
+
+    // 3. #workspaces / #workspace
+    if (hash === '#workspaces' || hash === '#workspace') {
+        closeModals();
+        if (typeof renderWorkspaceList === 'function') renderWorkspaceList();
+        if (workspaceModal) workspaceModal.classList.remove('hidden');
+        if (workspaceTabBtn) workspaceTabBtn.click();
+        return;
+    }
+
+    // 4. #groups / #group
+    if (hash === '#groups' || hash === '#group') {
+        closeModals();
+        if (typeof renderWorkspaceList === 'function') renderWorkspaceList();
+        if (workspaceModal) workspaceModal.classList.remove('hidden');
+        if (groupsTabBtn) groupsTabBtn.click();
+        return;
+    }
+
+    // 5. #archive / #archives
+    if (hash === '#archive' || hash === '#archives') {
+        closeModals();
+        if (typeof renderWorkspaceList === 'function') renderWorkspaceList();
+        if (workspaceModal) workspaceModal.classList.remove('hidden');
+        if (archiveTabBtn) archiveTabBtn.click();
+        return;
+    }
+
+    // 6. #presets / #preset
+    if (hash === '#presets' || hash === '#preset') {
+        closeModals();
+        if (typeof renderPresetList === 'function') renderPresetList();
+        if (presetModal) presetModal.classList.remove('hidden');
+        return;
+    }
+
+    // 7. #duplicates / #dedupe / #remove-duplicates
+    if (hash === '#duplicates' || hash === '#dedupe' || hash === '#remove-duplicates') {
+        closeModals();
+        if (removeDuplicatesModal) {
+            removeDuplicatesModal.classList.remove('hidden');
+            if (duplicatesInput) duplicatesInput.focus();
+        }
+        return;
+    }
+
+    // 8. #merge / #merge-data
+    if (hash === '#merge' || hash === '#merge-data') {
+        closeModals();
+        if (mergeDataModal) {
+            mergeDataModal.classList.remove('hidden');
+            if (mergeDataInput) mergeDataInput.focus();
+        }
+        return;
+    }
+
+    // 9. #workspace=<id> or #ws=<id>
+    if (hash.startsWith('#workspace=') || hash.startsWith('#ws=')) {
+        const wsId = activeHash.split('=')[1]?.trim();
+        if (wsId && typeof switchWorkspace === 'function') {
+            switchWorkspace(wsId);
+        }
+        return;
+    }
+
+    // 10. #tab=<id>
+    if (hash.startsWith('#tab=')) {
+        const tabId = activeHash.split('=')[1]?.trim();
+        if (tabId && typeof switchTab === 'function') {
+            switchTab(tabId);
+        }
+        return;
+    }
+}
+
+function initHashRouting() {
+    window.addEventListener('hashchange', () => handleHashRoute());
+
+    // Hook modal cancel buttons to keep active view hash clean
+    if (workspaceModalCancel) {
+        const origWsCancel = workspaceModalCancel.onclick;
+        workspaceModalCancel.onclick = (e) => {
+            origWsCancel && origWsCancel.call(workspaceModalCancel, e);
+            resetHashToActiveView();
+        };
+    }
+    if (presetModalCancel) {
+        const origPresetCancel = presetModalCancel.onclick;
+        presetModalCancel.onclick = (e) => {
+            origPresetCancel && origPresetCancel.call(presetModalCancel, e);
+            resetHashToActiveView();
+        };
+    }
+    if (cancelMergeBtn) {
+        const origMergeCancel = cancelMergeBtn.onclick;
+        cancelMergeBtn.onclick = (e) => {
+            origMergeCancel && origMergeCancel.call(cancelMergeBtn, e);
+            resetHashToActiveView();
+        };
+    }
+    if (cancelDuplicatesBtn) {
+        const origDedupeCancel = cancelDuplicatesBtn.onclick;
+        cancelDuplicatesBtn.onclick = (e) => {
+            origDedupeCancel && origDedupeCancel.call(cancelDuplicatesBtn, e);
+            resetHashToActiveView();
+        };
+    }
+
+    // Handle initial route on startup
+    if (window.location.hash && window.location.hash.length > 1) {
+        handleHashRoute();
+    } else {
+        try {
+            history.replaceState(null, '', '#' + (currentView === 'bans' ? 'ban' : 'main'));
+        } catch (e) { }
+    }
+}
+
+initHashRouting();
 

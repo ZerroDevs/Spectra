@@ -65,8 +65,8 @@ cd Spectra
 ```
 
 ### 2. Launch
-- **Windows**: Double-click `start.bat` to launch with your default browser.
-- **Cross-Platform**: Open `index.html` in any modern web browser (Chrome, Edge, Firefox, Safari).
+- **Windows**: Double-click `start.bat` to launch with your default browser (opens the Spectra Dashboard).
+- **Cross-Platform**: Open `index.html` (Dashboard & Analytics Hub) or `workspace.html` (Primary Forensic Workspace & Inspector) in any modern web browser.
 - **Local Dev Server** (Optional):
   ```bash
   npx serve .

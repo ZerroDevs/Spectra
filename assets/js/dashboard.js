@@ -31,7 +31,9 @@
         tabSearch: '',
         wsSort: 'default',
         tabSort: 'default',
-        data: null
+        data: null,
+        hiddenStats: new Set(),
+        statsCollapsed: false
     };
 
     const $ = id => document.getElementById(id);
@@ -47,6 +49,17 @@
         statTwinks: $('stat-twinks'),
         statGriefers: $('stat-griefers'),
         statStorage: $('stat-storage'),
+        statsGrid: $('stats-grid'),
+        metricsHeader: $('metrics-section-header'),
+        metricsCounter: $('metrics-counter'),
+        metricsRestoreBtn: $('metrics-restore-btn'),
+        metricsHiddenCount: $('metrics-hidden-count'),
+        metricsToggleBtn: $('metrics-toggle-btn'),
+        metricsToggleIcon: $('metrics-toggle-icon'),
+        metricsToggleLabel: $('metrics-toggle-label'),
+        statsCollapsedBanner: $('stats-collapsed-banner'),
+        statsCollapsedText: $('stats-collapsed-text'),
+        statsExpandBtn: $('stats-expand-btn'),
         distTotal: $('dist-total'),
         distMains: $('dist-mains'),
         distTwinks: $('dist-twinks'),
@@ -65,12 +78,13 @@
         groupsWsName: $('groups-workspace-name'),
         storageUsed: $('storage-used'),
         storagePercent: $('storage-percent'),
-        storageBar: $('storage-bar'),
+        storageBar: $('storage-progress') || $('storage-bar'),
         storageProgress: $('storage-progress'),
         storageKeys: $('storage-keys'),
         exportBtn: $('export-btn'),
         themeToggleBtn: $('theme-toggle-btn'),
         portalBanGen: $('portal-ban-gen'),
+        launchBanGenBtn: $('launch-ban-gen-btn'),
         toast: $('toast')
     };
 
@@ -338,7 +352,14 @@
             main.appendChild(makeEl('span', 'badge', `${row.tabRows.length} tab${row.tabRows.length === 1 ? '' : 's'}`));
             if (row.groupCount > 0) main.appendChild(makeEl('span', 'badge badge-green', `${row.groupCount} group${row.groupCount === 1 ? '' : 's'}`));
 
-            const meta = makeEl('div', 'item-meta', metaText(row.stats));
+            const meta = makeEl('div', 'item-meta');
+            meta.append(document.createTextNode(metaText(row.stats)));
+            const openWsLink = makeEl('a', 'badge badge-green', 'Open #workspace');
+            openWsLink.href = `workspace.html#workspace=${encodeURIComponent(row.ws.id)}`;
+            openWsLink.title = `Open workspace "${row.ws.name}" in Workspace Engine`;
+            openWsLink.style.textDecoration = 'none';
+            openWsLink.addEventListener('click', (e) => e.stopPropagation());
+            meta.appendChild(openWsLink);
             item.append(main, meta);
 
             const children = makeEl('div', 'ws-children');
@@ -346,7 +367,12 @@
             for (const tr of row.tabRows) {
                 const mini = makeEl('div', 'mini-row');
                 const nameWrap = makeEl('div', 'item-main');
-                nameWrap.appendChild(makeEl('span', 'mini-name', tr.tab.name || 'Untitled'));
+                const tabLink = makeEl('a', 'mini-name', tr.tab.name || 'Untitled');
+                tabLink.href = `workspace.html#tab=${encodeURIComponent(tr.tab.id)}`;
+                tabLink.title = `Open tab "${tr.tab.name}" in Workspace (#tab)`;
+                tabLink.style.textDecoration = 'none';
+                tabLink.style.color = 'inherit';
+                nameWrap.appendChild(tabLink);
                 if (tr.tab.pinned) nameWrap.appendChild(makeEl('span', 'badge badge-amber', 'Pinned'));
                 mini.append(nameWrap, makeEl('span', 'mini-meta', metaText(tr.stats)));
                 inner.appendChild(mini);
@@ -436,7 +462,14 @@
                 chip.append(dot, document.createTextNode(group.name || 'Group'));
                 main.appendChild(chip);
             }
-            item.append(main, makeEl('div', 'item-meta', metaText(row.stats)));
+            const metaWrap = makeEl('div', 'item-meta');
+            metaWrap.append(document.createTextNode(metaText(row.stats)));
+            const openTabBadge = makeEl('a', 'badge', 'Open #tab');
+            openTabBadge.href = `workspace.html#tab=${encodeURIComponent(row.tab.id)}`;
+            openTabBadge.title = `Open tab "${row.tab.name}" in Workspace`;
+            openTabBadge.style.textDecoration = 'none';
+            metaWrap.appendChild(openTabBadge);
+            item.append(main, metaWrap);
             list.appendChild(item);
         }
     }
@@ -485,16 +518,21 @@
     }
 
     function renderStorage() {
+        if (!state.data || !state.data.storage) return;
         const { bytes, keyCount } = state.data.storage;
         const percent = Math.min((bytes / STORAGE_LIMIT) * 100, 100);
 
-        els.storageUsed.textContent = formatBytes(bytes);
-        els.storagePercent.textContent = `${percent.toFixed(percent < 10 ? 1 : 0)}%`;
-        els.storageBar.style.width = percent + '%';
-        els.storageBar.classList.toggle('warn', percent >= 60 && percent < 85);
-        els.storageBar.classList.toggle('danger', percent >= 85);
-        els.storageProgress.setAttribute('aria-valuenow', String(Math.round(percent)));
-        els.storageKeys.textContent = keyCount.toLocaleString();
+        if (els.storageUsed) els.storageUsed.textContent = formatBytes(bytes);
+        if (els.storagePercent) els.storagePercent.textContent = `${percent.toFixed(percent < 10 ? 1 : 0)}%`;
+        
+        const bar = els.storageProgress || els.storageBar;
+        if (bar) {
+            bar.style.width = percent + '%';
+            bar.classList.toggle('warn', percent >= 60 && percent < 85);
+            bar.classList.toggle('danger', percent >= 85);
+            bar.setAttribute('aria-valuenow', String(Math.round(percent)));
+        }
+        if (els.storageKeys) els.storageKeys.textContent = keyCount.toLocaleString();
     }
 
     function relativeTime(ts) {
@@ -507,29 +545,38 @@
 
     let toastTimer = null;
     function toast(message) {
+        if (!els.toast) return;
         els.toast.textContent = message;
         els.toast.classList.add('show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => els.toast.classList.remove('show'), 2200);
+        toastTimer = setTimeout(() => els.toast && els.toast.classList.remove('show'), 2200);
     }
 
     function refresh(options = {}) {
         const { silent = false } = options;
-        state.data = collectData();
-        renderStats();
-        renderDistribution();
-        renderWorkspaces();
-        renderTabs();
-        renderGroups();
-        renderStorage();
-
-        state.loadedAt = Date.now();
-        els.lastUpdated.textContent = relativeTime(state.loadedAt);
+        try {
+            state.data = collectData();
+            if (typeof renderStats === 'function') renderStats();
+            if (typeof renderDistribution === 'function') renderDistribution();
+            if (typeof renderWorkspaces === 'function') renderWorkspaces();
+            if (typeof renderTabs === 'function') renderTabs();
+            if (typeof renderGroups === 'function') renderGroups();
+            if (typeof renderStorage === 'function') renderStorage();
+        } catch (err) {
+            console.error('Error refreshing dashboard:', err);
+        } finally {
+            state.loadedAt = Date.now();
+            if (els.lastUpdated) {
+                els.lastUpdated.textContent = relativeTime(state.loadedAt);
+            }
+        }
 
         if (!silent) {
             toast('Dashboard refreshed');
-            els.refreshBtn.classList.add('loading');
-            setTimeout(() => els.refreshBtn.classList.remove('loading'), 700);
+            if (els.refreshBtn) {
+                els.refreshBtn.classList.add('loading');
+                setTimeout(() => els.refreshBtn && els.refreshBtn.classList.remove('loading'), 700);
+            }
         }
     }
 
@@ -577,12 +624,180 @@
         }
     }
 
+    const STAT_META = {
+        accounts: { label: 'Total Accounts' },
+        tabs: { label: 'Total Tabs' },
+        workspaces: { label: 'Workspaces' },
+        groups: { label: 'Groups' },
+        mains: { label: 'Main Accounts (M)' },
+        twinks: { label: 'Twinks (T)' },
+        griefers: { label: 'Flagged Griefers' },
+        storage: { label: 'Storage Utilized' }
+    };
+    const ALL_STAT_KEYS = Object.keys(STAT_META);
+
+    function saveHiddenStats() {
+        try {
+            localStorage.setItem('spectraHiddenStats', JSON.stringify([...state.hiddenStats]));
+        } catch (e) {}
+    }
+
+    function saveStatsCollapsed() {
+        try {
+            localStorage.setItem('spectraStatsCollapsed', String(state.statsCollapsed));
+        } catch (e) {}
+    }
+
+    function updateMetricsUI() {
+        const cards = document.querySelectorAll('.stat-card[data-stat-id]');
+        const totalCards = cards.length || ALL_STAT_KEYS.length;
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const id = card.dataset.statId;
+            const isHidden = state.hiddenStats.has(id);
+            card.classList.toggle('is-hidden', isHidden);
+            if (!isHidden) visibleCount++;
+        });
+
+        const hiddenCount = state.hiddenStats.size;
+
+        if (els.metricsCounter) {
+            els.metricsCounter.textContent = `${visibleCount} active`;
+        }
+        if (els.metricsHiddenCount) {
+            els.metricsHiddenCount.textContent = String(hiddenCount);
+        }
+        if (els.metricsRestoreBtn) {
+            els.metricsRestoreBtn.style.display = hiddenCount > 0 ? 'inline-flex' : 'none';
+        }
+
+        const isCollapsed = state.statsCollapsed;
+        const allHidden = visibleCount === 0;
+
+        if (els.statsGrid) {
+            els.statsGrid.classList.toggle('is-collapsed', isCollapsed || allHidden);
+        }
+
+        if (els.statsCollapsedBanner) {
+            if (isCollapsed) {
+                els.statsCollapsedBanner.style.display = 'flex';
+                if (els.statsCollapsedText) {
+                    els.statsCollapsedText.textContent = `Forensic metrics section is collapsed (${visibleCount} of ${totalCards} active).`;
+                }
+                if (els.statsExpandBtn) {
+                    els.statsExpandBtn.textContent = 'Expand Metrics';
+                }
+            } else if (allHidden) {
+                els.statsCollapsedBanner.style.display = 'flex';
+                if (els.statsCollapsedText) {
+                    els.statsCollapsedText.textContent = `All ${totalCards} forensic metric cards are closed/hidden.`;
+                }
+                if (els.statsExpandBtn) {
+                    els.statsExpandBtn.textContent = 'Restore All Cards';
+                }
+            } else {
+                els.statsCollapsedBanner.style.display = 'none';
+            }
+        }
+
+        if (els.metricsToggleLabel) {
+            els.metricsToggleLabel.textContent = isCollapsed ? 'Expand' : 'Collapse';
+        }
+        if (els.metricsToggleIcon) {
+            els.metricsToggleIcon.style.transform = isCollapsed ? 'rotate(180deg)' : '';
+        }
+    }
+
+    function hideStatCard(id, cardEl) {
+        if (!id) return;
+        const meta = STAT_META[id];
+        const card = cardEl || document.querySelector(`.stat-card[data-stat-id="${id}"]`);
+
+        if (card) {
+            card.classList.add('closing');
+            setTimeout(() => {
+                card.classList.remove('closing');
+                state.hiddenStats.add(id);
+                saveHiddenStats();
+                updateMetricsUI();
+                toast(`"${meta ? meta.label : id}" metric closed`);
+            }, 180);
+        } else {
+            state.hiddenStats.add(id);
+            saveHiddenStats();
+            updateMetricsUI();
+        }
+    }
+
+    function restoreAllStats() {
+        state.hiddenStats.clear();
+        state.statsCollapsed = false;
+        saveHiddenStats();
+        saveStatsCollapsed();
+        updateMetricsUI();
+        toast('All metric cards restored');
+    }
+
+    function toggleStatsCollapse() {
+        state.statsCollapsed = !state.statsCollapsed;
+        saveStatsCollapsed();
+        updateMetricsUI();
+    }
+
+    function initMetricsControls() {
+        const storedHidden = parseJSON(lsGet('spectraHiddenStats', '[]'), []);
+        state.hiddenStats = new Set(Array.isArray(storedHidden) ? storedHidden : []);
+        state.statsCollapsed = lsGet('spectraStatsCollapsed', 'false') === 'true';
+        updateMetricsUI();
+    }
+
     function bindEvents() {
         applyTheme(currentTheme);
 
+        // Closeable metrics delegation
+        document.addEventListener('click', e => {
+            const closeBtn = e.target.closest('.stat-card-close-btn');
+            if (closeBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const statId = closeBtn.dataset.closeStat;
+                const card = closeBtn.closest('.stat-card');
+                hideStatCard(statId, card);
+                return;
+            }
+
+            const restoreBtn = e.target.closest('#metrics-restore-btn');
+            if (restoreBtn) {
+                e.preventDefault();
+                restoreAllStats();
+                return;
+            }
+
+            const toggleBtn = e.target.closest('#metrics-toggle-btn');
+            if (toggleBtn) {
+                e.preventDefault();
+                toggleStatsCollapse();
+                return;
+            }
+
+            const expandBtn = e.target.closest('#stats-expand-btn');
+            if (expandBtn) {
+                e.preventDefault();
+                if (state.hiddenStats.size === ALL_STAT_KEYS.length) {
+                    restoreAllStats();
+                } else {
+                    state.statsCollapsed = false;
+                    saveStatsCollapsed();
+                    updateMetricsUI();
+                }
+                return;
+            }
+        });
+
         if (els.backBtn) {
             els.backBtn.addEventListener('click', () => {
-                window.location.href = 'index.html';
+                window.location.href = 'workspace.html#main';
             });
         }
 
@@ -603,6 +818,12 @@
 
         if (els.portalBanGen) {
             els.portalBanGen.addEventListener('click', () => {
+                localStorage.setItem('multiCheckView', 'ban-generator');
+            });
+        }
+
+        if (els.launchBanGenBtn) {
+            els.launchBanGenBtn.addEventListener('click', () => {
                 localStorage.setItem('multiCheckView', 'ban-generator');
             });
         }
@@ -639,7 +860,9 @@
                 e.preventDefault();
                 refresh();
             } else if (key === 'w') {
-                window.location.href = 'index.html';
+                window.location.href = 'workspace.html#main';
+            } else if (key === 'b') {
+                window.location.href = 'workspace.html#ban';
             } else if (key === 'a') {
                 window.location.href = 'about.html';
             } else if (key === 't') {
@@ -656,6 +879,7 @@
         }, 30000);
     }
 
+    initMetricsControls();
     bindEvents();
     refresh({ silent: true });
 })();
