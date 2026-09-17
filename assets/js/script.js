@@ -1832,7 +1832,6 @@ const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
 const hideHeaderBtn = document.getElementById('hide-header-btn');
 const showHeaderBtn = document.getElementById('show-header-btn');
 const topBar = document.querySelector('.top-bar');
-const exportBtn = document.getElementById('export-btn');
 const sidebar = document.querySelector('.sidebar');
 const revertBtn = document.getElementById('revert-btn');
 const inputLines = document.getElementById('input-lines');
@@ -2751,50 +2750,6 @@ function generateTabName() {
         .replace(/{ws}/g, workspaceName);
 }
 
-// Register service worker for PWA
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then((registration) => {
-                console.log('Service Worker registered:', registration);
-            })
-            .catch((error) => {
-                console.log('Service Worker registration failed:', error);
-            });
-    });
-}
-
-// PWA Install handling
-let deferredPrompt;
-const installAppBtn = document.getElementById('install-app-btn');
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (installAppBtn) {
-        installAppBtn.classList.remove('hidden');
-    }
-});
-
-if (installAppBtn) {
-    installAppBtn.addEventListener('click', async () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                installAppBtn.classList.add('hidden');
-            }
-            deferredPrompt = null;
-        }
-    });
-}
-
-window.addEventListener('appinstalled', () => {
-    if (installAppBtn) {
-        installAppBtn.classList.add('hidden');
-    }
-    showUndoToast('App installed successfully!', null, 3000);
-});
 
 // Discord webhook sending function
 async function sendToDiscord(content, source = 'Output') {
@@ -5023,18 +4978,6 @@ if (copyMtIdsBtn) {
     };
 }
 
-exportBtn.onclick = () => {
-    const text = outputArea.value;
-    if (!text) return;
-    const blob = new Blob([text], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    const tabName = tabs.find(t => t.id === activeTabId)?.name || 'list';
-    a.download = `${tabName}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-};
 
 // Hover Copy Logic
 const hoverCopyPopup = document.getElementById('hover-copy-popup');
