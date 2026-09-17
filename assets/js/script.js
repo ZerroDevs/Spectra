@@ -2635,14 +2635,44 @@ if (trueFullscreenBtn && outputPane) {
 }
 
 let sidebarCollapsed = localStorage.getItem('multiCheckSidebar') === 'true';
-if (sidebarCollapsed) {
+if (sidebarCollapsed || window.innerWidth <= 768) {
     sidebar.classList.add('collapsed');
 }
 
+const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+
+function closeMobileSidebar() {
+    sidebar.classList.add('collapsed');
+    if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+}
+
+function openMobileSidebar() {
+    sidebar.classList.remove('collapsed');
+    if (sidebarBackdrop && window.innerWidth <= 768) {
+        sidebarBackdrop.classList.add('active');
+    }
+}
+
 toggleSidebarBtn.onclick = () => {
-    sidebar.classList.toggle('collapsed');
-    localStorage.setItem('multiCheckSidebar', sidebar.classList.contains('collapsed'));
+    const isNowCollapsed = sidebar.classList.toggle('collapsed');
+    localStorage.setItem('multiCheckSidebar', isNowCollapsed);
+    if (sidebarBackdrop && window.innerWidth <= 768) {
+        if (isNowCollapsed) {
+            sidebarBackdrop.classList.remove('active');
+        } else {
+            sidebarBackdrop.classList.add('active');
+        }
+    }
 };
+
+if (sidebarBackdrop) {
+    sidebarBackdrop.onclick = closeMobileSidebar;
+}
+
+if (closeSidebarBtn) {
+    closeSidebarBtn.onclick = closeMobileSidebar;
+}
 
 let headerCollapsed = localStorage.getItem('multiCheckHeader') === 'true';
 if (headerCollapsed) {
@@ -3672,6 +3702,10 @@ function switchTab(id) {
     
     saveState();
     renderTabs();
+
+    if (window.innerWidth <= 768 && typeof closeMobileSidebar === 'function') {
+        closeMobileSidebar();
+    }
 }
 
 function renderTabsVirtual() {
@@ -4059,6 +4093,15 @@ groupToggles.forEach(toggle => {
         const groupName = toggle.getAttribute('data-group');
         const buttonsContainer = document.getElementById(groupName + '-buttons');
         if (buttonsContainer) {
+            // On mobile view, tapping Quick or Tools smoothly scrolls the buttons row instead of hiding it
+            if (window.innerWidth <= 768) {
+                if (buttonsContainer.scrollLeft > 20) {
+                    buttonsContainer.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    buttonsContainer.scrollTo({ left: buttonsContainer.scrollWidth, behavior: 'smooth' });
+                }
+                return;
+            }
             buttonsContainer.classList.toggle('collapsed');
             // Save collapse state to localStorage
             const isCollapsed = buttonsContainer.classList.contains('collapsed');
@@ -5140,11 +5183,21 @@ viewToggleBtn.onclick = () => {
         multiCheckerView.style.display = 'none';
         banGeneratorView.style.display = 'flex';
         viewToggleBtn.textContent = 'Switch to Inspector';
+        if (processBtn) processBtn.style.display = 'none';
+        const mps = document.getElementById('mobile-pane-switcher');
+        const mbps = document.getElementById('mobile-ban-pane-switcher');
+        if (mps) mps.style.display = 'none';
+        if (mbps) mbps.style.display = 'flex';
     } else {
         currentView = 'multi';
         banGeneratorView.style.display = 'none';
         multiCheckerView.style.display = '';
         viewToggleBtn.textContent = 'Ban Generator';
+        if (processBtn) processBtn.style.display = '';
+        const mps = document.getElementById('mobile-pane-switcher');
+        const mbps = document.getElementById('mobile-ban-pane-switcher');
+        if (mbps) mbps.style.display = 'none';
+        if (mps) mps.style.display = 'flex';
     }
     updatePageStateIndicator();
     if (typeof saveBanGeneratorState === 'function') saveBanGeneratorState();
@@ -6729,3 +6782,166 @@ banInputArea.addEventListener('input', saveBanGeneratorState);
 
 // Load state on startup
 loadBanGeneratorState();
+
+// ============================================
+// Mobile-First & Phone-Friendly Controller
+// ============================================
+const mainAppContainer = document.querySelector('.app-container') || document.body;
+const mobilePaneSwitcher = document.getElementById('mobile-pane-switcher');
+const mobileTabInput = document.getElementById('mobile-tab-input');
+const mobileTabOutput = document.getElementById('mobile-tab-output');
+const mobileOutputCount = document.getElementById('mobile-output-count');
+
+const mobileBanPaneSwitcher = document.getElementById('mobile-ban-pane-switcher');
+const mobileBanTabInput = document.getElementById('mobile-ban-tab-input');
+const mobileBanTabOutput = document.getElementById('mobile-ban-tab-output');
+const mobileBanOutputCount = document.getElementById('mobile-ban-output-count');
+
+function setMobileInspectorPane(pane) {
+    if (pane === 'output') {
+        mainAppContainer.classList.add('mobile-view-output');
+        mainAppContainer.classList.remove('mobile-view-input');
+        if (mobileTabOutput) mobileTabOutput.classList.add('active');
+        if (mobileTabInput) mobileTabInput.classList.remove('active');
+    } else {
+        mainAppContainer.classList.add('mobile-view-input');
+        mainAppContainer.classList.remove('mobile-view-output');
+        if (mobileTabInput) mobileTabInput.classList.add('active');
+        if (mobileTabOutput) mobileTabOutput.classList.remove('active');
+    }
+}
+
+function updateMobileBanOutputBadge() {
+    if (!mobileBanOutputCount || !banOutputArea) return;
+    const count = banOutputArea.querySelectorAll('.ban-line').length;
+    if (count > 0) {
+        mobileBanOutputCount.textContent = count;
+        mobileBanOutputCount.style.display = 'inline-block';
+    } else {
+        mobileBanOutputCount.style.display = 'none';
+    }
+}
+
+function setMobileBanPane(pane) {
+    const banView = document.getElementById('ban-generator-view');
+    if (!banView) return;
+    if (pane === 'output') {
+        banView.classList.add('mobile-ban-view-output');
+        banView.classList.remove('mobile-ban-view-input');
+        if (mobileBanTabOutput) mobileBanTabOutput.classList.add('active');
+        if (mobileBanTabInput) mobileBanTabInput.classList.remove('active');
+        banView.scrollTop = 0;
+        updateMobileBanOutputBadge();
+    } else {
+        banView.classList.add('mobile-ban-view-input');
+        banView.classList.remove('mobile-ban-view-output');
+        if (mobileBanTabInput) mobileBanTabInput.classList.add('active');
+        if (mobileBanTabOutput) mobileBanTabOutput.classList.remove('active');
+        banView.scrollTop = 0;
+    }
+}
+
+if (mobileTabInput && mobileTabOutput) {
+    mobileTabInput.addEventListener('click', () => setMobileInspectorPane('input'));
+    mobileTabOutput.addEventListener('click', () => setMobileInspectorPane('output'));
+    // Default to input pane on phones
+    setMobileInspectorPane('input');
+}
+
+if (mobileBanTabInput && mobileBanTabOutput) {
+    mobileBanTabInput.addEventListener('click', () => setMobileBanPane('input'));
+    mobileBanTabOutput.addEventListener('click', () => setMobileBanPane('output'));
+    setMobileBanPane('input');
+}
+
+// Update output badge count when output area changes
+function updateMobileOutputBadge() {
+    if (!mobileOutputCount) return;
+    const text = outputArea ? outputArea.value.trim() : '';
+    if (!text) {
+        mobileOutputCount.style.display = 'none';
+        return;
+    }
+    const lines = text.split('\n').filter(l => l.trim().length > 0).length;
+    mobileOutputCount.textContent = lines;
+    mobileOutputCount.style.display = 'inline-block';
+}
+
+if (outputArea) {
+    outputArea.addEventListener('input', updateMobileOutputBadge);
+    outputArea.addEventListener('change', updateMobileOutputBadge);
+}
+
+// Hook processBtn to automatically flip to output pane on mobile
+const origProcessWithMobileFlip = processBtn.onclick;
+processBtn.onclick = (e) => {
+    origProcessWithMobileFlip && origProcessWithMobileFlip.call(processBtn, e);
+    if (window.innerWidth <= 768) {
+        setTimeout(() => {
+            setMobileInspectorPane('output');
+            updateMobileOutputBadge();
+        }, 120);
+    }
+};
+
+// Also flip ban generator to output when generating bans on mobile
+const genBansBtnEl = document.getElementById('generate-bans-btn');
+if (genBansBtnEl) {
+    const origGenBans = genBansBtnEl.onclick;
+    genBansBtnEl.onclick = (e) => {
+        origGenBans && origGenBans.call(genBansBtnEl, e);
+        updateMobileBanOutputBadge();
+        if (window.innerWidth <= 768) {
+            setTimeout(() => {
+                setMobileBanPane('output');
+                updateMobileBanOutputBadge();
+            }, 80);
+        }
+    };
+}
+
+// Hook ban clear button to update mobile badge
+const banClearBtnEl = document.getElementById('ban-clear-btn');
+if (banClearBtnEl) {
+    const origBanClear = banClearBtnEl.onclick;
+    banClearBtnEl.onclick = (e) => {
+        origBanClear && origBanClear.call(banClearBtnEl, e);
+        updateMobileBanOutputBadge();
+    };
+}
+
+// Enable horizontal drag-to-scroll for toolbar button groups
+document.querySelectorAll('.group-buttons').forEach(container => {
+    let isDown = false;
+    let startX = 0;
+    let scrollStart = 0;
+
+    container.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startX = e.pageX - container.offsetLeft;
+        scrollStart = container.scrollLeft;
+    });
+    window.addEventListener('mouseup', () => {
+        isDown = false;
+    });
+    container.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX);
+        if (Math.abs(walk) > 4) {
+            container.scrollLeft = scrollStart - walk;
+        }
+    });
+});
+
+// Sync mobile drawer state on resize
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+        if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+    } else {
+        if (!sidebar.classList.contains('collapsed')) {
+            if (sidebarBackdrop) sidebarBackdrop.classList.add('active');
+        }
+    }
+});
+

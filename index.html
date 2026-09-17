@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spectra · Intelligence Workspace</title>
-    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/icon-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="assets/images/icon-512.png">
-    <link rel="apple-touch-icon" href="assets/images/icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/logo1.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/images/logo1.png">
+    <link rel="apple-touch-icon" href="assets/images/logo1.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -75,6 +75,12 @@
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
                     </button>
+                    <button id="close-sidebar-btn" class="icon-btn mobile-only" title="Close Sidebar" style="width: 32px; height: 32px; border-radius: 6px; display: none;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
                 </div>
             </div>
             <div class="workspace-selector">
@@ -106,6 +112,7 @@
                 <!-- Tabs will be dynamically inserted here -->
             </ul>
         </aside>
+        <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -115,7 +122,7 @@
                 </svg>
             </button>
             <header class="top-bar">
-                <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="top-bar-branding" style="display: flex; align-items: center; gap: 12px;">
                     <button id="toggle-sidebar-btn" class="icon-btn" title="Toggle Sidebar" style="width: 36px; height: 36px; border-radius: 8px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2);">
                         <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2"
                             fill="none">
@@ -138,7 +145,7 @@
                     </div>
                     <div id="save-status" class="save-status" aria-live="polite" style="margin-left: auto;">Autosaved</div>
                 </div>
-                <div class="actions" style="display: flex; align-items: center; gap: 8px;">
+                <div class="actions top-bar-actions" style="display: flex; align-items: center; gap: 8px;">
                     <button id="view-toggle-btn" class="secondary-btn"
                         style="padding: 8px 16px; font-weight: 600; font-size: 0.85rem; border-radius: 8px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(2, 132, 199, 0.12)); border: 1px solid rgba(56, 189, 248, 0.25);">
                         <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align: middle; margin-right: 6px;">
@@ -154,7 +161,7 @@
                         </svg>
                         Clear All
                     </button>
-                    <div style="width: 1px; height: 24px; background: var(--glass-border); margin: 0 4px;"></div>
+                    <div class="top-bar-divider" style="width: 1px; height: 24px; background: var(--glass-border); margin: 0 4px;"></div>
                     <button id="toggle-hover-btn" class="icon-btn" title="Toggle Hover Copy" style="width: 32px; height: 32px; border-radius: 6px;">
                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2"
                             fill="none">
@@ -187,18 +194,32 @@
                 </div>
             </header>
 
+            <!-- Mobile Pane Switcher (Inspector) -->
+            <div class="mobile-pane-switcher" id="mobile-pane-switcher">
+                <button class="mobile-tab-btn active" id="mobile-tab-input" data-target="input">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    <span>Input</span>
+                </button>
+                <button class="mobile-tab-btn" id="mobile-tab-output" data-target="output">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg>
+                    <span>Output</span>
+                    <span class="mobile-tab-badge" id="mobile-output-count" style="display: none;">0</span>
+                </button>
+            </div>
+
             <div class="editor-container" id="editor-container">
                 <div class="pane" id="input-pane">
-                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                        <span>Input (Raw Data)</span>
-                        <div style="display: flex; gap: 6px; align-items: center;">
-                            <div
-                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted);">
+                    <div class="pane-header">
+                        <div class="pane-header-main">
+                            <span class="pane-title">Input (Raw Data)</span>
+                            <button id="clear-input-btn" class="icon-btn small clear-action-btn" style="color: #ef4444;">Clear</button>
+                        </div>
+                        <div class="pane-header-toolbar">
+                            <div class="pane-toolbar-chip">
                                 <input type="checkbox" id="auto-process-toggle"
-                                    style="accent-color: var(--primary-color); cursor: pointer;"> <span style="cursor: default;">Process</span>
+                                    style="accent-color: var(--primary-color); cursor: pointer;"> <span>Process</span>
                             </div>
-                            <div
-                                style="display: flex; align-items: center; gap: 2px; border: 1px solid var(--glass-border); border-radius: 6px; overflow: hidden;">
+                            <div class="font-size-control">
                                 <button id="font-dec-btn" class="icon-btn small"
                                     style="border-radius:0; border:none; padding: 3px 7px; font-size:0.8rem; font-weight:bold;"
                                     title="Decrease font size">A-</button>
@@ -208,7 +229,6 @@
                                     style="border-radius:0; border:none; padding: 3px 7px; font-size:0.8rem; font-weight:bold;"
                                     title="Increase font size">A+</button>
                             </div>
-                            <button id="clear-input-btn" class="icon-btn small" style="color: #ef4444;">Clear</button>
                         </div>
                     </div>
                     <div class="textarea-wrapper">
@@ -217,21 +237,25 @@
                     </div>
                 </div>
                 <div class="pane" id="output-pane">
-                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                        <span>Output (Processed)</span>
-                        <div style="display: flex; gap: 5px; align-items: center;">
-                            <div
-                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted); margin-right: 5px;">
+                    <div class="pane-header">
+                        <div class="pane-header-main">
+                            <span class="pane-title">Output (Processed)</span>
+                            <div class="pane-primary-actions" style="display: flex; gap: 6px; align-items: center;">
+                                <button id="copy-btn" class="icon-btn small" style="background: rgba(56, 189, 248, 0.15); color: var(--primary-color); font-weight: 600;">Copy</button>
+                                <button id="clear-output-btn" class="icon-btn small" style="color: #ef4444;">Clear</button>
+                            </div>
+                        </div>
+                        <div class="pane-header-toolbar">
+                            <div class="pane-toolbar-chip">
                                 <input type="checkbox" id="underscore-names-toggle"
-                                    style="accent-color: var(--primary-color); cursor: pointer;"> <span style="cursor: default;">_Name</span>
+                                    style="accent-color: var(--primary-color); cursor: pointer;"> <span>_Name</span>
                             </div>
-                            <div
-                                style="display: flex; align-items: center; gap: 4px; font-size: 0.85rem; color: var(--text-muted); margin-right: 5px;">
+                            <div class="pane-toolbar-chip">
                                 <input type="checkbox" id="discord-code-toggle"
-                                    style="accent-color: var(--primary-color); cursor: pointer;"> <span style="cursor: default;">Dis ```</span>
+                                    style="accent-color: var(--primary-color); cursor: pointer;"> <span>Dis ```</span>
                             </div>
-                            <div class="tag-format-dropdown-wrapper" style="margin-right: 5px;">
-                                <button id="tag-format-dropdown-btn" class="tag-format-dropdown-btn" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px; padding: 6px 10px; font-size: 0.85rem; font-weight: 500; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <div class="tag-format-dropdown-wrapper">
+                                <button id="tag-format-dropdown-btn" class="tag-format-dropdown-btn" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px; padding: 4px 8px; font-size: 0.82rem; font-weight: 500; display: flex; align-items: center; gap: 5px; cursor: pointer;">
                                     <span id="tag-format-label">With ()</span>
                                     <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none">
                                         <polyline points="6 9 12 15 18 9"></polyline>
@@ -243,8 +267,8 @@
                                     <div class="tag-format-option" data-value="all">No () All</div>
                                 </div>
                             </div>
-                            <label id="kbd-shortcuts-label"
-                                style="display: flex; align-items: center; gap: 4px; font-size: 0.82rem; color: var(--text-muted); cursor: pointer; padding: 3px 5px; border-radius: 6px; transition: all 0.2s; border: 1px solid transparent; margin-right: 5px;"
+                            <label id="kbd-shortcuts-label" class="pane-toolbar-chip"
+                                style="cursor: pointer;"
                                 title="TAB=(M) ESC=Revert `=(T) 1=Non-RP  2=Fail-RP  3=Provoking  4=GR3.1  5=GR3.2">
                                 <input type="checkbox" id="kbd-shortcuts-toggle"
                                     style="accent-color: var(--primary-color);">
@@ -262,8 +286,11 @@
                                 </svg>
                                 <span>Hotkeys</span>
                             </label>
-                            <button id="clear-output-btn" class="icon-btn small" style="color: #ef4444;">Clear</button>
-                            <button id="toggle-fullscreen-btn" class="icon-btn small" title="Toggle Fullscreen Output">
+                            <button id="toggle-stats-btn" class="icon-btn small" title="Toggle Stats Bar">Stats</button>
+                            <button id="copy-ids-btn" class="icon-btn small">Copy IDs</button>
+                            <button id="copy-mt-ids-btn" class="icon-btn small" title="Copy only M/T tagged IDs">Copy M/T IDs</button>
+                            <button id="send-btn" class="icon-btn small" title="Send to Discord">Send</button>
+                            <button id="toggle-fullscreen-btn" class="icon-btn small desktop-only" title="Toggle Fullscreen Output">
                                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2"
                                     fill="none">
                                     <path
@@ -271,18 +298,13 @@
                                     </path>
                                 </svg>
                             </button>
-                            <button id="true-fullscreen-btn" class="icon-btn small"
+                            <button id="true-fullscreen-btn" class="icon-btn small desktop-only"
                                 title="True Fullscreen (Covers whole screen)">
                                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2"
                                     fill="none">
                                     <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path>
                                 </svg>
                             </button>
-                            <button id="toggle-stats-btn" class="icon-btn small" title="Toggle Stats Bar">Stats</button>
-                            <button id="copy-ids-btn" class="icon-btn small">Copy IDs</button>
-                            <button id="copy-mt-ids-btn" class="icon-btn small" title="Copy only M/T tagged IDs">Copy M/T IDs</button>
-                            <button id="send-btn" class="icon-btn small" title="Send to Discord">Send</button>
-                            <button id="copy-btn" class="icon-btn small">Copy</button>
                         </div>
                     </div>
                     <div id="stats-bar" class="stats-bar" style="display: none;">
@@ -388,6 +410,19 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Mobile Pane Switcher (Ban Generator) -->
+            <div class="mobile-pane-switcher" id="mobile-ban-pane-switcher" style="display: none;">
+                <button class="mobile-tab-btn active" id="mobile-ban-tab-input" data-target="input">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                    <span>Accounts</span>
+                </button>
+                <button class="mobile-tab-btn" id="mobile-ban-tab-output" data-target="output">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg>
+                    <span>Commands</span>
+                    <span class="mobile-tab-badge" id="mobile-ban-output-count" style="display: none;">0</span>
+                </button>
             </div>
 
             <!-- Ban Generator View -->
