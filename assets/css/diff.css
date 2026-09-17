@@ -404,3 +404,59 @@
     align-items: center;
     gap: 12px;
 }
+
+/* --------------------------------------------------------------------------
+   Mobile & Phone Responsive Styles for Diff Comparator
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .diff-container {
+        padding: 72px 12px 32px;
+    }
+
+    .diff-metrics-bar {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .diff-metric-tile {
+        padding: 10px 12px;
+    }
+
+    .diff-metric-val {
+        font-size: 1.25rem;
+    }
+
+    .diff-filter-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .diff-chips-group {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+        width: 100%;
+    }
+
+    .diff-chips-group::-webkit-scrollbar {
+        display: none;
+    }
+
+    .diff-view-modes {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .diff-row-meta {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 4px;
+    }
+}

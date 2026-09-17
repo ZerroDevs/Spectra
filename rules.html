@@ -200,7 +200,7 @@
                 </div>
                 <h2>Configured Server Rules</h2>
                 <span class="badge" id="rules-count-badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">0 rules</span>
-                <div style="margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <div class="rules-card-controls">
                     <select id="rules-category-filter" class="search-input" style="padding: 4px 10px; font-size: 0.78rem;">
                         <option value="all">All Categories</option>
                         <option value="Chat">Chat</option>
@@ -213,7 +213,12 @@
                 </div>
             </div>
 
-            <div class="card-body" style="padding: 0; overflow-x: auto;">
+            <div class="rules-scroll-hint">
+                <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.2" fill="none"><polyline points="7 16 3 12 7 8"></polyline><polyline points="17 8 21 12 17 16"></polyline><line x1="3" y1="12" x2="21" y2="12"></line></svg>
+                <span>Swipe left &amp; right to view all penalty columns &amp; 1-click actions</span>
+            </div>
+
+            <div class="card-body rules-table-wrapper">
                 <table class="rules-table">
                     <thead>
                         <tr>

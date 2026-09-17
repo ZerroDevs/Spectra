@@ -72,9 +72,45 @@
     gap: 10px;
 }
 
-/* Rules Table */
+/* Scroll Hint on Phones */
+.rules-scroll-hint {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.74rem;
+    color: #fbbf24;
+    padding: 8px 14px;
+    background: rgba(245, 158, 11, 0.08);
+    border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+    margin-bottom: 0;
+}
+
+/* Rules Table & Wrapper */
+.rules-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    display: block;
+    position: relative;
+}
+
+.rules-table-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.rules-table-wrapper::-webkit-scrollbar-track {
+    background: var(--surface-2);
+}
+
+.rules-table-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(245, 158, 11, 0.4);
+    border-radius: 3px;
+}
+
 .rules-table {
     width: 100%;
+    min-width: 780px;
     border-collapse: collapse;
     font-size: 0.84rem;
 }
@@ -88,6 +124,7 @@
     color: var(--text-3);
     border-bottom: 1px solid var(--border);
     background: var(--surface-2);
+    white-space: nowrap;
 }
 
 .rules-table td {
@@ -95,6 +132,12 @@
     border-bottom: 1px solid var(--border);
     color: var(--text-1);
     vertical-align: middle;
+    white-space: nowrap;
+}
+
+.rules-table td:nth-child(2) {
+    white-space: normal;
+    min-width: 240px;
 }
 
 .rules-table tr:hover td {
@@ -201,4 +244,81 @@
     justify-content: flex-end;
     gap: 10px;
     background: var(--surface-2);
+}
+
+/* --------------------------------------------------------------------------
+   Mobile & Phone Responsive Styles for Rulebook
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .rules-container {
+        padding: 72px 12px 32px;
+    }
+
+    .rules-scroll-hint {
+        display: flex;
+    }
+
+    .rules-profile-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 12px 14px;
+    }
+
+    .rules-profile-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        width: 100%;
+    }
+
+    .rules-profile-left select {
+        width: 100%;
+        min-width: 0 !important;
+        box-sizing: border-box;
+    }
+
+    .rules-profile-right {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        width: 100%;
+    }
+
+    .rules-profile-right .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 8px 4px;
+        font-size: 0.72rem;
+    }
+
+    .card {
+        padding: 16px 12px;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    .rules-card-controls {
+        margin-left: 0 !important;
+        width: 100% !important;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .rules-card-controls select,
+    .rules-card-controls input {
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .rules-card-controls #add-rule-btn {
+        grid-column: span 2;
+        width: 100%;
+        justify-content: center;
+    }
 }

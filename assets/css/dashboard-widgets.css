@@ -826,3 +826,89 @@
     transform: translate(-50%, 0) !important;
     pointer-events: auto !important;
 }
+
+/* --------------------------------------------------------------------------
+   Mobile & Phone Responsive Enhancements for Dashboard Widgets
+   -------------------------------------------------------------------------- */
+@media (max-width: 680px) {
+    .quick-action-bar {
+        padding: 12px 14px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .quick-action-label-group {
+        justify-content: flex-start;
+    }
+
+    .quick-action-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .quick-act-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 9px 8px;
+        font-size: 0.76rem;
+        box-sizing: border-box;
+    }
+
+    .quick-act-badge {
+        display: none; /* Keep buttons clean and compact on small phones */
+    }
+
+    .telemetry-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .health-radar-body {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 14px;
+    }
+
+    .health-penalty-list {
+        width: 100%;
+    }
+
+    .storage-quota-body {
+        padding: 8px 0;
+    }
+
+    .storage-breakdown-bar {
+        height: 16px;
+    }
+
+    .storage-legend-list {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .pinned-forensics-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .pinned-tab-card {
+        padding: 12px 14px;
+    }
+
+    .timeline-filter-pills {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+        width: 100%;
+    }
+
+    .timeline-filter-pills::-webkit-scrollbar {
+        display: none;
+    }
+}
