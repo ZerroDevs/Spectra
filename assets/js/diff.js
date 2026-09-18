@@ -590,17 +590,6 @@
         const jsonBtn = document.getElementById('export-json-diff-btn');
         if (jsonBtn) jsonBtn.addEventListener('click', exportDeltaJSON);
 
-        // Theme Toggle
-        const themeBtn = document.getElementById('theme-toggle-btn');
-        if (themeBtn) {
-            themeBtn.addEventListener('click', () => {
-                const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-                const next = cur === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem('multiCheckTheme', next);
-                localStorage.setItem('spectraTheme', next);
-            });
-        }
 
         // Auto-run if sources present
         runDiff();

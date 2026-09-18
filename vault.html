@@ -274,7 +274,7 @@
                     </svg>
                     <h3 id="shred-modal-title" style="margin: 0; font-size: 1.15rem; color: #f87171;">Confirm Zero-Trace Data Shred</h3>
                 </div>
-                <button id="close-shred-modal-btn" class="icon-btn small" style="width: 28px; height: 28px;" aria-label="Close modal">
+                <button id="close-shred-modal-btn" class="icon-btn small modal-close-btn" style="width: 28px; height: 28px;" aria-label="Close modal" title="Close modal">
                     <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -284,13 +284,13 @@
             <p style="color: var(--text-2); font-size: 0.85rem; line-height: 1.6; margin: 0 0 16px;">
                 This action is <strong>irreversible</strong>. All tabs, logs, custom rules, blacklists, and historical snapshots will be permanently deleted from browser storage.
             </p>
-            <p style="color: var(--text-3); font-size: 0.82rem; margin: 0 0 8px;">
+            <p style="color: var(--text-2); font-weight: 600; font-size: 0.82rem; margin: 0 0 8px;">
                 To confirm, type <strong style="color: #f87171;">CONFIRM SHRED</strong> below:
             </p>
-            <input type="text" id="shred-confirm-input" class="vault-input" style="margin-bottom: 16px; border-color: rgba(239, 68, 68, 0.5);" placeholder="CONFIRM SHRED">
+            <input type="text" id="shred-confirm-input" class="vault-input modal-input" style="margin-bottom: 16px; border-color: rgba(239, 68, 68, 0.5);" placeholder="CONFIRM SHRED">
             <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                <button class="btn btn-secondary" id="cancel-shred-btn">Cancel</button>
-                <button class="btn btn-primary" id="confirm-shred-btn" style="background: #ef4444; border-color: #dc2626;">Purge All Local Data</button>
+                <button class="btn btn-ghost btn-sm" id="cancel-shred-btn">Cancel</button>
+                <button class="btn btn-primary btn-sm" id="confirm-shred-btn" style="background: #ef4444; border-color: #dc2626;">Purge All Local Data</button>
             </div>
         </div>
     </div>

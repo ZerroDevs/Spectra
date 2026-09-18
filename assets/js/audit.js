@@ -484,17 +484,6 @@
         if (closeNoteBtn && noteModal) closeNoteBtn.onclick = () => noteModal.style.display = 'none';
         if (cancelNoteBtn && noteModal) cancelNoteBtn.onclick = () => noteModal.style.display = 'none';
 
-        // Theme Toggle
-        const themeBtn = document.getElementById('theme-toggle-btn');
-        if (themeBtn) {
-            themeBtn.addEventListener('click', () => {
-                const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-                const next = cur === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                lsSet('multiCheckTheme', next);
-                lsSet('spectraTheme', next);
-            });
-        }
 
         // Refresh Button
         const refreshBtn = document.getElementById('refresh-btn');

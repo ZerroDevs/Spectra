@@ -216,17 +216,6 @@ Ghost_RP,5512,9B84C1A45F01E8402D67AE419B726C81,45.142.122.9,Griefer`
 
     // Initialize Event Listeners
     document.addEventListener('DOMContentLoaded', () => {
-        // Theme toggle
-        const themeBtn = document.getElementById('theme-toggle-btn');
-        if (themeBtn) {
-            themeBtn.addEventListener('click', () => {
-                const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem('multiCheckTheme', next);
-                localStorage.setItem('spectraTheme', next);
-            });
-        }
-
         const rawInput = document.getElementById('converter-raw-input');
         if (rawInput) {
             rawInput.addEventListener('input', runTranspile);

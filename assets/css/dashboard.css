@@ -1,13 +1,18 @@
 :root {
     --bg-0: #090a0f;
     --bg-1: #0f172a;
+    --bg-deep: #06080f;
     --surface: rgba(255, 255, 255, 0.04);
     --surface-2: rgba(255, 255, 255, 0.06);
     --surface-hover: rgba(255, 255, 255, 0.08);
+    --glass-hover: rgba(255, 255, 255, 0.08);
     --border: rgba(255, 255, 255, 0.09);
     --border-strong: rgba(255, 255, 255, 0.16);
+    --glass-border: rgba(255, 255, 255, 0.09);
     --text-1: #f4f4fb;
+    --text-main: #f4f4fb;
     --text-2: rgba(244, 244, 251, 0.64);
+    --text-muted: rgba(244, 244, 251, 0.64);
     --text-3: rgba(244, 244, 251, 0.38);
     --accent: #38bdf8;
     --accent-soft: #7dd3fc;
@@ -21,13 +26,18 @@
 [data-theme="light"] {
     --bg-0: #f8fafc;
     --bg-1: #edf2f7;
+    --bg-deep: #f1f5f9;
     --surface: #ffffff;
     --surface-2: #f8fafc;
     --surface-hover: #f1f5f9;
+    --glass-hover: rgba(0, 0, 0, 0.05);
     --border: #cbd5e1;
     --border-strong: #94a3b8;
+    --glass-border: #cbd5e1;
     --text-1: #0f172a;
+    --text-main: #0f172a;
     --text-2: #475569;
+    --text-muted: #64748b;
     --text-3: #64748b;
     --accent: #0284c7;
     --accent-soft: #0369a1;
@@ -2257,6 +2267,242 @@ body {
         opacity: 1;
         transform: scale(1) translateY(0);
     }
+}
+
+/* ==========================================================================
+   Universal Modal Close Button & Icon Button Styles
+   ========================================================================== */
+.icon-btn,
+.modal-close-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 0;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.icon-btn:hover,
+.modal-close-btn:hover {
+    color: var(--text-1);
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+    transform: translateY(-1px);
+}
+
+.icon-btn.small,
+.modal-close-btn.small {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+}
+
+.icon-btn:active,
+.modal-close-btn:active {
+    transform: translateY(0);
+}
+
+[data-theme="light"] .icon-btn,
+[data-theme="light"] .modal-close-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+
+[data-theme="light"] .icon-btn:hover,
+[data-theme="light"] .modal-close-btn:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #0f172a;
+    box-shadow: 0 0 10px rgba(2, 132, 199, 0.12);
+}
+
+/* ==========================================================================
+   Universal Modal Form Groups, Labels & Inputs
+   ========================================================================== */
+.modal-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.modal-label,
+.modal-form-group label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-2);
+    margin-bottom: 4px;
+    display: block;
+    letter-spacing: 0.01em;
+}
+
+[data-theme="light"] .modal-label,
+[data-theme="light"] .modal-form-group label {
+    color: #334155;
+}
+
+.modal-input,
+.modal-textarea,
+.reports-input {
+    width: 100%;
+    background: var(--bg-deep, #090d16);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 13px;
+    color: var(--text-1);
+    font-size: 0.88rem;
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.modal-input:focus,
+.modal-textarea:focus,
+.reports-input:focus {
+    border-color: var(--accent, #38bdf8);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
+[data-theme="light"] .modal-input,
+[data-theme="light"] .modal-textarea,
+[data-theme="light"] .reports-input {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+}
+
+[data-theme="light"] .modal-input:focus,
+[data-theme="light"] .modal-textarea:focus,
+[data-theme="light"] .reports-input:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+/* ==========================================================================
+   Universal Dropdown & Select Styling (Matching Workspace & Ban Generator)
+   ========================================================================== */
+select,
+.dropdown,
+.modal-select,
+.select-input,
+.audit-select,
+select.search-input,
+select.reports-input {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background: rgba(56, 189, 248, 0.08) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 12px center !important;
+    border: 1px solid rgba(56, 189, 248, 0.3) !important;
+    border-radius: 8px !important;
+    color: var(--text-1) !important;
+    padding: 8px 36px 8px 12px !important;
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+    font-family: inherit !important;
+    cursor: pointer !important;
+    outline: none !important;
+    line-height: 1.4 !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+}
+
+select:hover,
+.dropdown:hover,
+.modal-select:hover,
+.select-input:hover,
+.audit-select:hover,
+select.search-input:hover,
+select.reports-input:hover {
+    background-color: rgba(56, 189, 248, 0.14) !important;
+    border-color: rgba(56, 189, 248, 0.55) !important;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12) !important;
+}
+
+select:focus,
+.dropdown:focus,
+.modal-select:focus,
+.select-input:focus,
+.audit-select:focus,
+select.search-input:focus,
+select.reports-input:focus {
+    border-color: #38bdf8 !important;
+    background-color: rgba(56, 189, 248, 0.14) !important;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.22) !important;
+}
+
+select option,
+.dropdown option,
+.modal-select option,
+.select-input option,
+.audit-select option,
+select.search-input option,
+select.reports-input option {
+    background-color: #0c101d !important;
+    color: #f4f4fb !important;
+    padding: 10px 12px !important;
+}
+
+/* Light Mode Overrides for Dropdowns */
+[data-theme="light"] select,
+[data-theme="light"] .dropdown,
+[data-theme="light"] .modal-select,
+[data-theme="light"] .select-input,
+[data-theme="light"] .audit-select,
+[data-theme="light"] select.search-input,
+[data-theme="light"] select.reports-input {
+    background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230284c7' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 12px center !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+}
+
+[data-theme="light"] select:hover,
+[data-theme="light"] .dropdown:hover,
+[data-theme="light"] .modal-select:hover,
+[data-theme="light"] .select-input:hover,
+[data-theme="light"] .audit-select:hover,
+[data-theme="light"] select.search-input:hover,
+[data-theme="light"] select.reports-input:hover {
+    background-color: #f8fafc !important;
+    border-color: #0284c7 !important;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12) !important;
+}
+
+[data-theme="light"] select:focus,
+[data-theme="light"] .dropdown:focus,
+[data-theme="light"] .modal-select:focus,
+[data-theme="light"] .select-input:focus,
+[data-theme="light"] .audit-select:focus,
+[data-theme="light"] select.search-input:focus,
+[data-theme="light"] select.reports-input:focus {
+    border-color: #0284c7 !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2) !important;
+}
+
+[data-theme="light"] select option,
+[data-theme="light"] .dropdown option,
+[data-theme="light"] .modal-select option,
+[data-theme="light"] .select-input option,
+[data-theme="light"] .audit-select option,
+[data-theme="light"] select.search-input option,
+[data-theme="light"] select.reports-input option {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    padding: 10px 12px !important;
 }
 
 /* Info Tooltip Component (No Emojis) */

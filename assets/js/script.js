@@ -2573,14 +2573,13 @@ function applyTheme() {
     }
 }
 
-themeToggleBtn.onclick = () => {
-    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('multiCheckTheme', currentTheme);
+window.addEventListener('themechange', (e) => {
+    currentTheme = (e.detail && e.detail.theme) || document.documentElement.getAttribute('data-theme') || 'dark';
     applyTheme();
     editorTheme = currentTheme;
     localStorage.setItem('multiCheckEditorTheme', editorTheme);
     applyEditorTheme();
-};
+});
 
 applyTheme();
 

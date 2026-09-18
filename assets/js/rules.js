@@ -480,17 +480,6 @@
             });
         }
 
-        // Theme Toggle
-        const themeBtn = document.getElementById('theme-toggle-btn');
-        if (themeBtn) {
-            themeBtn.addEventListener('click', () => {
-                const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-                const next = cur === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem('multiCheckTheme', next);
-                localStorage.setItem('spectraTheme', next);
-            });
-        }
     }
 
     if (document.readyState === 'loading') {

@@ -6,6 +6,12 @@
 (() => {
     'use strict';
 
+    // Auto-apply theme immediately to avoid flash
+    try {
+        const storedTheme = localStorage.getItem('multiCheckTheme') || localStorage.getItem('spectraTheme') || 'dark';
+        document.documentElement.setAttribute('data-theme', storedTheme);
+    } catch (e) { }
+
     // Auto-inject header.css if not present
     if (!document.querySelector('link[href*="header.css"]')) {
         const link = document.createElement('link');
@@ -458,19 +464,55 @@
             }
         };
 
-        // Theme Toggle maintenance
-        const themeToggleBtn = topbar.querySelector('#theme-toggle-btn') || document.querySelector('#theme-toggle-btn') || document.querySelector('#theme-toggle');
-        if (themeToggleBtn && !themeToggleBtn._boundHeader) {
-            themeToggleBtn._boundHeader = true;
-            themeToggleBtn.addEventListener('click', () => {
-                const active = document.documentElement.getAttribute('data-theme') || 'dark';
-                const next = active === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem('multiCheckTheme', next);
-                localStorage.setItem('spectraTheme', next);
-            });
+        // Theme Toggle Icon & State Maintenance
+        function updateThemeIcon(theme) {
+            const btn = document.querySelector('#theme-toggle-btn');
+            if (!btn) return;
+            if (theme === 'light') {
+                btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+                btn.title = 'Switch to Dark Theme';
+            } else {
+                btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+                btn.title = 'Switch to Light Theme';
+            }
         }
+
+        const initialTheme = document.documentElement.getAttribute('data-theme') || localStorage.getItem('multiCheckTheme') || 'dark';
+        updateThemeIcon(initialTheme);
     }
+
+    // Global Capture-Phase Theme Toggle Controller
+    // Guarantees clean 1-click toggle on every page regardless of other event handlers
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('#theme-toggle-btn');
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === 'function') {
+            e.stopImmediatePropagation();
+        }
+
+        const active = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = active === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try {
+            localStorage.setItem('multiCheckTheme', next);
+            localStorage.setItem('spectraTheme', next);
+        } catch (err) { }
+
+        // Update all theme toggle buttons on page
+        document.querySelectorAll('#theme-toggle-btn').forEach(b => {
+            if (next === 'light') {
+                b.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+                b.title = 'Switch to Dark Theme';
+            } else {
+                b.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+                b.title = 'Switch to Light Theme';
+            }
+        });
+
+        window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: next } }));
+    }, true);
 
     // Keyboard Shortcuts
     document.addEventListener('keydown', (e) => {

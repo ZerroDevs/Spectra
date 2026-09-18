@@ -229,7 +229,7 @@
 
     // Triage Quick Lookup
     function handleTriageSearch(query) {
-        const resultContainer = document.getElementById('live-triage-result');
+        const resultContainer = document.getElementById('live-triage-results') || document.getElementById('live-triage-result');
         if (!resultContainer) return;
 
         const q = query.trim().toLowerCase();
@@ -394,17 +394,6 @@
 
     // Initialize Event Listeners
     document.addEventListener('DOMContentLoaded', () => {
-        // Theme toggle
-        const themeBtn = document.getElementById('theme-toggle-btn');
-        if (themeBtn) {
-            themeBtn.addEventListener('click', () => {
-                const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem('multiCheckTheme', next);
-                localStorage.setItem('spectraTheme', next);
-            });
-        }
-
         startClock();
         loadWatchlist();
 

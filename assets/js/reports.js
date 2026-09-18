@@ -371,17 +371,6 @@
 
     // Initialize Event Listeners
     document.addEventListener('DOMContentLoaded', () => {
-        // Theme toggle
-        const themeBtn = document.getElementById('theme-toggle-btn');
-        if (themeBtn) {
-            themeBtn.addEventListener('click', () => {
-                const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem('multiCheckTheme', next);
-                localStorage.setItem('spectraTheme', next);
-            });
-        }
-
         // Import from workspace button
         const importWsBtn = document.getElementById('import-ws-report-btn');
         if (importWsBtn) {

@@ -198,52 +198,61 @@
     <!-- Add Target Modal -->
     <div id="add-target-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="add-target-modal-title">
         <div class="modal-content glass" style="width: 520px; max-width: 95vw;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                <h3 id="add-target-modal-title" style="margin: 0; font-size: 1.15rem; color: var(--text-1);">Pin Target to Radar HUD</h3>
-                <button id="close-target-modal-btn" class="icon-btn small" style="width: 28px; height: 28px;" aria-label="Close modal">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(239, 68, 68, 0.15); display: flex; align-items: center; justify-content: center; color: #f87171;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.2" fill="none">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <h3 id="add-target-modal-title" style="margin: 0; font-size: 1.15rem; color: var(--text-1); font-weight: 700;">Pin Target to Radar HUD</h3>
+                </div>
+                <button id="close-target-modal-btn" class="icon-btn small modal-close-btn" aria-label="Close modal" title="Close modal">
                     <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
             </div>
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--text-3); display: block; margin-bottom: 4px;">Target Name *</label>
-                        <input type="text" id="new-target-name" class="reports-input" style="width: 100%; border-radius: 8px;" placeholder="Character Name / Alias">
+            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px;">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px;">
+                    <div class="modal-form-group" style="margin-bottom: 0;">
+                        <label class="modal-label" for="new-target-name">Target Name *</label>
+                        <input type="text" id="new-target-name" class="modal-input" placeholder="Character Name / Alias">
                     </div>
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--text-3); display: block; margin-bottom: 4px;">Server ID *</label>
-                        <input type="text" id="new-target-id" class="reports-input" style="width: 100%; border-radius: 8px;" placeholder="e.g. 1042">
+                    <div class="modal-form-group" style="margin-bottom: 0;">
+                        <label class="modal-label" for="new-target-id">Server ID *</label>
+                        <input type="text" id="new-target-id" class="modal-input" placeholder="e.g. 1042">
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--text-3); display: block; margin-bottom: 4px;">Known IP</label>
-                        <input type="text" id="new-target-ip" class="reports-input" style="width: 100%; border-radius: 8px;" placeholder="e.g. 192.168.1.100">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="modal-form-group" style="margin-bottom: 0;">
+                        <label class="modal-label" for="new-target-ip">Known IP</label>
+                        <input type="text" id="new-target-ip" class="modal-input" placeholder="e.g. 192.168.1.100">
                     </div>
-                    <div>
-                        <label style="font-size: 0.8rem; color: var(--text-3); display: block; margin-bottom: 4px;">Risk Level</label>
-                        <select id="new-target-status" class="reports-input" style="width: 100%; border-radius: 8px;">
+                    <div class="modal-form-group" style="margin-bottom: 0;">
+                        <label class="modal-label" for="new-target-status">Risk Level</label>
+                        <select id="new-target-status" class="modal-select">
                             <option value="CRITICAL">Critical (Griefer / Blacklist)</option>
                             <option value="HIGH" selected>High Risk</option>
                             <option value="WATCH">Watch / Pending</option>
                         </select>
                     </div>
                 </div>
-                <div>
-                    <label style="font-size: 0.8rem; color: var(--text-3); display: block; margin-bottom: 4px;">Hardware ID (HWID)</label>
-                    <input type="text" id="new-target-hwid" class="reports-input" style="width: 100%; border-radius: 8px;" placeholder="e.g. 8A4B9F10...">
+                <div class="modal-form-group" style="margin-bottom: 0;">
+                    <label class="modal-label" for="new-target-hwid">Hardware ID (HWID)</label>
+                    <input type="text" id="new-target-hwid" class="modal-input" placeholder="e.g. 8A4B9F10...">
                 </div>
-                <div>
-                    <label style="font-size: 0.8rem; color: var(--text-3); display: block; margin-bottom: 4px;">Staff Notes / Incident Reason</label>
-                    <textarea id="new-target-notes" class="reports-input" rows="3" style="width: 100%; border-radius: 8px; resize: vertical;" placeholder="Contextual notes for active moderation staff..."></textarea>
+                <div class="modal-form-group" style="margin-bottom: 0;">
+                    <label class="modal-label" for="new-target-notes">Staff Notes / Incident Reason</label>
+                    <textarea id="new-target-notes" class="modal-textarea" rows="3" placeholder="Contextual notes for active moderation staff..."></textarea>
                 </div>
             </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                <button class="btn btn-secondary" id="cancel-target-btn">Cancel</button>
-                <button class="btn btn-primary" id="save-target-btn">Pin to Watchlist</button>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 14px; border-top: 1px solid var(--border);">
+                <button class="btn btn-ghost btn-sm" id="cancel-target-btn">Cancel</button>
+                <button class="btn btn-primary btn-sm" id="save-target-btn" style="background: linear-gradient(135deg, #ef4444, #dc2626); border-color: #ef4444;">Pin to Watchlist</button>
             </div>
         </div>
     </div>

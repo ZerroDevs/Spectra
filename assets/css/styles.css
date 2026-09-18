@@ -1520,26 +1520,71 @@ input[type="checkbox"][style*="--danger"]:checked {
     transition: all 0.3s ease;
 }
 
+select,
 .dropdown {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--glass-border);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: rgba(56, 189, 248, 0.08) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 12px center;
+    border: 1px solid rgba(56, 189, 248, 0.3);
     color: var(--text-main);
-    padding: 10px 15px;
+    padding: 8px 36px 8px 12px;
     border-radius: 8px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    font-weight: 500;
     outline: none;
     cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
 }
 
+select:hover,
+.dropdown:hover {
+    background-color: rgba(56, 189, 248, 0.14);
+    border-color: rgba(56, 189, 248, 0.55);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+}
+
+select:focus,
+.dropdown:focus {
+    border-color: #38bdf8;
+    background-color: rgba(56, 189, 248, 0.14);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.22);
+}
+
+select option,
+.dropdown option {
+    background: #0f172a;
+    color: #f4f4fb;
+    padding: 10px 12px;
+}
+
+[data-theme="light"] select,
 [data-theme="light"] .dropdown {
-    background: #ffffff;
+    background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230284c7' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 12px center;
     border: 1px solid #cbd5e1;
     color: #0f172a;
 }
 
-.dropdown option {
-    background: var(--bg-color);
-    color: var(--text-main);
+[data-theme="light"] select:hover,
+[data-theme="light"] .dropdown:hover {
+    background-color: #f8fafc;
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+}
+
+[data-theme="light"] select:focus,
+[data-theme="light"] .dropdown:focus {
+    border-color: #0284c7;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+}
+
+[data-theme="light"] select option,
+[data-theme="light"] .dropdown option {
+    background: #ffffff;
+    color: #0f172a;
+    padding: 10px 12px;
 }
 
 .tag-format-dropdown-wrapper {
