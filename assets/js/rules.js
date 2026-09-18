@@ -57,18 +57,18 @@
     // Default Seed Profiles
     const DEFAULT_PROFILES = [
         {
-            id: 'profile-grandrp',
-            name: 'GrandRP Standard Rulebook',
+            id: 'profile-rpserver',
+            name: 'RP Server Standard Rulebook',
             commandTemplate: '/ban {id} {duration} {reason}',
             durationUnit: 'Days',
             rules: [
-                { id: 'r1', code: 'GR 3.1', name: 'Mentioning Parents / Insulting Relatives', category: 'Chat', duration: '3', unit: 'Days', severity: 'High', reason: 'GR 3.1 Insulting Parents' },
-                { id: 'r2', code: 'GR 3.2', name: 'OOC Toxic / OOC Disrespect', category: 'Chat', duration: '180', unit: 'Minutes', severity: 'Medium', reason: 'GR 3.2 OOC Toxicity' },
-                { id: 'r3', code: 'GR 6.2', name: 'Leaving RP Situation / Combat Logging', category: 'Roleplay', duration: 'Warn', unit: 'Days', severity: 'Medium', reason: 'GR 6.2 Combat Log' },
-                { id: 'r4', code: 'GR 6.8', name: 'Sexual Harassment / Inappropriate RP', category: 'Roleplay', duration: '7', unit: 'Days', severity: 'Critical', reason: 'GR 6.8 Unacceptable Behavior' },
-                { id: 'r5', code: 'Fail-RP', name: 'Unrealistic Actions / Non-Roleplay', category: 'Roleplay', duration: '120', unit: 'Minutes', severity: 'Low', reason: 'Fail-RP Demorgan' },
-                { id: 'r6', code: 'DM', name: 'Deathmatching without Demand/Reason', category: 'Combat', duration: '120', unit: 'Minutes', severity: 'Medium', reason: 'DM Demorgan' },
-                { id: 'r7', code: 'Provoking', name: 'Intentionally Provoking / Trolling players', category: 'General', duration: '60', unit: 'Minutes', severity: 'Low', reason: 'Provoking in Greenzone' }
+                { id: 'r1', code: '3.1', name: 'Mentioning Parents / Insulting Relatives', category: 'Chat', duration: '3', unit: 'Days', severity: 'High', reason: 'GR 3.1 Insulting Parents' },
+                { id: 'r2', code: '3.2', name: 'OOC Toxic / OOC Disrespect', category: 'Chat', duration: '180', unit: 'Minutes', severity: 'Medium', reason: 'GR 3.2 OOC Toxicity' },
+                { id: 'r3', code: '6.2', name: 'Leaving RP Situation / Combat Logging', category: 'Roleplay', duration: 'Warn', unit: 'Days', severity: 'Medium', reason: 'GR 6.2 Combat Log' },
+                { id: 'r4', code: '6.8', name: 'Sexual Harassment / Inappropriate RP', category: 'Roleplay', duration: '7', unit: 'Days', severity: 'Critical', reason: 'GR 6.8 Unacceptable Behavior' },
+                { id: 'r5', code: 'failrp', name: 'Unrealistic Actions / Non-Roleplay', category: 'Roleplay', duration: '120', unit: 'Minutes', severity: 'Low', reason: 'Fail-RP Demorgan' },
+                { id: 'r6', code: 'dm', name: 'Deathmatching without Demand/Reason', category: 'Combat', duration: '120', unit: 'Minutes', severity: 'Medium', reason: 'DM Demorgan' },
+                { id: 'r7', code: 'provoking', name: 'Intentionally Provoking / Trolling players', category: 'General', duration: '60', unit: 'Minutes', severity: 'Low', reason: 'Provoking in Greenzone' }
             ]
         },
         {
@@ -93,7 +93,24 @@
             lsSet(KEYS.profiles, DEFAULT_PROFILES);
             return DEFAULT_PROFILES;
         }
-        return parseJSON(raw, DEFAULT_PROFILES);
+        let parsed = parseJSON(raw, DEFAULT_PROFILES);
+        if (Array.isArray(parsed)) {
+            let changed = false;
+            parsed.forEach(p => {
+                if (p.id === 'profile-grandrp') {
+                    p.id = 'profile-rpserver';
+                    changed = true;
+                }
+                if (p.name && /grand\s*5?rp|rpgrand/i.test(p.name)) {
+                    p.name = p.name.replace(/grand\s*5?rp|rpgrand/gi, 'RP Server');
+                    changed = true;
+                }
+            });
+            if (changed) {
+                lsSet(KEYS.profiles, parsed);
+            }
+        }
+        return parsed;
     }
 
     function saveProfiles(profiles) {
@@ -103,7 +120,11 @@
 
     function getActiveProfile() {
         const profiles = getProfiles();
-        const activeId = lsGet(KEYS.activeProfile, profiles[0]?.id || 'profile-grandrp');
+        let activeId = lsGet(KEYS.activeProfile, profiles[0]?.id || 'profile-rpserver');
+        if (activeId === 'profile-grandrp') {
+            activeId = 'profile-rpserver';
+            lsSet(KEYS.activeProfile, activeId);
+        }
         return profiles.find(p => p.id === activeId) || profiles[0] || DEFAULT_PROFILES[0];
     }
 
