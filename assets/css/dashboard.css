@@ -2560,12 +2560,30 @@ select.reports-input option {
     left: 0;
 }
 
+.hero .info-tooltip-wrap .info-tooltip-content {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(-4px);
+}
+
 .info-tooltip-wrap:hover .info-tooltip-content,
 .info-tooltip-wrap:focus-within .info-tooltip-content {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
     pointer-events: auto;
+}
+
+.hero .info-tooltip-wrap:hover .info-tooltip-content,
+.hero .info-tooltip-wrap:focus-within .info-tooltip-content {
+    transform: translateX(-50%) translateY(0);
+}
+
+[data-theme="light"] .info-tooltip-content {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #475569;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
 }
 
 .modal-backdrop {

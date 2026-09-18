@@ -347,6 +347,14 @@
     }
 
     function openDrawer() {
+        // If workspace mobile sidebar is open, close it cleanly
+        const sidebar = document.querySelector('.sidebar');
+        const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+        if (sidebar && !sidebar.classList.contains('collapsed')) {
+            sidebar.classList.add('collapsed');
+            if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+        }
+
         const overlay = buildDrawerElement();
         overlay.classList.add('open');
         document.body.style.overflow = 'hidden';
@@ -396,6 +404,29 @@
                 openDrawer();
             };
             wsDashboardBtn.parentNode.insertBefore(wsDrawerBtn, wsDashboardBtn.nextSibling);
+        }
+
+        // In workspace.html top-bar, also add direct tools drawer button for instant mobile phone access
+        const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
+        if (toggleSidebarBtn && !document.getElementById('topbar-ws-tools-btn')) {
+            const wsTopDrawerBtn = document.createElement('button');
+            wsTopDrawerBtn.id = 'topbar-ws-tools-btn';
+            wsTopDrawerBtn.className = 'icon-btn';
+            wsTopDrawerBtn.title = 'Spectra Platform Tools Drawer (14 Modules)';
+            wsTopDrawerBtn.style.cssText = 'width: 36px; height: 36px; border-radius: 8px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); color: #38bdf8; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; margin-right: 6px; flex-shrink: 0;';
+            wsTopDrawerBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.2" fill="none">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                </svg>
+            `;
+            wsTopDrawerBtn.onclick = (e) => {
+                e.preventDefault();
+                openDrawer();
+            };
+            toggleSidebarBtn.parentNode.insertBefore(wsTopDrawerBtn, toggleSidebarBtn.nextSibling);
         }
 
         if (!topbar) return;
@@ -451,7 +482,12 @@
                     <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
             `;
-            topbarBrand.appendChild(drawerBtn);
+            const brandLink = topbarBrand.querySelector('.brand-link, .brand, a[href*="index.html"]');
+            if (brandLink && brandLink.nextSibling) {
+                topbarBrand.insertBefore(drawerBtn, brandLink.nextSibling);
+            } else {
+                topbarBrand.appendChild(drawerBtn);
+            }
         }
 
         drawerBtn.onclick = (e) => {
