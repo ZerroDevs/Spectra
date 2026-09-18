@@ -1063,15 +1063,15 @@ body {
 }
 
 .group-color-option.selected::after {
-    content: '✓';
+    content: '';
     position: absolute;
-    top: 50%;
+    top: 48%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    text-shadow: 0 0 2px rgba(0,0,0,0.5);
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -60%) rotate(45deg);
 }
 
 .modal-tab-btn {
@@ -1181,14 +1181,15 @@ input[type="checkbox"]:checked {
 }
 
 input[type="checkbox"]:checked::after {
-    content: '✓';
+    content: '';
     position: absolute;
-    top: 50%;
+    top: 45%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
+    width: 4px;
+    height: 7px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: translate(-50%, -55%) rotate(45deg);
 }
 
 input[type="checkbox"]:focus {

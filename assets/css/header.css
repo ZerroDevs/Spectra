@@ -1,0 +1,348 @@
+/* ==========================================================================
+   Spectra Centralized Header & Navigation Drawer Stylesheet
+   ========================================================================== */
+
+/* Topbar Clean Sizing & Anti-Overflow Protection */
+.topbar {
+    max-width: 100vw;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 100;
+}
+
+.topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.topbar-brand::-webkit-scrollbar {
+    display: none;
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+/* Hide unpinned nav buttons automatically to guarantee zero horizontal overflow */
+.topbar-brand > a.btn.nav-unpinned {
+    display: none !important;
+}
+
+/* Tools Drawer Trigger Button */
+.topbar-drawer-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    color: #38bdf8;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm, 8px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    margin-left: 4px;
+    flex-shrink: 0;
+}
+
+.topbar-drawer-btn:hover {
+    background: rgba(56, 189, 248, 0.18);
+    border-color: #38bdf8;
+    color: #f8fafc;
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+}
+
+.topbar-drawer-btn .drawer-chevron {
+    transition: transform 0.2s ease;
+}
+
+.topbar-drawer-btn.active .drawer-chevron {
+    transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   Spectra Tools Drawer Component
+   ========================================================================== */
+
+.spectra-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(4, 7, 13, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.spectra-drawer-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.spectra-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 580px;
+    max-width: 92vw;
+    background: #0b0f17;
+    border-left: 1px solid var(--border-strong);
+    box-shadow: -16px 0 48px rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    transform: translateX(100%);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+[data-theme="light"] .spectra-drawer {
+    background: #ffffff;
+    box-shadow: -16px 0 48px rgba(15, 23, 42, 0.15);
+}
+
+.spectra-drawer-overlay.open .spectra-drawer {
+    transform: translateX(0);
+}
+
+/* Drawer Header */
+.spectra-drawer-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+}
+
+.spectra-drawer-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.spectra-drawer-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    padding: 3px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.spectra-drawer-close {
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.spectra-drawer-close:hover {
+    color: var(--text-1);
+    border-color: var(--border-strong);
+    background: var(--surface-hover);
+}
+
+/* Drawer Search Bar */
+.spectra-drawer-search-wrapper {
+    padding: 14px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.spectra-drawer-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    transition: border-color 0.2s ease;
+}
+
+[data-theme="light"] .spectra-drawer-search {
+    background: #f8fafc;
+}
+
+.spectra-drawer-search:focus-within {
+    border-color: #38bdf8;
+}
+
+.spectra-drawer-search input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-1);
+    font-size: 0.88rem;
+    width: 100%;
+    font-family: inherit;
+}
+
+/* Drawer Scrollable Content */
+.spectra-drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.spectra-drawer-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.spectra-drawer-body::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 3px;
+}
+
+/* Drawer Section */
+.drawer-section-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-3);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.drawer-tools-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+/* Drawer Tool Item Card */
+.drawer-tool-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all 0.18s ease;
+}
+
+[data-theme="light"] .drawer-tool-card {
+    background: #ffffff;
+}
+
+.drawer-tool-card:hover {
+    border-color: var(--border-strong);
+    background: var(--surface-hover);
+    transform: translateX(4px);
+}
+
+.drawer-tool-card.active-page {
+    border-color: rgba(56, 189, 248, 0.5);
+    background: rgba(56, 189, 248, 0.08);
+}
+
+.drawer-tool-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.drawer-tool-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+}
+
+.drawer-tool-card:hover .drawer-tool-icon {
+    transform: scale(1.08);
+}
+
+.drawer-tool-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.drawer-tool-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.drawer-tool-desc {
+    font-size: 0.76rem;
+    color: var(--text-3);
+    line-height: 1.3;
+}
+
+.drawer-tool-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 3px 7px;
+    border-radius: 5px;
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    color: var(--text-2);
+    flex-shrink: 0;
+}
+
+/* Drawer Footer */
+.spectra-drawer-footer {
+    padding: 14px 24px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text-3);
+}

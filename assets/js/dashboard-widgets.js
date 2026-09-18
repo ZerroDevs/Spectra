@@ -83,7 +83,7 @@
     function showToast(msg, duration = 3000) {
         const toast = document.getElementById('toast');
         if (!toast) return;
-        toast.innerHTML = msg;
+        toast.innerHTML = `<img src="assets/images/logo1.png" alt="" class="toast-favicon" style="width:15px;height:15px;vertical-align:middle;margin-right:7px;border-radius:3px;display:inline-block;"><span>${msg}</span>`;
         toast.classList.add('show');
         toast.classList.add('visible');
         clearTimeout(toast._timer);
@@ -720,7 +720,7 @@
             const stale = scan.staleTabs;
 
             if (stale.length === 0) {
-                showToast('✨ No stale tabs detected! Workspace hygiene is optimal (100%).');
+                showToast('No stale tabs detected! Workspace hygiene is optimal (100%).');
                 return;
             }
 
@@ -788,7 +788,7 @@
 
                 closeModal();
                 recordMutation(`Purged ${wipedCount} stale tabs across workspaces`, 'delete');
-                showToast(`🧹 Wiped <strong>${wipedCount}</strong> stale tabs! Telemetry hygiene updated.`);
+                showToast(`Wiped <strong>${wipedCount}</strong> stale tabs! Telemetry hygiene updated.`);
                 refreshAllWidgets();
 
                 if (typeof window.refreshDashboardData === 'function') {
@@ -853,7 +853,7 @@
                     if (file.name.endsWith('.json') || file.type.includes('json')) {
                         handleJsonFile(file);
                     } else {
-                        showToast('⚠️ Please drop a valid Spectra JSON backup file.');
+                        showToast('Please drop a valid Spectra JSON backup file.');
                     }
                 }
             });
@@ -867,7 +867,7 @@
                 const data = JSON.parse(e.target.result);
                 processImportedBackup(data, file.name);
             } catch (err) {
-                showToast('❌ Invalid JSON backup format.');
+                showToast('Invalid JSON backup format.');
                 console.error(err);
             }
         };
@@ -923,14 +923,14 @@
                 lsSet(tabsKey, currentTabs);
             }
 
-            showToast(`✅ Successfully imported <strong>${importedTabsCount} tabs</strong> across <strong>${importedWsCount} workspaces</strong>!`);
+            showToast(`Successfully imported <strong>${importedTabsCount} tabs</strong> across <strong>${importedWsCount} workspaces</strong>!`);
             refreshAllWidgets();
 
             if (typeof window.refreshDashboardData === 'function') {
                 window.refreshDashboardData();
             }
         } else {
-            showToast('⚠️ Unrecognized backup structure.');
+            showToast('Unrecognized backup structure.');
         }
     }
 
@@ -1068,7 +1068,7 @@
             generateBtn.addEventListener('click', async () => {
                 const pass = (passphraseInput?.value || '').trim();
                 if (!pass) {
-                    showToast('⚠️ Please enter a secret passphrase to encrypt.');
+                    showToast('Please enter a secret passphrase to encrypt.');
                     return;
                 }
 
@@ -1108,10 +1108,10 @@
                     if (urlOutput) urlOutput.value = shareUrl;
                     if (outputGroup) outputGroup.style.display = 'block';
                     recordMutation(`Generated AES-256 encrypted staff sync link (${scope})`, 'create');
-                    showToast('🔐 Encrypted shareable URL generated!');
+                    showToast('Encrypted shareable URL generated!');
                 } catch (err) {
                     console.error('Encryption failed:', err);
-                    showToast('❌ Encryption error: ' + err.message);
+                    showToast('Encryption error: ' + err.message);
                 } finally {
                     generateBtn.textContent = 'Generate Encrypted Link (AES-GCM)';
                     generateBtn.disabled = false;
@@ -1123,7 +1123,7 @@
             copyBtn.addEventListener('click', () => {
                 if (urlOutput && urlOutput.value) {
                     navigator.clipboard.writeText(urlOutput.value).then(() => {
-                        showToast('📋 Copied encrypted staff link to clipboard!');
+                        showToast('Copied encrypted staff link to clipboard!');
                     });
                 }
             });
@@ -1134,7 +1134,7 @@
             testWebhookBtn.addEventListener('click', async () => {
                 const url = (webhookInput?.value || '').trim();
                 if (!url.startsWith('https://discord.com/api/webhooks/')) {
-                    showToast('⚠️ Please provide a valid Discord Webhook URL.');
+                    showToast('Please provide a valid Discord Webhook URL.');
                     return;
                 }
                 localStorage.setItem('multiCheckStaffWebhookUrl', url);
@@ -1144,13 +1144,13 @@
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            content: '📡 **Spectra Intelligence:** Webhook channel handshake verified successfully!'
+                            content: '**Spectra Intelligence:** Webhook channel handshake verified successfully!'
                         })
                     });
-                    if (res.ok) showToast('✅ Test webhook ping delivered!');
-                    else showToast('❌ Webhook error: ' + res.statusText);
+                    if (res.ok) showToast('Test webhook ping delivered!');
+                    else showToast('Webhook error: ' + res.statusText);
                 } catch (e) {
-                    showToast('❌ Webhook connection failed: ' + e.message);
+                    showToast('Webhook connection failed: ' + e.message);
                 }
             });
         }
@@ -1160,7 +1160,7 @@
                 const url = (webhookInput?.value || '').trim();
                 const author = (authorInput?.value || 'Staff Operative').trim();
                 if (!url.startsWith('https://discord.com/api/webhooks/')) {
-                    showToast('⚠️ Please provide a valid Discord Webhook URL.');
+                    showToast('Please provide a valid Discord Webhook URL.');
                     return;
                 }
                 localStorage.setItem('multiCheckStaffWebhookUrl', url);
@@ -1168,16 +1168,16 @@
 
                 const scan = scanAllWorkspaceData();
                 const embed = {
-                    title: '🛡️ Spectra Forensic Intelligence Report',
+                    title: 'Spectra Forensic Intelligence Report',
                     description: `Automated telemetry dispatch submitted by **${author}**.`,
                     color: 0x38bdf8,
                     fields: [
-                        { name: '👥 Total Accounts', value: String(scan.totalAccounts), inline: true },
-                        { name: '🚨 Flagged Griefers', value: String(scan.totalGriefers), inline: true },
-                        { name: '📁 Workspaces', value: String(scan.workspaces.length), inline: true },
-                        { name: '📑 Active Tabs', value: String(scan.allTabs.length), inline: true },
-                        { name: '⭐ Pinned Forensics', value: String(scan.pinnedTabs.length), inline: true },
-                        { name: '💾 Storage Memory', value: formatBytes(scan.totalBytes), inline: true }
+                        { name: 'Total Accounts', value: String(scan.totalAccounts), inline: true },
+                        { name: 'Flagged Griefers', value: String(scan.totalGriefers), inline: true },
+                        { name: 'Workspaces', value: String(scan.workspaces.length), inline: true },
+                        { name: 'Active Tabs', value: String(scan.allTabs.length), inline: true },
+                        { name: 'Pinned Forensics', value: String(scan.pinnedTabs.length), inline: true },
+                        { name: 'Storage Memory', value: formatBytes(scan.totalBytes), inline: true }
                     ],
                     footer: { text: 'Spectra Forensics Suite · Zero-Server Security' },
                     timestamp: new Date().toISOString()
@@ -1191,12 +1191,12 @@
                     });
                     if (res.ok) {
                         recordMutation('Dispatched forensic intelligence report to Discord webhook', 'create');
-                        showToast('📡 Dispatched forensic report to Discord!');
+                        showToast('Dispatched forensic report to Discord!');
                     } else {
-                        showToast('❌ Webhook dispatch failed: ' + res.statusText);
+                        showToast('Webhook dispatch failed: ' + res.statusText);
                     }
                 } catch (e) {
-                    showToast('❌ Dispatch failed: ' + e.message);
+                    showToast('Dispatch failed: ' + e.message);
                 }
             });
         }
@@ -1237,7 +1237,7 @@
             decryptBtn.addEventListener('click', async () => {
                 const pass = (passInput?.value || '').trim();
                 if (!pass) {
-                    showToast('⚠️ Enter passphrase to unlock payload.');
+                    showToast('Enter passphrase to unlock payload.');
                     return;
                 }
 
@@ -1260,10 +1260,10 @@
                         }
                         statsText.innerHTML = `Contains <strong>${wsCount} workspace${wsCount === 1 ? '' : 's'}</strong> with <strong>${tabCount} total forensic tabs</strong>.`;
                     }
-                    showToast('🔓 Payload decrypted successfully!');
+                    showToast('Payload decrypted successfully!');
                 } catch (err) {
                     console.error(err);
-                    showToast('❌ Decryption failed. Incorrect passphrase or corrupted payload.');
+                    showToast('Decryption failed. Incorrect passphrase or corrupted payload.');
                 } finally {
                     decryptBtn.textContent = 'Unlock & Inspect Payload';
                     decryptBtn.disabled = false;
@@ -1299,7 +1299,7 @@
 
                 cleanupHash();
                 recordMutation('Merged incoming encrypted staff sync payload', 'create');
-                showToast('✅ Merged encrypted staff sync data!');
+                showToast('Merged encrypted staff sync data!');
                 refreshAllWidgets();
                 if (typeof window.refreshDashboardData === 'function') window.refreshDashboardData();
             });
@@ -1324,7 +1324,7 @@
 
                 cleanupHash();
                 recordMutation('Restored entire database from encrypted staff sync payload', 'create');
-                showToast('✅ Database restored from staff sync payload!');
+                showToast('Database restored from staff sync payload!');
                 refreshAllWidgets();
                 if (typeof window.refreshDashboardData === 'function') window.refreshDashboardData();
             });

@@ -46,35 +46,15 @@
                 <span class="brand-name">Spectra</span>
                 <span class="brand-pill">Dashboard</span>
             </a>
-            <a href="workspace.html#main" class="btn btn-ghost btn-sm" id="back-btn" title="Return to Inspector Workspace (#main)">
+            <a href="workspace.html#main" class="btn btn-ghost btn-sm pinned-nav-btn" id="back-btn" title="Return to Inspector Workspace (#main)">
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="16 18 22 12 16 6"></polyline>
                     <polyline points="8 6 2 12 8 18"></polyline>
                 </svg>
-                <span class="btn-label">Workspace (#main)</span>
+                <span class="btn-label">Workspace</span>
             </a>
-            <a href="analytics.html" class="btn btn-ghost btn-sm" id="analytics-nav-btn" title="Deep Forensics &amp; Historical Trends">
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="20" x2="18" y2="10"></line>
-                    <line x1="12" y1="20" x2="12" y2="4"></line>
-                    <line x1="6" y1="20" x2="6" y2="14"></line>
-                </svg>
-                <span class="btn-label">Analytics</span>
-            </a>
-            <a href="diff.html" class="btn btn-ghost btn-sm" id="diff-nav-btn" title="Forensic Visual Diff &amp; Log Comparator">
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="16 3 21 3 21 8"></polyline>
-                    <line x1="4" y1="20" x2="21" y2="3"></line>
-                    <polyline points="21 16 21 21 16 21"></polyline>
-                    <line x1="15" y1="15" x2="21" y2="21"></line>
-                    <line x1="4" y1="4" x2="9" y2="9"></line>
-                </svg>
-                <span class="btn-label">Diff</span>
-            </a>
-            <a href="graph.html" class="btn btn-ghost btn-sm" id="graph-nav-btn" title="Network Alt Graph &amp; Syndicate Visualizer">
+            <a href="graph.html" class="btn btn-ghost btn-sm pinned-nav-btn" id="graph-nav-btn" title="Network Alt Graph &amp; Syndicate Visualizer">
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="18" cy="5" r="3"></circle>
@@ -85,32 +65,26 @@
                 </svg>
                 <span class="btn-label">Alt Graph</span>
             </a>
-            <a href="rules.html" class="btn btn-ghost btn-sm" id="rules-nav-btn" title="Server Rulebook &amp; Ban Matrix Customizer">
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                    <line x1="9" y1="7" x2="15" y2="7"></line>
-                    <line x1="9" y1="11" x2="13" y2="11"></line>
-                </svg>
-                <span class="btn-label">Rulebook</span>
-            </a>
-            <a href="audit.html" class="btn btn-ghost btn-sm" id="audit-nav-btn" title="Griefer &amp; Flagged Account Database">
+            <a href="audit.html" class="btn btn-ghost btn-sm pinned-nav-btn" id="audit-nav-btn" title="Griefer &amp; Flagged Account Database">
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                 </svg>
                 <span class="btn-label">Audit</span>
             </a>
-            <a href="about.html" class="btn btn-ghost btn-sm" id="about-nav-btn" title="About &amp; Documentation">
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            <button id="topbar-tools-drawer-btn" class="topbar-drawer-btn" title="Open All Platform Tools Drawer (14 modules)">
+                <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.2" fill="none">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
                 </svg>
-                <span class="btn-label">About</span>
-            </a>
+                <span>Tools</span>
+                <span style="font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; opacity: 0.75;">(14)</span>
+                <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" class="drawer-chevron">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
         </div>
         <div class="topbar-actions">
             <span class="last-updated" id="last-updated">Loading…</span>
@@ -263,6 +237,30 @@
                             <a href="workspace.html#merge" class="route-tag-pill tag-emerald" title="Open Merge New Data Tool (#merge)">
                                 <code class="tag-code">#merge</code>
                                 <span>Merge Data</span>
+                            </a>
+                            <a href="timeline.html" class="route-tag-pill tag-cyan" title="Open Forensic Incident Timeline">
+                                <code class="tag-code">#timeline</code>
+                                <span>Timeline</span>
+                            </a>
+                            <a href="matrix.html" class="route-tag-pill tag-violet" title="Open Hardware &amp; Network Collision Matrix">
+                                <code class="tag-code">#matrix</code>
+                                <span>Matrix</span>
+                            </a>
+                            <a href="reports.html" class="route-tag-pill tag-green" title="Open Case Dossier &amp; Evidence Pack Generator">
+                                <code class="tag-code">#dossiers</code>
+                                <span>Dossiers</span>
+                            </a>
+                            <a href="converter.html" class="route-tag-pill tag-cyan" title="Open Multi-Framework Log Parser &amp; Transpiler">
+                                <code class="tag-code">#converter</code>
+                                <span>Converter</span>
+                            </a>
+                            <a href="live.html" class="route-tag-pill tag-red" title="Open Tactical Watchlist HUD">
+                                <code class="tag-code">#live</code>
+                                <span>Live HUD</span>
+                            </a>
+                            <a href="vault.html" class="route-tag-pill tag-amber" title="Open Encrypted Data Vault &amp; Migration">
+                                <code class="tag-code">#vault</code>
+                                <span>Data Vault</span>
                             </a>
                         </div>
                     </div>
@@ -1025,7 +1023,7 @@
                     </div>
                 </div>
                 <button type="button" class="btn btn-ghost btn-xs" id="close-layout-modal-btn" aria-label="Close layout manager">
-                    ✕
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
             </div>
             <div class="layout-modal-body">
@@ -1068,7 +1066,7 @@
                         <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-2);">Directly add a new tab into any workspace.</p>
                     </div>
                 </div>
-                <button type="button" class="btn btn-ghost btn-xs" id="close-quick-tab-modal" aria-label="Close modal">✕</button>
+                <button type="button" class="btn btn-ghost btn-xs" id="close-quick-tab-modal" aria-label="Close modal"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
             <div class="layout-modal-body">
                 <div class="modal-form-group">
@@ -1107,7 +1105,7 @@
                         <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-2);">Clean empty or unpopulated tabs to boost workspace hygiene.</p>
                     </div>
                 </div>
-                <button type="button" class="btn btn-ghost btn-xs" id="close-wipe-stale-modal" aria-label="Close modal">✕</button>
+                <button type="button" class="btn btn-ghost btn-xs" id="close-wipe-stale-modal" aria-label="Close modal"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
             <div class="layout-modal-body">
                 <p id="stale-tabs-count-text" style="margin: 0 0 8px 0; font-size: 0.85rem; color: var(--text-1);"></p>
@@ -1141,13 +1139,13 @@
                         <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-2);">Client-side AES-256 encrypted link sharing &amp; Discord webhook dispatch.</p>
                     </div>
                 </div>
-                <button type="button" class="btn btn-ghost btn-xs" id="close-staff-sync-modal" aria-label="Close modal">✕</button>
+                <button type="button" class="btn btn-ghost btn-xs" id="close-staff-sync-modal" aria-label="Close modal"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
             <div class="layout-modal-body">
                 <!-- Sync Tabs -->
                 <div style="display: flex; gap: 6px; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
-                    <button type="button" class="btn btn-secondary btn-xs active" id="sync-tab-link-btn">🔐 Encrypted URL Link</button>
-                    <button type="button" class="btn btn-secondary btn-xs" id="sync-tab-webhook-btn">📡 Discord Webhook</button>
+                    <button type="button" class="btn btn-secondary btn-xs active" id="sync-tab-link-btn"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align: -2px; margin-right: 4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Encrypted URL Link</button>
+                    <button type="button" class="btn btn-secondary btn-xs" id="sync-tab-webhook-btn"><svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align: -2px; margin-right: 4px;"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>Discord Webhook</button>
                 </div>
 
                 <!-- Panel 1: Encrypted URL Hash -->
@@ -1172,7 +1170,7 @@
                         <label style="font-size: 0.75rem; font-weight: 700; color: #38bdf8;">Encrypted Shareable URL:</label>
                         <textarea id="sync-url-output" class="modal-textarea" readonly style="height: 64px; font-family: monospace; font-size: 0.74rem;"></textarea>
                         <button type="button" class="btn btn-secondary btn-sm" id="copy-sync-link-btn" style="width: 100%; margin-top: 6px;">
-                            📋 Copy Shareable Link
+                            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" style="vertical-align: -2px; margin-right: 4px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>Copy Shareable Link
                         </button>
                     </div>
                 </div>
@@ -1222,7 +1220,7 @@
                         <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-2);">This link contains an encrypted forensic payload.</p>
                     </div>
                 </div>
-                <button type="button" class="btn btn-ghost btn-xs" id="close-incoming-sync-modal">✕</button>
+                <button type="button" class="btn btn-ghost btn-xs" id="close-incoming-sync-modal"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
             <div class="layout-modal-body">
                 <div class="modal-form-group">
@@ -1234,7 +1232,10 @@
                 </button>
 
                 <div id="incoming-preview-area" style="display: none; margin-top: 14px; background: var(--surface-2); padding: 12px; border-radius: 8px; border: 1px solid var(--border);">
-                    <div style="font-weight: 700; color: #34d399; font-size: 0.85rem; margin-bottom: 4px;">✓ Successfully Decrypted</div>
+                    <div style="font-weight: 700; color: #34d399; font-size: 0.85rem; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Successfully Decrypted
+                    </div>
                     <div id="incoming-stats-text" style="font-size: 0.78rem; color: var(--text-2);"></div>
                 </div>
             </div>
@@ -1268,6 +1269,7 @@
 
     <script src="assets/js/dashboard.js"></script>
     <script src="assets/js/dashboard-widgets.js"></script>
+    <script src="assets/js/header.js"></script>
 </body>
 
 </html>

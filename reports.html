@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#070711">
+    <meta name="description" content="Spectra Case Dossier & Evidence Pack Generator — Generate official moderation case files, rule citations, and redaction packages.">
+    <title>Spectra · Case Dossier &amp; Evidence Generator</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/logo1.png">
+    <link rel="apple-touch-icon" href="assets/images/logo1.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('multiCheckTheme') || localStorage.getItem('spectraTheme') || 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) { }
+        })();
+    </script>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/reports.css">
+</head>
+
+<body>
+    <div class="orbs" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation Topbar -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <a href="index.html" class="brand-link" title="Spectra Intelligence Dashboard">
+                <div class="brand-icon" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05)); border-color: rgba(16, 185, 129, 0.4); color: #34d399;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                </div>
+                <span class="brand-name">Spectra</span>
+                <span class="brand-pill" style="background: rgba(16, 185, 129, 0.12); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Dossiers</span>
+            </a>
+            <a href="index.html" class="btn btn-ghost btn-sm pinned-nav-btn" id="dashboard-nav-btn" title="Back to Dashboard">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span class="btn-label">Dashboard</span>
+            </a>
+            <a href="workspace.html#main" class="btn btn-ghost btn-sm pinned-nav-btn" id="workspace-nav-btn" title="Open Workspace Inspector (#main)">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                <span class="btn-label">Workspace</span>
+            </a>
+            <a href="reports.html" class="btn btn-ghost btn-sm pinned-nav-btn" id="reports-nav-btn" title="Case Dossier &amp; Evidence Generator" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.12); color: #34d399;">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span class="btn-label">Dossiers</span>
+            </a>
+            <a href="graph.html" class="btn btn-ghost btn-sm pinned-nav-btn" id="graph-nav-btn" title="Network Alt Graph">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+                <span class="btn-label">Alt Graph</span>
+            </a>
+            <a href="audit.html" class="btn btn-ghost btn-sm pinned-nav-btn" id="audit-nav-btn" title="Griefer Database">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span class="btn-label">Audit</span>
+            </a>
+            <button id="topbar-tools-drawer-btn" class="topbar-drawer-btn" title="Open All Platform Tools Drawer (14 modules)">
+                <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.2" fill="none">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                </svg>
+                <span>Tools</span>
+                <span style="font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; opacity: 0.75;">(14)</span>
+                <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" class="drawer-chevron">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+        </div>
+        <div class="topbar-actions">
+            <button class="btn btn-ghost btn-sm" id="theme-toggle-btn" title="Toggle Dark/Light Theme">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+            <button class="btn btn-primary btn-sm" id="print-dossier-btn">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                <span class="btn-label">Print / PDF</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="reports-container">
+        <!-- Hero Section -->
+        <section class="hero" style="margin-bottom: 24px;">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <span class="pill" style="background: rgba(16, 185, 129, 0.12); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">Forensic Evidence &amp; Appeals</span>
+                    <h1>Case Dossier &amp; <span>Evidence Generator</span></h1>
+                    <p>Assemble formal investigation case sheets, cite exact server rule violations, toggle 1-click IP/HWID redaction, and export clean Discord bundles.</p>
+                </div>
+                <div class="info-tooltip-wrap" style="margin-top: 8px;">
+                    <button class="info-tooltip-btn" aria-label="Reports & Dossier Guide" title="Dossier Guide">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </button>
+                    <div class="info-tooltip-content">
+                        <strong style="color: var(--text-1); display: block; margin-bottom: 6px; font-size: 0.85rem;">Case Dossier Help</strong>
+                        Generates publication-ready case sheets for staff channels and appeals. Fill out suspect attributes manually or click <em>Load from Workspace</em>. Toggling <em>Redact IPs &amp; HWIDs</em> automatically masks sensitive identifiers before copying to Discord or exporting.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="reports-layout-grid">
+            <!-- Form Builder Panel -->
+            <section class="reports-form-panel">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px; gap: 10px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <h3 style="margin: 0; font-size: 1.05rem; color: var(--text-1);">Case Parameters</h3>
+                        <button class="btn btn-ghost btn-sm" id="import-ws-report-btn" title="Populate suspect fields from first account in active Workspace" style="font-size: 0.76rem; padding: 3px 8px;">
+                            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Load from Workspace
+                        </button>
+                    </div>
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: #38bdf8;">
+                        <input type="checkbox" id="redaction-toggle" style="accent-color: #38bdf8;">
+                        <span>Redact IPs &amp; HWIDs</span>
+                    </label>
+                </div>
+
+                <div class="reports-field-group">
+                    <label class="reports-field-label">Case Title</label>
+                    <input type="text" id="report-title" class="reports-input" placeholder="e.g. Investigation: Multi-Account Asset Transfer">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="reports-field-group">
+                        <label class="reports-field-label">Investigating Admin</label>
+                        <input type="text" id="report-investigator" class="reports-input" placeholder="Investigator Name / Call-sign">
+                    </div>
+                    <div class="reports-field-group">
+                        <label class="reports-field-label">Severity Level</label>
+                        <select id="report-severity" class="reports-input">
+                            <option value="CRITICAL">Critical (Blacklist)</option>
+                            <option value="HIGH" selected>High (30d - 60d Ban)</option>
+                            <option value="MEDIUM">Medium (7d - 14d Ban)</option>
+                            <option value="LOW">Low (Warning / Mute)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid var(--border); padding-top: 12px;">
+                    <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-1); display: block; margin-bottom: 8px;">Primary Suspect Identity</span>
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="report-target-name" class="reports-input" placeholder="Primary Character Name">
+                        <input type="text" id="report-target-id" class="reports-input" placeholder="Server ID">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <input type="text" id="report-target-ip" class="reports-input" placeholder="IP Address (e.g. 192.168.1.100)">
+                        <input type="text" id="report-target-hwid" class="reports-input" placeholder="Hardware ID (HWID)">
+                    </div>
+                </div>
+
+                <div class="reports-field-group">
+                    <label class="reports-field-label">Cite Violated Server Rules</label>
+                    <div id="rule-chips-picker" class="reports-rule-tag-picker">
+                        <!-- Rule chips loaded dynamically -->
+                    </div>
+                </div>
+
+                <div class="reports-field-group">
+                    <label class="reports-field-label">Forensic Log Evidence &amp; Transcripts</label>
+                    <textarea id="report-evidence-text" class="reports-input" rows="5" style="resize: vertical; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;" placeholder="Paste incident logs, timestamps, or moderation evidence transcripts..."></textarea>
+                </div>
+
+                <div class="reports-field-group">
+                    <label class="reports-field-label">Sanction Recommendation</label>
+                    <input type="text" id="report-sanction" class="reports-input" placeholder="e.g. 60d Ban + Linked Alt Accounts">
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 6px;">
+                    <button class="btn btn-primary" id="copy-discord-dossier-btn" style="flex: 1;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        Copy Discord Embed
+                    </button>
+                    <button class="btn btn-secondary" id="export-json-dossier-btn">
+                        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        JSON Pack
+                    </button>
+                </div>
+            </section>
+
+            <!-- Dossier Live Preview Sheet -->
+            <section class="dossier-preview-wrapper" id="printable-dossier">
+                <div class="dossier-watermark">SPECTRA DOSSIER</div>
+
+                <div class="dossier-header">
+                    <div class="dossier-seal-badge">
+                        <div class="dossier-seal-icon">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.72rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.8px;">OFFICIAL FORENSIC INCIDENT REPORT</div>
+                            <div class="dossier-case-number" id="dossier-case-num">CAS-2026-0918-001</div>
+                        </div>
+                    </div>
+                    <div id="dossier-severity" class="badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">CRITICAL</div>
+                </div>
+
+                <h2 id="dossier-title" style="font-size: 1.35rem; color: var(--text-1); margin: 0 0 16px;">Case Title</h2>
+
+                <div class="dossier-grid">
+                    <div class="dossier-meta-item">
+                        <div class="dossier-meta-lbl">Investigator</div>
+                        <div id="dossier-admin" style="font-weight: 700; color: var(--text-1);">Admin</div>
+                    </div>
+                    <div class="dossier-meta-item">
+                        <div class="dossier-meta-lbl">Date Logged</div>
+                        <div id="dossier-date" style="font-weight: 700; color: var(--text-1);">Date</div>
+                    </div>
+                    <div class="dossier-meta-item">
+                        <div class="dossier-meta-lbl">Verification Protocol</div>
+                        <div style="font-weight: 700; color: #10b981;">100% Client Sandbox Verified</div>
+                    </div>
+                </div>
+
+                <div class="dossier-section-title">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                    </svg>
+                    Identified Suspect Cluster &amp; Linked Alternates
+                </div>
+
+                <table class="dossier-identities-table">
+                    <thead>
+                        <tr>
+                            <th>Identity / Tag</th>
+                            <th>Server ID</th>
+                            <th>Public IP</th>
+                            <th>Hardware ID (HWID)</th>
+                            <th>Discord UID</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dossier-identities-tbody">
+                        <!-- Populated by reports.js -->
+                    </tbody>
+                </table>
+
+                <div class="dossier-section-title">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    Rulebook Violations &amp; Articles Cited
+                </div>
+                <div id="dossier-citations-list" style="margin-bottom: 20px;">
+                    <!-- Citations list -->
+                </div>
+
+                <div class="dossier-section-title">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                        <polyline points="4 17 10 11 4 5"></polyline>
+                        <line x1="12" y1="19" x2="20" y2="19"></line>
+                    </svg>
+                    Evidence Log Transcript
+                </div>
+                <div class="dossier-evidence-box" id="dossier-evidence-content">
+                    <!-- Evidence transcript -->
+                </div>
+
+                <div class="dossier-section-title">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                    </svg>
+                    Recommended Administrative Enforcement
+                </div>
+                <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 8px; padding: 12px 16px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #f87171; margin-bottom: 24px;" id="dossier-sanction-content">
+                    <!-- Sanction -->
+                </div>
+
+                <div class="dossier-footer">
+                    <div>Document Signature: <span id="dossier-security-hash" style="color: var(--text-2);">SPECTRA-SIG-SHA256</span></div>
+                    <div>Page 1 of 1 • Internal Staff Record</div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="assets/js/reports.js"></script>
+    <script src="assets/js/header.js"></script>
+</body>
+
+</html>

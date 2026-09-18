@@ -49,7 +49,7 @@
     function showToast(msg, duration = 3000) {
         const toast = document.getElementById('toast');
         if (!toast) return;
-        toast.innerHTML = msg;
+        toast.innerHTML = `<img src="assets/images/logo1.png" alt="" class="toast-favicon" style="width:15px;height:15px;vertical-align:middle;margin-right:7px;border-radius:3px;display:inline-block;"><span>${msg}</span>`;
         toast.classList.add('show', 'visible');
         clearTimeout(toast._timer);
         toast._timer = setTimeout(() => {
@@ -293,7 +293,7 @@
         const contentB = resolveSourceContent(selectB?.value, rawAreaB?.value);
 
         if (!contentA.trim() && !contentB.trim()) {
-            showToast('⚠️ Both sources are empty. Select active tabs or paste log data.');
+            showToast('Both sources are empty. Select active tabs or paste log data.');
             return;
         }
 
@@ -504,7 +504,7 @@
         out += '```';
 
         navigator.clipboard.writeText(out).then(() => {
-            showToast('📋 Copied Discord formatted diff block to clipboard!');
+            showToast('Copied Discord formatted diff block to clipboard!');
         });
     }
 

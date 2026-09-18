@@ -575,7 +575,7 @@
     let toastTimer = null;
     function toast(message) {
         if (!els.toast) return;
-        els.toast.textContent = message;
+        els.toast.innerHTML = `<img src="assets/images/logo1.png" alt="" class="toast-favicon" style="width:15px;height:15px;vertical-align:middle;margin-right:7px;border-radius:3px;display:inline-block;"><span>${message}</span>`;
         els.toast.classList.add('show');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => els.toast && els.toast.classList.remove('show'), 2200);

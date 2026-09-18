@@ -1,0 +1,159 @@
+/* ==========================================================================
+   Spectra Encrypted Data Vault & Migration Manager Stylesheet
+   ========================================================================== */
+
+.vault-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px 20px 80px 20px;
+}
+
+/* Storage Meter Grid */
+.vault-meter-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    margin-bottom: 24px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.vault-meter-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.vault-meter-bar {
+    width: 100%;
+    height: 12px;
+    background: var(--bg-deep);
+    border-radius: 6px;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+}
+
+.vault-meter-segment {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.seg-workspaces { background: #38bdf8; }
+.seg-tabs { background: #10b981; }
+.seg-audit { background: #ef4444; }
+.seg-rules { background: #fbbf24; }
+.seg-snapshots { background: #818cf8; }
+
+.vault-meter-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-2);
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+/* Vault Actions Grid */
+.vault-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.vault-action-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    transition: all 0.2s ease;
+}
+
+.vault-action-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+}
+
+.vault-action-card.danger-card {
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.vault-action-card.danger-card:hover {
+    border-color: #ef4444;
+}
+
+.vault-card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.vault-card-desc {
+    font-size: 0.85rem;
+    color: var(--text-3);
+    line-height: 1.5;
+}
+
+.vault-input {
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    color: var(--text-1);
+    font-size: 0.88rem;
+    font-family: 'JetBrains Mono', monospace;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s ease;
+}
+
+[data-theme="light"] .vault-input {
+    background: #f8fafc;
+}
+
+.vault-input:focus {
+    border-color: #f59e0b;
+}
+
+/* Snapshots List */
+.vault-snapshots-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.vault-snapshots-table th {
+    text-align: left;
+    background: var(--bg-deep);
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    color: var(--text-3);
+    font-size: 0.78rem;
+}
+
+.vault-snapshots-table td {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    color: var(--text-1);
+}

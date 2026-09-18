@@ -1974,6 +1974,8 @@ body {
     bottom: 26px;
     transform: translate(-50%, 16px);
     z-index: 200;
+    display: inline-flex;
+    align-items: center;
     background: rgba(17, 17, 36, 0.92);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
@@ -1992,6 +1994,17 @@ body {
 .toast.show {
     opacity: 1;
     transform: translate(-50%, 0);
+}
+
+.toast-favicon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+    border-radius: 3px;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 
 @keyframes fadeUp {
@@ -2182,6 +2195,131 @@ body {
     .item-meta {
         white-space: normal;
     }
+}
+
+.hidden,
+[hidden] {
+    display: none !important;
+}
+
+/* Universal Modal Overlay System */
+.modal {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(4, 7, 18, 0.78);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 1;
+    visibility: visible;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.modal.hidden,
+.modal[hidden] {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.modal .modal-content {
+    background: var(--bg-1, #0c101d);
+    border: 1px solid var(--border-strong, rgba(255, 255, 255, 0.12));
+    border-radius: var(--radius-lg, 16px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    padding: 24px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+[data-theme="light"] .modal .modal-content {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+}
+
+@keyframes modalPopIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Info Tooltip Component (No Emojis) */
+.info-tooltip-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.info-tooltip-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--surface, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+    color: var(--text-2, #94a3b8);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.info-tooltip-btn:hover {
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+    border-color: rgba(56, 189, 248, 0.35);
+}
+
+.info-tooltip-content {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 290px;
+    padding: 12px 14px;
+    background: var(--bg-1, #0f172a);
+    border: 1px solid var(--border-strong, rgba(255, 255, 255, 0.15));
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--text-2, #94a3b8);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+    text-align: left;
+}
+
+.info-tooltip-content.align-left {
+    right: auto;
+    left: 0;
+}
+
+.info-tooltip-wrap:hover .info-tooltip-content,
+.info-tooltip-wrap:focus-within .info-tooltip-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .modal-backdrop {

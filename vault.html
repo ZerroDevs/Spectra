@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#070711">
+    <meta name="description" content="Spectra Encrypted Data Vault & Migration Manager — 256-bit AES-GCM password-encrypted export, storage diagnostics, and zero-trace data purge.">
+    <title>Spectra · Encrypted Data Vault &amp; Migration</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/logo1.png">
+    <link rel="apple-touch-icon" href="assets/images/logo1.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('multiCheckTheme') || localStorage.getItem('spectraTheme') || 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) { }
+        })();
+    </script>
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/vault.css">
+</head>
+
+<body>
+    <div class="orbs" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation Topbar -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <a href="index.html" class="brand-link" title="Spectra Intelligence Dashboard">
+                <div class="brand-icon" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05)); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </div>
+                <span class="brand-name">Spectra</span>
+                <span class="brand-pill" style="background: rgba(245, 158, 11, 0.12); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">Data Vault</span>
+            </a>
+            <a href="index.html" class="btn btn-ghost btn-sm pinned-nav-btn" id="dashboard-nav-btn" title="Back to Dashboard">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span class="btn-label">Dashboard</span>
+            </a>
+            <a href="workspace.html#main" class="btn btn-ghost btn-sm pinned-nav-btn" id="workspace-nav-btn" title="Open Workspace Inspector (#main)">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <polyline points="16 18 22 12 16 6"></polyline>
+                    <polyline points="8 6 2 12 8 18"></polyline>
+                </svg>
+                <span class="btn-label">Workspace</span>
+            </a>
+            <a href="vault.html" class="btn btn-ghost btn-sm pinned-nav-btn" id="vault-nav-btn" title="Data Vault &amp; Migration" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.12); color: #fbbf24;">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span class="btn-label">Vault</span>
+            </a>
+            <a href="graph.html" class="btn btn-ghost btn-sm pinned-nav-btn" id="graph-nav-btn" title="Network Alt Graph &amp; Syndicate Visualizer">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+                <span class="btn-label">Alt Graph</span>
+            </a>
+            <a href="audit.html" class="btn btn-ghost btn-sm pinned-nav-btn" id="audit-nav-btn" title="Griefer &amp; Flagged Account Database">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span class="btn-label">Audit</span>
+            </a>
+            <button id="topbar-tools-drawer-btn" class="topbar-drawer-btn" title="Open All Platform Tools Drawer (14 modules)">
+                <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.2" fill="none">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                </svg>
+                <span>Tools</span>
+                <span style="font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; opacity: 0.75;">(14)</span>
+                <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.5" fill="none" class="drawer-chevron">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+        </div>
+        <div class="topbar-actions">
+            <button class="btn btn-ghost btn-sm" id="theme-toggle-btn" title="Toggle Dark/Light Theme">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="vault-container">
+        <!-- Hero Section -->
+        <section class="hero" style="margin-bottom: 24px;">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+                <div>
+                    <span class="pill" style="background: rgba(245, 158, 11, 0.12); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">Client-Side Data Portability</span>
+                    <h1>Encrypted Data Vault &amp; <span>Migration</span></h1>
+                    <p>Export AES-GCM 256-bit password-protected <code>.spectra</code> vault bundles, inspect client-side storage usage, rollback historical checkpoints, or execute a zero-trace data purge.</p>
+                </div>
+                <div class="info-tooltip-wrap" style="margin-top: 8px;">
+                    <button class="info-tooltip-btn" aria-label="Vault Security Guide" title="Vault Guide">
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </button>
+                    <div class="info-tooltip-content">
+                        <strong style="color: var(--text-1); display: block; margin-bottom: 6px; font-size: 0.85rem;">Vault &amp; Encryption Help</strong>
+                        All investigation databases are preserved exclusively in your local browser sandbox. Encrypted exports use Web Crypto API AES-GCM 256-bit encryption with PBKDF2 key derivation. Emergency Shred instantly purges all local storage.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Storage Diagnostics Meter -->
+        <section class="vault-meter-card">
+            <div class="vault-meter-header">
+                <div>
+                    <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-1);">Browser Storage Diagnostics</h3>
+                    <div style="font-size: 0.8rem; color: var(--text-3); margin-top: 2px;">100% Client-Side LocalStorage Sandbox (Zero Cloud Storage)</div>
+                </div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 1.25rem; font-weight: 800; color: #fbbf24;" id="vault-storage-total">0 KB</div>
+            </div>
+
+            <div class="vault-meter-bar">
+                <div id="seg-ws" class="vault-meter-segment seg-workspaces" style="width: 25%;" title="Workspaces Data"></div>
+                <div id="seg-tabs" class="vault-meter-segment seg-tabs" style="width: 35%;" title="Workspace Tabs & Records"></div>
+                <div id="seg-audit" class="vault-meter-segment seg-audit" style="width: 15%;" title="Blacklist & Audit Notes"></div>
+                <div id="seg-rules" class="vault-meter-segment seg-rules" style="width: 15%;" title="Rulebook & Ban Matrices"></div>
+                <div id="seg-snap" class="vault-meter-segment seg-snapshots" style="width: 10%;" title="Historical Snapshots"></div>
+            </div>
+
+            <div class="vault-meter-legend">
+                <div><span class="legend-dot seg-workspaces"></span>Workspaces</div>
+                <div><span class="legend-dot seg-tabs"></span>Tabs &amp; Records</div>
+                <div><span class="legend-dot seg-audit"></span>Griefer Database</div>
+                <div><span class="legend-dot seg-rules"></span>Rule Matrices</div>
+                <div><span class="legend-dot seg-snapshots"></span>Historical Snapshots</div>
+            </div>
+        </section>
+
+        <!-- Vault Operations Grid -->
+        <div class="vault-grid">
+            <!-- Encrypted Export -->
+            <section class="vault-action-card">
+                <div>
+                    <div class="vault-card-title">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" style="color: #fbbf24;">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Encrypted Vault Export (.spectra)
+                    </div>
+                    <div class="vault-card-desc">
+                        Exports all workspaces, rule profiles, custom blacklists, and graph clusters into an AES-GCM 256-bit encrypted bundle.
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="password" id="vault-export-pwd" class="vault-input" placeholder="Enter vault encryption passphrase...">
+                    <button class="btn btn-primary" id="export-encrypted-btn" style="width: 100%;">
+                        Export Encrypted .spectra
+                    </button>
+                    <button class="btn btn-secondary btn-sm" id="export-json-btn" style="width: 100%;">
+                        Download Plain JSON Snapshot
+                    </button>
+                </div>
+            </section>
+
+            <!-- Decrypt & Restore -->
+            <section class="vault-action-card">
+                <div>
+                    <div class="vault-card-title">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" style="color: #38bdf8;">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Restore Vault Bundle
+                    </div>
+                    <div class="vault-card-desc">
+                        Select a <code>.spectra</code> (encrypted) or <code>.json</code> snapshot to restore previous investigation states.
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="file" id="vault-import-file" class="vault-input" accept=".spectra,.json" style="padding: 6px;">
+                    <input type="password" id="vault-import-pwd" class="vault-input" placeholder="Passphrase (if encrypted .spectra)...">
+                    <button class="btn btn-primary" id="vault-import-btn" style="width: 100%;">
+                        Decrypt &amp; Restore Vault
+                    </button>
+                </div>
+            </section>
+
+            <!-- Emergency Shredder -->
+            <section class="vault-action-card danger-card">
+                <div>
+                    <div class="vault-card-title" style="color: #f87171;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        Zero-Trace Data Shredder
+                    </div>
+                    <div class="vault-card-desc">
+                        Permanently purges all workspaces, records, and moderation notes from this browser. Recommended when departing a shared computer.
+                    </div>
+                </div>
+
+                <div>
+                    <button class="btn btn-secondary" id="open-shred-modal-btn" style="width: 100%; border-color: rgba(239, 68, 68, 0.4); color: #f87171;">
+                        Execute Zero-Trace Wipe
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <!-- Snapshots Checkpoints List -->
+        <section class="vault-meter-card">
+            <h3 style="margin: 0 0 16px; font-size: 1.1rem; color: var(--text-1);">Historical Checkpoints &amp; Rollback</h3>
+            <table class="vault-snapshots-table">
+                <thead>
+                    <tr>
+                        <th>Checkpoint Name</th>
+                        <th>Created Timestamp</th>
+                        <th>Record Scope</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="vault-snapshots-tbody">
+                    <!-- Populated by vault.js -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Shred Confirmation Modal -->
+    <div id="shred-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="shred-modal-title">
+        <div class="modal-content glass" style="width: 480px; max-width: 95vw; border-color: rgba(239, 68, 68, 0.4);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="#f87171" stroke-width="2" fill="none">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <h3 id="shred-modal-title" style="margin: 0; font-size: 1.15rem; color: #f87171;">Confirm Zero-Trace Data Shred</h3>
+                </div>
+                <button id="close-shred-modal-btn" class="icon-btn small" style="width: 28px; height: 28px;" aria-label="Close modal">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <p style="color: var(--text-2); font-size: 0.85rem; line-height: 1.6; margin: 0 0 16px;">
+                This action is <strong>irreversible</strong>. All tabs, logs, custom rules, blacklists, and historical snapshots will be permanently deleted from browser storage.
+            </p>
+            <p style="color: var(--text-3); font-size: 0.82rem; margin: 0 0 8px;">
+                To confirm, type <strong style="color: #f87171;">CONFIRM SHRED</strong> below:
+            </p>
+            <input type="text" id="shred-confirm-input" class="vault-input" style="margin-bottom: 16px; border-color: rgba(239, 68, 68, 0.5);" placeholder="CONFIRM SHRED">
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn btn-secondary" id="cancel-shred-btn">Cancel</button>
+                <button class="btn btn-primary" id="confirm-shred-btn" style="background: #ef4444; border-color: #dc2626;">Purge All Local Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="assets/js/vault.js"></script>
+    <script src="assets/js/header.js"></script>
+</body>
+
+</html>

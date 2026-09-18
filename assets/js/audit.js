@@ -60,7 +60,7 @@
     function showToast(msg, duration = 2800) {
         const toast = document.getElementById('toast');
         if (!toast) return;
-        toast.innerHTML = msg;
+        toast.innerHTML = `<img src="assets/images/logo1.png" alt="" class="toast-favicon" style="width:15px;height:15px;vertical-align:middle;margin-right:7px;border-radius:3px;display:inline-block;"><span>${msg}</span>`;
         toast.classList.add('visible');
         clearTimeout(toast._timer);
         toast._timer = setTimeout(() => toast.classList.remove('visible'), duration);
@@ -270,7 +270,7 @@
                 const reason = btn.dataset.banReason || 'Rule Violation';
                 const cmd = `/ban ${id} 60 ${reason}`;
                 navigator.clipboard.writeText(cmd).then(() => {
-                    showToast(`📋 Copied: <code>${cmd}</code>`);
+                    showToast(`Copied: <code>${cmd}</code>`);
                 });
             });
         });
@@ -407,7 +407,7 @@
             copyBtn.addEventListener('click', () => {
                 if (!preview) return;
                 navigator.clipboard.writeText(preview.value).then(() => {
-                    showToast('📋 Copied blocklist to clipboard!');
+                    showToast('Copied blocklist to clipboard!');
                 });
             });
         }

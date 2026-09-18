@@ -48,7 +48,7 @@
     function showToast(msg, duration = 3000) {
         const toast = document.getElementById('toast');
         if (!toast) return;
-        toast.innerHTML = msg;
+        toast.innerHTML = `<img src="assets/images/logo1.png" alt="" class="toast-favicon" style="width:15px;height:15px;vertical-align:middle;margin-right:7px;border-radius:3px;display:inline-block;"><span>${msg}</span>`;
         toast.classList.add('show', 'visible');
         clearTimeout(toast._timer);
         toast._timer = setTimeout(() => toast.classList.remove('show', 'visible'), duration);
@@ -186,7 +186,7 @@
         const reason = (document.getElementById('rule-reason-input')?.value || '').trim() || `${code} Violation`;
 
         if (!code || !name) {
-            showToast('⚠️ Rule Code and Rule Title are required.');
+            showToast('Rule Code and Rule Title are required.');
             return;
         }
 
@@ -319,8 +319,8 @@
                         <button type="button" class="btn btn-secondary" data-edit-rule="${r.id}" title="Edit Rule" style="padding: 4px 8px; font-size: 0.74rem;">
                             Edit
                         </button>
-                        <button type="button" class="btn btn-secondary" data-del-rule="${r.id}" title="Delete Rule" style="padding: 4px 8px; font-size: 0.74rem; color: #f87171;">
-                            ✕
+                        <button type="button" class="btn btn-secondary" data-del-rule="${r.id}" title="Delete Rule" style="padding: 4px 8px; font-size: 0.74rem; color: #f87171;" aria-label="Delete Rule">
+                            <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         </button>
                     </div>
                 </td>
@@ -339,7 +339,7 @@
                         .replace(/\{reason\}/gi, rule.reason)
                         .replace(/\{code\}/gi, rule.code);
                     navigator.clipboard.writeText(cmd).then(() => {
-                        showToast(`📋 Copied rule syntax: <code>${cmd}</code>`);
+                        showToast(`Copied rule syntax: <code>${cmd}</code>`);
                     });
                 }
             });

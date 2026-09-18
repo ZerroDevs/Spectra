@@ -1,0 +1,217 @@
+/* ==========================================================================
+   Spectra Tactical Watchlist & Second-Screen HUD Stylesheet
+   ========================================================================== */
+
+.live-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 20px 60px 20px;
+}
+
+/* Tactical HUD Topbar Banner */
+.live-hud-header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.live-clock-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.live-beacon {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ef4444;
+    box-shadow: 0 0 12px #ef4444;
+    animation: livePulse 1.8s infinite ease-in-out;
+}
+
+@keyframes livePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+.live-clock-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-1);
+    line-height: 1;
+}
+
+.live-clock-utc {
+    font-size: 0.78rem;
+    color: var(--text-3);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Triage Quick Search Bar */
+.live-triage-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 18px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.live-triage-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    transition: all 0.2s ease;
+}
+
+[data-theme="light"] .live-triage-input-wrapper {
+    background: #f8fafc;
+}
+
+.live-triage-input-wrapper:focus-within {
+    border-color: #ef4444;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.2);
+}
+
+.live-triage-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-1);
+    font-size: 0.95rem;
+    width: 100%;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.live-triage-result-card {
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+}
+
+.live-triage-result-card.match-alert {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+    animation: flashAlert 0.4s ease;
+}
+
+@keyframes flashAlert {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+/* Watchlist Suspect Grid */
+.live-watchlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+}
+
+.live-suspect-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.live-suspect-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+}
+
+.live-suspect-card.pinned-high {
+    border-left: 4px solid #ef4444;
+}
+
+.live-suspect-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.live-suspect-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-1);
+}
+
+.live-suspect-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-3);
+}
+
+.live-suspect-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg-deep);
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.live-suspect-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.live-action-btn {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.live-action-btn:hover {
+    color: var(--text-1);
+    border-color: var(--border-strong);
+}
+
+.live-action-btn.ban-btn {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #f87171;
+}
+
+.live-action-btn.ban-btn:hover {
+    background: rgba(239, 68, 68, 0.25);
+}

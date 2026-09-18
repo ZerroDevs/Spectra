@@ -874,7 +874,7 @@
                     <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">Inspector Architecture</span>
                     <h3 style="margin: 0; font-size: 1.15rem;">Workspace Normalizer Overview</h3>
                 </div>
-                <button id="close-guide-modal-btn" class="icon-btn small" style="width: 28px; height: 28px;">✕</button>
+                <button id="close-guide-modal-btn" class="icon-btn small" style="width: 28px; height: 28px;" aria-label="Close guide"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
             </div>
             <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); margin-bottom: 16px; box-shadow: 0 12px 28px -10px rgba(0,0,0,0.5); background: #0b0f17;">
                 <img src="assets/images/showcase/workspace_inspector.svg" alt="Workspace Dual-Pane Inspector Blueprint" style="width: 100%; height: auto; display: block;">
@@ -973,6 +973,7 @@
     </div>
 
     <script src="assets/js/script.js"></script>
+    <script src="assets/js/header.js"></script>
     <script>
         document.getElementById('guide-modal-btn')?.addEventListener('click', () => document.getElementById('guide-modal')?.classList.remove('hidden'));
         document.getElementById('close-guide-modal-btn')?.addEventListener('click', () => document.getElementById('guide-modal')?.classList.add('hidden'));

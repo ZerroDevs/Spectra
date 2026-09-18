@@ -591,7 +591,7 @@
             banBtn.onclick = () => {
                 const cmd = `/ban ${node.id !== 'N/A' ? node.id : node.name} 60 ${node.tags || 'Griefer'}`;
                 navigator.clipboard.writeText(cmd).then(() => {
-                    showToast(`📋 Copied command: <code>${cmd}</code>`);
+                    showToast(`Copied command: <code>${cmd}</code>`);
                 });
             };
         }
@@ -610,7 +610,7 @@
     function showToast(msg) {
         const toast = document.getElementById('toast');
         if (!toast) return;
-        toast.innerHTML = msg;
+        toast.innerHTML = `<img src="assets/images/logo1.png" alt="" class="toast-favicon" style="width:15px;height:15px;vertical-align:middle;margin-right:7px;border-radius:3px;display:inline-block;"><span>${msg}</span>`;
         toast.classList.add('show', 'visible');
         clearTimeout(toast._timer);
         toast._timer = setTimeout(() => toast.classList.remove('show', 'visible'), 3000);

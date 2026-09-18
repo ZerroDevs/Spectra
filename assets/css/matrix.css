@@ -1,0 +1,273 @@
+/* ==========================================================================
+   Spectra Hardware & Network Collision Matrix Stylesheet
+   ========================================================================== */
+
+.matrix-container {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 24px 20px 80px 20px;
+}
+
+/* Vitals Grid */
+.matrix-vitals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.matrix-vital-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: all 0.2s ease;
+}
+
+[data-theme="light"] .matrix-vital-card {
+    background: #ffffff;
+    box-shadow: 0 4px 18px -4px rgba(15, 23, 42, 0.05);
+}
+
+.matrix-vital-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+}
+
+.matrix-vital-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.matrix-vital-num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-1);
+    line-height: 1.1;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.matrix-vital-lbl {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+/* Controls Bar */
+.matrix-controls-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.matrix-controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.matrix-view-toggle {
+    display: inline-flex;
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+    gap: 4px;
+}
+
+.matrix-toggle-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-2);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.matrix-toggle-btn.active {
+    background: var(--surface);
+    color: #818cf8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Heatmap Grid */
+.matrix-heatmap-wrapper {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+}
+
+.matrix-heatmap-table {
+    border-collapse: separate;
+    border-spacing: 3px;
+    margin: 0 auto;
+}
+
+.matrix-heatmap-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-3);
+    padding: 6px 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.matrix-cell {
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    user-select: none;
+}
+
+.matrix-cell:hover {
+    transform: scale(1.18);
+    z-index: 10;
+    box-shadow: 0 0 12px rgba(129, 140, 248, 0.6);
+}
+
+.matrix-cell.self {
+    background: rgba(30, 41, 59, 0.5);
+    color: var(--text-3);
+    cursor: default;
+}
+
+.matrix-cell.score-0 {
+    background: rgba(15, 23, 42, 0.6);
+    color: transparent;
+}
+
+.matrix-cell.score-low {
+    background: rgba(56, 189, 248, 0.2);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.matrix-cell.score-med {
+    background: rgba(245, 158, 11, 0.25);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.matrix-cell.score-high {
+    background: rgba(239, 68, 68, 0.3);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+/* Pairwise Ranked List */
+.matrix-ranked-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.matrix-ranked-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    transition: all 0.2s ease;
+}
+
+.matrix-ranked-item:hover {
+    border-color: var(--border-strong);
+    transform: translateX(4px);
+}
+
+.matrix-match-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.15rem;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.score-badge-high {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.score-badge-med {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.score-badge-low {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+/* Subnet & Cluster Panel */
+.matrix-subnet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.matrix-subnet-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+}
+
+.matrix-subnet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.matrix-subnet-ip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-1);
+}

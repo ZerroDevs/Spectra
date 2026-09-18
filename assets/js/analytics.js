@@ -142,7 +142,7 @@
     function showToast(msg, duration = 3500, isRoast = false) {
         const toast = document.getElementById('toast');
         if (!toast) return;
-        toast.innerHTML = msg;
+        toast.innerHTML = `<img src="assets/images/logo1.png" alt="" class="toast-favicon" style="width:15px;height:15px;vertical-align:middle;margin-right:7px;border-radius:3px;display:inline-block;"><span>${msg}</span>`;
         toast.classList.add('show');
         toast.classList.add('visible');
         if (isRoast) toast.classList.add('roast');
@@ -292,7 +292,7 @@
 
         if (manual) {
             logTemporalMutation(`Forensic snapshot captured (${system.totalAccounts} accounts)`, 'create');
-            showToast('📸 Forensic snapshot captured successfully!');
+            showToast('Forensic snapshot captured successfully!');
             renderAll();
         }
     }
@@ -474,7 +474,7 @@
                         <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                         ${c.identity}
                     </span>
-                    ${c.hasConflict ? '<span class="collision-conflict-badge">⚠️ Classification Conflict</span>' : ''}
+                    ${c.hasConflict ? '<span class="collision-conflict-badge"><svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2.2" fill="none" style="vertical-align: -1px; margin-right: 4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>Classification Conflict</span>' : ''}
                 </div>
 
                 <div class="collision-occurrences">
@@ -572,7 +572,7 @@
             if (restoreBtn) {
                 restoreBtn.addEventListener('click', () => {
                     localStorage.removeItem(KEYS.clearedAt);
-                    showToast('👀 Guilt got the better of you? Full activity history resurrected.', 3500, true);
+                    showToast('Guilt got the better of you? Full activity history resurrected.', 3500, true);
                     const updatedSystem = scanSystem();
                     renderTimeline(updatedSystem);
                 });
@@ -653,14 +653,14 @@
 
         let roastIndex = 0;
         const CLEAR_ROASTS = [
-            "🔥 Timeline incinerated! What shady evidence were you trying to bury?",
-            "🧹 Running from your past faster than a griefer dodging a ban hammer, huh?",
-            "💀 Plausible deniability unlocked: Even the feds couldn't trace those mutations now.",
-            "🕵️‍♂️ Evidence shredded! Moving like a covert operative with zero paper trail.",
-            "✨ Poof! Wiped cleaner than an admin's search history before an audit.",
-            "🗑️ Timeline nuked! Pretending you never touched those tabs, are we?",
-            "🧼 Fresh slate! Your browser storage thanks you, but your conscience remembers.",
-            "⚡ Scorched earth! 0 logs, 0 traces, 100% suspicious behavior detected."
+            "Timeline incinerated! What shady evidence were you trying to bury?",
+            "Running from your past faster than a griefer dodging a ban hammer, huh?",
+            "Plausible deniability unlocked: Even the feds couldn't trace those mutations now.",
+            "Evidence shredded! Moving like a covert operative with zero paper trail.",
+            "Poof! Wiped cleaner than an admin's search history before an audit.",
+            "Timeline nuked! Pretending you never touched those tabs, are we?",
+            "Fresh slate! Your browser storage thanks you, but your conscience remembers.",
+            "Scorched earth! 0 logs, 0 traces, 100% suspicious behavior detected."
         ];
 
         // Bind Clear Timeline Button with Roast Notification
