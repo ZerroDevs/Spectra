@@ -5151,7 +5151,7 @@ hoverCopyPopup.addEventListener('click', () => {
         }
         robustCopy(textToCopy, () => {
             const savedInner = hoverCopyType.textContent;
-            hoverCopyType.textContent = '✓ Copied!';
+            hoverCopyType.textContent = 'Copied!';
             setTimeout(() => {
                 hoverCopyType.textContent = savedInner;
                 isMouseOverPopup = false;
@@ -5799,7 +5799,7 @@ const banInputLabel = document.getElementById('ban-input-label');
 importFromTabBtn.onclick = () => {
     banInputArea.value = outputArea.value;
     const originalText = importFromTabBtn.textContent;
-    importFromTabBtn.textContent = '✓ Imported!';
+    importFromTabBtn.textContent = 'Imported!';
     if (typeof saveBanGeneratorState === 'function') saveBanGeneratorState();
     setTimeout(() => importFromTabBtn.textContent = originalText, 2000);
 };
@@ -6193,7 +6193,7 @@ if (banOutputArea && banLineNumbers) {
                     const name = parts[1];
                     const originalText = e.target.textContent;
                     robustCopy(name, () => {
-                        e.target.textContent = '✓';
+                        e.target.textContent = 'Copied';
                         e.target.style.color = '#22c55e';
                         e.target.style.fontWeight = 'bold';
                         setTimeout(() => {

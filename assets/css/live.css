@@ -10,6 +10,8 @@
 
 /* Tactical HUD Topbar Banner */
 .live-hud-header {
+    position: relative;
+    z-index: 40;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
@@ -22,6 +24,13 @@
     flex-wrap: wrap;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+}
+
+.live-hud-header:hover,
+.live-hud-header:focus-within,
+.live-hud-header:has(.info-tooltip-wrap:hover),
+.live-hud-header:has(.info-tooltip-wrap:focus-within) {
+    z-index: 9999 !important;
 }
 
 .live-clock-wrapper {
@@ -60,6 +69,8 @@
 
 /* Triage Quick Search Bar */
 .live-triage-bar {
+    position: relative;
+    z-index: 1;
     margin-bottom: 24px;
 }
 

@@ -1,0 +1,31 @@
+{
+  "name": "spectra",
+  "version": "3.0.0",
+  "description": "Spectra v3.0.0 · High-Performance Client-Side Intelligence & Forensic Suite",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx -y serve .",
+    "seo": "node scripts/generate-seo.js",
+    "build:seo": "node scripts/generate-seo.js",
+    "lint": "node scripts/lint.js",
+    "lint:js": "node scripts/lint.js",
+    "test": "node scripts/lint.js && node scripts/generate-seo.js"
+  },
+  "keywords": [
+    "spectra",
+    "fivem",
+    "moderation",
+    "forensics",
+    "intelligence",
+    "client-side",
+    "security-audit",
+    "log-parser"
+  ],
+  "author": "ZerroDevs (https://github.com/ZerroDevs)",
+  "license": "MIT",
+  "homepage": "https://zerrodevs.github.io/Spectra",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZerroDevs/Spectra.git"
+  }
+}

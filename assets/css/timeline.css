@@ -10,6 +10,8 @@
 
 /* Timeline Metrics Grid */
 .timeline-metrics-grid {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 16px;

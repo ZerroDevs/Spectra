@@ -601,6 +601,15 @@ body {
     text-align: center;
     margin-bottom: 36px;
     animation: fadeUp 0.5s ease both;
+    position: relative;
+    z-index: 40;
+}
+
+.hero:hover,
+.hero:focus-within,
+.hero:has(.info-tooltip-wrap:hover),
+.hero:has(.info-tooltip-wrap:focus-within) {
+    z-index: 9999 !important;
 }
 
 .pill {
@@ -2510,6 +2519,22 @@ select.reports-input option {
     position: relative;
     display: inline-flex;
     align-items: center;
+    z-index: 50;
+}
+
+.info-tooltip-wrap:hover,
+.info-tooltip-wrap:focus-within {
+    z-index: 99999 !important;
+}
+
+/* Ensure any parent section or card elevates its stacking order when hovering tooltip */
+section:has(.info-tooltip-wrap:hover),
+section:has(.info-tooltip-wrap:focus-within),
+header:has(.info-tooltip-wrap:hover),
+header:has(.info-tooltip-wrap:focus-within),
+div:has(.info-tooltip-wrap:hover),
+div:has(.info-tooltip-wrap:focus-within) {
+    z-index: 9000 !important;
 }
 
 .info-tooltip-btn {
@@ -2542,15 +2567,15 @@ select.reports-input option {
     background: var(--bg-1, #0f172a);
     border: 1px solid var(--border-strong, rgba(255, 255, 255, 0.15));
     border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(56, 189, 248, 0.2);
     font-size: 0.8rem;
     line-height: 1.5;
     color: var(--text-2, #94a3b8);
-    z-index: 1000;
+    z-index: 999999 !important;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-4px);
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     pointer-events: none;
     text-align: left;
 }

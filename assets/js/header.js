@@ -304,7 +304,7 @@
 
                 <div class="spectra-drawer-footer">
                     <div>Press <code style="background: var(--bg-deep); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border);">Esc</code> to close</div>
-                    <div style="color: #38bdf8; font-weight: 600;">Spectra v2.5 Sandbox</div>
+                    <div style="color: #38bdf8; font-weight: 600;">Spectra v3.0.0 Sandbox</div>
                 </div>
             </aside>
         `;

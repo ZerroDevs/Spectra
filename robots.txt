@@ -1,0 +1,13 @@
+# ==============================================================================
+# Spectra Robots Specification
+# Automatically generated via scripts/generate-seo.js
+# ==============================================================================
+
+User-agent: *
+Allow: /
+Disallow: /404.html
+Disallow: /scratch/
+Disallow: /.git/
+
+# Canonical Sitemap
+Sitemap: https://zerrodevs.github.io/Spectra/sitemap.xml

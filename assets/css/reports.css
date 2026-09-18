@@ -9,6 +9,8 @@
 }
 
 .reports-layout-grid {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: 460px 1fr;
     gap: 24px;
