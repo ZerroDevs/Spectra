@@ -1363,10 +1363,17 @@ input[type="checkbox"][style*="--danger"]:checked {
 }
 
 .icon-btn.small {
-    padding: 2px 8px;
-    font-size: 0.75rem;
+    padding: 0 10px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    white-space: nowrap;
     border: 1px solid var(--glass-border);
-    margin-left: 10px;
+    border-radius: 6px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
 }
 
 .icon-btn:hover {
@@ -3590,13 +3597,139 @@ select option,
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-wrap: nowrap;
 }
+
+.pane-header-toolbar .icon-btn.small,
+.pane-primary-actions .icon-btn.small,
+.pane-btn {
+    width: auto !important;
+    min-width: max-content !important;
+    height: 28px !important;
+    padding: 0 10px !important;
+    margin: 0 !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 6px !important;
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    color: var(--text-1, #f8fafc);
+    transition: all 0.18s ease;
+    cursor: pointer;
+    line-height: 1;
+    box-sizing: border-box;
+}
+
+.pane-header-toolbar .icon-btn.small:hover,
+.pane-primary-actions .icon-btn.small:hover,
+.pane-btn:hover {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: #38bdf8;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+    transform: translateY(-1px);
+}
+
+/* Icon-only button (e.g. toggle-fullscreen-btn) */
+.pane-header-toolbar .icon-btn.small:has(svg:only-child),
+.pane-header-toolbar #toggle-fullscreen-btn {
+    width: 28px !important;
+    min-width: 28px !important;
+    padding: 0 !important;
+}
+
+[data-theme="light"] .pane-header-toolbar .icon-btn.small,
+[data-theme="light"] .pane-primary-actions .icon-btn.small,
+[data-theme="light"] .pane-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+}
+
+[data-theme="light"] .pane-header-toolbar .icon-btn.small:hover,
+[data-theme="light"] .pane-primary-actions .icon-btn.small:hover,
+[data-theme="light"] .pane-btn:hover {
+    background: #f1f5f9;
+    border-color: #0284c7;
+    color: #0f172a;
+    box-shadow: 0 0 8px rgba(2, 132, 199, 0.15);
+}
+
+/* Specific styling for Send button */
+.pane-header-toolbar #send-btn {
+    background: rgba(16, 185, 129, 0.1) !important;
+    border-color: rgba(16, 185, 129, 0.35) !important;
+    color: #34d399 !important;
+}
+
+.pane-header-toolbar #send-btn:hover {
+    background: rgba(16, 185, 129, 0.22) !important;
+    border-color: #10b981 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.35) !important;
+}
+
+[data-theme="light"] .pane-header-toolbar #send-btn {
+    background: rgba(16, 185, 129, 0.08) !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+    color: #059669 !important;
+}
+
+/* Specific styling for Copy & Clear in primary actions */
+.pane-primary-actions #copy-btn {
+    background: rgba(56, 189, 248, 0.15) !important;
+    border-color: rgba(56, 189, 248, 0.35) !important;
+    color: #38bdf8 !important;
+}
+
+.pane-primary-actions #clear-output-btn,
+.pane-primary-actions #clear-input-btn {
+    background: rgba(239, 68, 68, 0.08) !important;
+    border-color: rgba(239, 68, 68, 0.25) !important;
+    color: #f87171 !important;
+}
+
+.pane-primary-actions #clear-output-btn:hover,
+.pane-primary-actions #clear-input-btn:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: #ef4444 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* Specific styling for Stats button */
+.pane-header-toolbar #toggle-stats-btn.active {
+    background: rgba(56, 189, 248, 0.22) !important;
+    border-color: #38bdf8 !important;
+    color: #38bdf8 !important;
+}
+
+/* Chips in pane header */
 .pane-toolbar-chip {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    font-size: 0.85rem;
+    gap: 5px;
+    font-size: 0.78rem;
+    font-weight: 500;
     color: var(--text-muted);
+    white-space: nowrap;
+    padding: 3px 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s ease;
+}
+
+.pane-toolbar-chip:hover {
+    color: var(--text-1, #f8fafc);
+}
+
+[data-theme="light"] .pane-toolbar-chip:hover {
+    color: #0f172a;
 }
 
 /* ============================================
