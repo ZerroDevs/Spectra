@@ -46,25 +46,6 @@
         return `${base}_${wsId}`;
     }
 
-    const DEMO_SYNDICATE = [
-        { name: 'Alex_Hunter', id: '1042', rawLine: 'Alex_Hunter | 1042 (m)', isMain: true, isTwink: false, isGriefer: false, tags: 'Syndicate Boss' },
-        { name: 'Alex_Hunter_Alt', id: '1042', rawLine: 'Alex_Hunter_Alt | 1042 (t) | Fail-RP', isMain: false, isTwink: true, isGriefer: true, tags: 'Fail-RP' },
-        { name: 'Shadow_Hunter', id: '1042', rawLine: 'Shadow_Hunter | 1042 (t) | GR 3.1', isMain: false, isTwink: true, isGriefer: true, tags: 'GR 3.1 Insulting Parents' },
-        { name: 'Marcus_Vance', id: '2088', rawLine: 'Marcus_Vance | 2088 (m)', isMain: true, isTwink: false, isGriefer: false, tags: 'Arms Dealer' },
-        { name: 'Marcus_Vance_Twink', id: '2088', rawLine: 'Marcus_Vance_Twink | 2088 (t) | Provoking', isMain: false, isTwink: true, isGriefer: true, tags: 'Provoking' },
-        { name: 'Vance_Shooter', id: '2088', rawLine: 'Vance_Shooter | 2088 | DM', isMain: false, isTwink: false, isGriefer: true, tags: 'Deathmatch DM' },
-        { name: 'Elena_Rostova', id: '4419', rawLine: 'Elena_Rostova | 4419 (m)', isMain: true, isTwink: false, isGriefer: false, tags: 'Cartel Executive' },
-        { name: 'Elena_Ghost', id: '4419', rawLine: 'Elena_Ghost | 4419 (t)', isMain: false, isTwink: true, isGriefer: false, tags: 'Storage Mule' },
-        { name: 'Dmitri_Volkov', id: '5512', rawLine: 'Dmitri_Volkov | 5512 (m)', isMain: true, isTwink: false, isGriefer: false, tags: 'Bratva Boss' },
-        { name: 'Dmitri_V', id: '5512', rawLine: 'Dmitri_V | 5512 (t) | GR 3.2', isMain: false, isTwink: true, isGriefer: true, tags: 'GR 3.2 OOC Toxicity' },
-        { name: 'Volkov_Driver', id: '5512', rawLine: 'Volkov_Driver | 5512 | Non-RP', isMain: false, isTwink: false, isGriefer: true, tags: 'Non-RP Driving' },
-        { name: 'Ghost_Rider', id: '6103', rawLine: 'Ghost_Rider | 6103 (m)', isMain: true, isTwink: false, isGriefer: false, tags: 'Racer Leader' },
-        { name: 'Ghost_Shadow', id: '6103', rawLine: 'Ghost_Shadow | 6103 (t)', isMain: false, isTwink: true, isGriefer: false, tags: 'Scout Alt' },
-        { name: 'Tony_Montana', id: '7711', rawLine: 'Tony_Montana | 7711 (m)', isMain: true, isTwink: false, isGriefer: false, tags: 'Nightclub Front' },
-        { name: 'Tony_Montana_Alt', id: '7711', rawLine: 'Tony_Montana_Alt | 7711 (t)', isMain: false, isTwink: true, isGriefer: false, tags: 'Cashier Alt' },
-        { name: 'Reckless_Drifter', id: '9021', rawLine: 'Reckless_Drifter | 9021 | Fail-RP | Provoking', isMain: false, isTwink: false, isGriefer: true, tags: 'Fail-RP | Provoking' }
-    ];
-
     function getAvailableWorkspaces() {
         let list = parseJSON(lsGet(KEYS.workspaces, '[]'), []);
         if (!Array.isArray(list) || list.length === 0) {
@@ -87,7 +68,7 @@
 
     function parseAccountLine(rawLine) {
         const line = (rawLine || '').trim();
-        if (!line) return null;
+        if (!line || line.startsWith('//') || line.startsWith('#') || line.startsWith('`') || line.startsWith('---')) return null;
 
         let name = '';
         let cleanId = '';
@@ -135,7 +116,6 @@
         hoveredNode: null,
         animFrameId: null,
         running: true,
-        usingDemo: false,
         // Viewport transform
         zoom: 1,
         panX: 0,
@@ -184,7 +164,8 @@
             const tabs = parseJSON(tabsStr || '[]', []);
 
             tabs.forEach(tab => {
-                const lines = (tab.output || tab.input || '').split('\n');
+                const content = (tab.output && tab.output.trim()) ? tab.output : (tab.input || '');
+                const lines = content.split('\n');
 
                 lines.forEach(rawLine => {
                     const parsed = parseAccountLine(rawLine);
@@ -245,55 +226,6 @@
             });
         });
 
-        // 2. If user activated Demo mode OR no real accounts exist in storage
-        if (graph.usingDemo || realAccountsFound === 0) {
-            DEMO_SYNDICATE.forEach(demo => {
-                const nodeKey = `id:${demo.id}:${demo.name.toLowerCase()}`;
-                let existing = nodeMap.get(nodeKey);
-                if (!existing) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const dist = 70 + Math.random() * 260;
-
-                    existing = {
-                        key: nodeKey,
-                        name: demo.name,
-                        id: demo.id,
-                        rawLine: demo.rawLine,
-                        wsId: 'workspace-demo',
-                        wsName: 'Demo Syndicate',
-                        tabId: 'tab-demo',
-                        tabName: 'Incident Roster',
-                        classification: demo.isMain ? 'Main' : demo.isTwink ? 'Twink' : 'Unlabeled',
-                        isGriefer: demo.isGriefer,
-                        tags: demo.tags,
-                        x: (canvas ? canvas.width / 2 : 400) + Math.cos(angle) * dist,
-                        y: (canvas ? canvas.height / 2 : 300) + Math.sin(angle) * dist,
-                        vx: (Math.random() - 0.5) * 2,
-                        vy: (Math.random() - 0.5) * 2,
-                        radius: demo.isGriefer ? 13 : demo.isMain ? 12 : 9,
-                        color: demo.isGriefer ? '#ef4444' : demo.isMain ? '#06b6d4' : '#ec4899',
-                        connected: new Set()
-                    };
-
-                    nodes.push(existing);
-                    nodeMap.set(nodeKey, existing);
-                }
-
-                if (demo.id) {
-                    const cluster = idClusterMap.get(demo.id) || [];
-                    cluster.push(existing);
-                    idClusterMap.set(demo.id, cluster);
-                }
-
-                const rootName = demo.name.replace(/_?(alt|twink|m|t|main|\d+)$/i, '').toLowerCase().trim();
-                if (rootName.length >= 3) {
-                    const nameCluster = rootNameClusterMap.get(rootName) || [];
-                    nameCluster.push(existing);
-                    rootNameClusterMap.set(rootName, nameCluster);
-                }
-            });
-        }
-
         // Generate Edges between linked alts & twinks
         const edgeKeys = new Set();
         function addLink(nodeA, nodeB, reason) {
@@ -351,24 +283,6 @@
         }
 
         updateHUDStats();
-        updateDemoHUD();
-    }
-
-    function updateDemoHUD() {
-        const demoBtn = document.getElementById('hud-demo-btn');
-        if (demoBtn) {
-            if (graph.usingDemo) {
-                demoBtn.classList.add('btn-primary');
-                demoBtn.classList.remove('btn-secondary');
-                demoBtn.innerHTML = '⚡ Demo (Active)';
-                demoBtn.style.boxShadow = '0 0 12px rgba(6, 182, 212, 0.4)';
-            } else {
-                demoBtn.classList.remove('btn-primary');
-                demoBtn.classList.add('btn-secondary');
-                demoBtn.innerHTML = '⚡ Demo';
-                demoBtn.style.boxShadow = 'none';
-            }
-        }
     }
 
     function updateHUDStats() {
@@ -733,24 +647,18 @@
             });
         }
 
-        // Demo Buttons
-        const hudDemoBtn = document.getElementById('hud-demo-btn');
-        if (hudDemoBtn) {
-            hudDemoBtn.addEventListener('click', () => {
-                graph.usingDemo = !graph.usingDemo;
+        // Live Storage & Visibility Synchronization
+        window.addEventListener('storage', (e) => {
+            if (e.key && (e.key.startsWith(KEYS.tabs) || e.key === KEYS.workspaces)) {
                 buildGraphData();
-                showToast(graph.usingDemo ? '⚡ Demo Syndicate Network Activated' : 'Switched to Workspace Accounts');
-            });
-        }
+            }
+        });
 
-        const loadDemoOverlayBtn = document.getElementById('load-demo-overlay-btn');
-        if (loadDemoOverlayBtn) {
-            loadDemoOverlayBtn.addEventListener('click', () => {
-                graph.usingDemo = true;
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
                 buildGraphData();
-                showToast('⚡ Demo Syndicate Network Loaded');
-            });
-        }
+            }
+        });
 
         buildGraphData();
         renderFrame();
