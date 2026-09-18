@@ -249,10 +249,32 @@
                 <div class="pane" id="output-pane">
                     <div class="pane-header">
                         <div class="pane-header-main">
-                            <span class="pane-title">Output (Processed)</span>
-                            <div class="pane-primary-actions" style="display: flex; gap: 6px; align-items: center;">
-                                <button id="copy-btn" class="icon-btn small" style="background: rgba(56, 189, 248, 0.15); color: var(--primary-color); font-weight: 600;">Copy</button>
-                                <button id="clear-output-btn" class="icon-btn small" style="color: #ef4444;">Clear</button>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <span class="pane-title">Output (Processed)</span>
+                                <div class="pane-primary-actions" style="display: flex; gap: 6px; align-items: center;">
+                                    <button id="copy-btn" class="icon-btn small" style="background: rgba(56, 189, 248, 0.15); color: var(--primary-color); font-weight: 600;">Copy</button>
+                                    <button id="clear-output-btn" class="icon-btn small" style="color: #ef4444;">Clear</button>
+                                </div>
+                            </div>
+                            <div class="toggle-fullscreen-wrapper desktop-only">
+                                <button id="toggle-fullscreen-btn" class="icon-btn small toggle-fullscreen-btn" aria-label="Expand output area and hide input pane" title="Expand Output (closes Input area for full view)">
+                                    <svg id="toggle-fullscreen-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2"
+                                        fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                                    </svg>
+                                    <span id="toggle-fullscreen-label">Full View</span>
+                                </button>
+                                <div id="toggle-fullscreen-tooltip" class="toggle-fullscreen-tooltip" role="tooltip">
+                                    <div class="toggle-fs-tip-header">
+                                        <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                        </svg>
+                                        <span id="toggle-fs-tip-title">Full Output (Closes Input Area)</span>
+                                    </div>
+                                    <p id="toggle-fs-tip-body">Closes/hides the left Input area so Output fills the entire screen. Click again anytime to restore side-by-side view.</p>
+                                </div>
                             </div>
                         </div>
                         <div class="pane-header-toolbar">
@@ -300,14 +322,6 @@
                             <button id="copy-ids-btn" class="icon-btn small">Copy IDs</button>
                             <button id="copy-mt-ids-btn" class="icon-btn small" title="Copy only M/T tagged IDs">Copy M/T IDs</button>
                             <button id="send-btn" class="icon-btn small" title="Send to Discord">Send</button>
-                            <button id="toggle-fullscreen-btn" class="icon-btn small desktop-only" title="Toggle Fullscreen Output">
-                                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2"
-                                    fill="none">
-                                    <path
-                                        d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
-                                    </path>
-                                </svg>
-                            </button>
                         </div>
                     </div>
                     <div id="stats-bar" class="stats-bar" style="display: none;">

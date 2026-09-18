@@ -3634,12 +3634,137 @@ select option,
     transform: translateY(-1px);
 }
 
-/* Icon-only button (e.g. toggle-fullscreen-btn) */
-.pane-header-toolbar .icon-btn.small:has(svg:only-child),
-.pane-header-toolbar #toggle-fullscreen-btn {
+/* Icon-only button (fallback) */
+.pane-header-toolbar .icon-btn.small:has(svg:only-child) {
     width: 28px !important;
     min-width: 28px !important;
     padding: 0 !important;
+}
+
+/* Fullscreen / Focus Output Toggle & Tooltip */
+.toggle-fullscreen-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+#toggle-fullscreen-btn,
+.toggle-fullscreen-btn {
+    width: auto !important;
+    min-width: max-content !important;
+    height: 28px !important;
+    padding: 0 11px !important;
+    gap: 6px !important;
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.18) 0%, rgba(56, 189, 248, 0.08) 100%) !important;
+    border: 1px solid rgba(56, 189, 248, 0.45) !important;
+    color: #e0f2fe !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+
+#toggle-fullscreen-btn:hover,
+.toggle-fullscreen-btn:hover {
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.3) 0%, rgba(56, 189, 248, 0.16) 100%) !important;
+    border-color: #38bdf8 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+    transform: translateY(-1px);
+}
+
+/* Active State: When input pane is closed / full output active */
+#toggle-fullscreen-btn.active,
+.toggle-fullscreen-btn.active {
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.22) 0%, rgba(245, 158, 11, 0.1) 100%) !important;
+    border-color: rgba(245, 158, 11, 0.6) !important;
+    color: #fbbf24 !important;
+    box-shadow: 0 0 12px rgba(245, 158, 11, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+#toggle-fullscreen-btn.active:hover,
+.toggle-fullscreen-btn.active:hover {
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.32) 0%, rgba(245, 158, 11, 0.18) 100%) !important;
+    border-color: #f59e0b !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Tooltip component for Toggle Fullscreen */
+.toggle-fullscreen-tooltip {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 250px;
+    background: rgba(15, 23, 42, 0.98);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 12px rgba(56, 189, 248, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 10000;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+}
+
+.toggle-fullscreen-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: 14px;
+    width: 8px;
+    height: 8px;
+    background: rgba(15, 23, 42, 0.98);
+    border-left: 1px solid rgba(56, 189, 248, 0.35);
+    border-top: 1px solid rgba(56, 189, 248, 0.35);
+    transform: rotate(45deg);
+}
+
+.toggle-fullscreen-wrapper:not(.tooltip-hidden):hover .toggle-fullscreen-tooltip:not(.tooltip-hidden),
+.toggle-fullscreen-wrapper:not(.tooltip-hidden):focus-within .toggle-fullscreen-tooltip:not(.tooltip-hidden) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.toggle-fullscreen-tooltip.tooltip-hidden,
+.toggle-fullscreen-wrapper.tooltip-hidden .toggle-fullscreen-tooltip {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(-4px) !important;
+}
+
+.toggle-fs-tip-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #38bdf8;
+    margin-bottom: 4px;
+}
+
+.toggle-fs-tip-header svg {
+    flex-shrink: 0;
+    color: #38bdf8;
+}
+
+.toggle-fullscreen-tooltip p {
+    font-size: 0.74rem;
+    line-height: 1.38;
+    color: #cbd5e1;
+    margin: 0;
+    white-space: normal;
 }
 
 [data-theme="light"] .pane-header-toolbar .icon-btn.small,
@@ -3706,6 +3831,55 @@ select option,
     background: rgba(56, 189, 248, 0.22) !important;
     border-color: #38bdf8 !important;
     color: #38bdf8 !important;
+}
+
+/* Light Theme for Fullscreen Button and Tooltip */
+[data-theme="light"] #toggle-fullscreen-btn,
+[data-theme="light"] .toggle-fullscreen-btn {
+    background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%) !important;
+    border: 1px solid rgba(2, 132, 199, 0.4) !important;
+    color: #0284c7 !important;
+    box-shadow: 0 1px 4px rgba(2, 132, 199, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    text-shadow: none !important;
+}
+
+[data-theme="light"] #toggle-fullscreen-btn:hover,
+[data-theme="light"] .toggle-fullscreen-btn:hover {
+    background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+    border-color: #0284c7 !important;
+    color: #0369a1 !important;
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.22), inset 0 1px 0 #ffffff !important;
+}
+
+[data-theme="light"] #toggle-fullscreen-btn.active,
+[data-theme="light"] .toggle-fullscreen-btn.active {
+    background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%) !important;
+    border-color: #d97706 !important;
+    color: #b45309 !important;
+    box-shadow: 0 1px 5px rgba(217, 119, 6, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+[data-theme="light"] .toggle-fullscreen-tooltip {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 0 12px rgba(2, 132, 199, 0.12);
+}
+
+[data-theme="light"] .toggle-fullscreen-tooltip::before {
+    background: #ffffff;
+    border-color: #cbd5e1;
+}
+
+[data-theme="light"] .toggle-fs-tip-header {
+    color: #0284c7;
+}
+
+[data-theme="light"] .toggle-fs-tip-header svg {
+    color: #0284c7;
+}
+
+[data-theme="light"] .toggle-fullscreen-tooltip p {
+    color: #475569;
 }
 
 /* Chips in pane header */

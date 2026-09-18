@@ -2607,20 +2607,78 @@ applyEditorTheme();
 
 const inputPane = document.getElementById('input-pane');
 
-toggleFullscreenBtn.onclick = () => {
-    const isFullscreen = editorContainer.classList.toggle('fullscreen-mode');
+if (toggleFullscreenBtn) {
+    const toggleFullscreenLabel = document.getElementById('toggle-fullscreen-label');
+    const toggleFullscreenIcon = document.getElementById('toggle-fullscreen-icon');
+    const toggleFsTipTitle = document.getElementById('toggle-fs-tip-title');
+    const toggleFsTipBody = document.getElementById('toggle-fs-tip-body');
 
-    if (isFullscreen) {
-        inputPane.style.display = 'none';
-        editorContainer.style.gridTemplateColumns = '1fr';
-        toggleFullscreenBtn.classList.add('active');
-    } else {
-        inputPane.style.display = 'flex';
-        editorContainer.style.gridTemplateColumns = '1fr 1fr';
-        toggleFullscreenBtn.classList.remove('active');
+    function setFullscreenMode(isFullscreen, notify = false) {
+        if (isFullscreen) {
+            editorContainer.classList.add('fullscreen-mode');
+            editorContainer.classList.add('fullscreen-output');
+            inputPane.style.display = 'none';
+            editorContainer.style.gridTemplateColumns = '1fr';
+            toggleFullscreenBtn.classList.add('active');
+            if (toggleFullscreenLabel) toggleFullscreenLabel.textContent = 'Restore Input';
+            if (toggleFullscreenIcon) {
+                // Split view restore icon
+                toggleFullscreenIcon.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line>';
+            }
+            if (toggleFsTipTitle) toggleFsTipTitle.textContent = 'Restore Split View';
+            if (toggleFsTipBody) toggleFsTipBody.textContent = 'Brings back the Input area and restores side-by-side editing.';
+            toggleFullscreenBtn.setAttribute('title', 'Restore Input Area (return to split view)');
+            if (notify && typeof showUndoToast === 'function') {
+                showUndoToast('Full View: Input hidden', null, 2500);
+            }
+        } else {
+            editorContainer.classList.remove('fullscreen-mode');
+            editorContainer.classList.remove('fullscreen-output');
+            inputPane.style.display = 'flex';
+            editorContainer.style.gridTemplateColumns = '1fr 1fr';
+            toggleFullscreenBtn.classList.remove('active');
+            if (toggleFullscreenLabel) toggleFullscreenLabel.textContent = 'Full View';
+            if (toggleFullscreenIcon) {
+                // Expand icon
+                toggleFullscreenIcon.innerHTML = '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>';
+            }
+            if (toggleFsTipTitle) toggleFsTipTitle.textContent = 'Full Output (Closes Input Area)';
+            if (toggleFsTipBody) toggleFsTipBody.textContent = 'Closes/hides the left Input area so Output fills the entire screen. Click again anytime to restore side-by-side view.';
+            toggleFullscreenBtn.setAttribute('title', 'Expand Output (closes Input area for full view)');
+            if (notify && typeof showUndoToast === 'function') {
+                showUndoToast('Split View: Input restored', null, 2500);
+            }
+        }
+        syncVisuals();
     }
-    syncVisuals();
-};
+
+    // Restore saved state from localStorage on load
+    const savedFullscreenState = localStorage.getItem(getWorkspaceStorageKey('multiCheckFullscreen')) === 'true';
+    if (savedFullscreenState) {
+        setFullscreenMode(true, false);
+    }
+
+    const toggleFsTooltip = document.getElementById('toggle-fullscreen-tooltip');
+    const toggleFsWrapper = toggleFullscreenBtn.closest('.toggle-fullscreen-wrapper');
+
+    toggleFullscreenBtn.onclick = () => {
+        // Immediately dismiss tooltip on click so it doesn't linger over button
+        if (toggleFsTooltip) toggleFsTooltip.classList.add('tooltip-hidden');
+        if (toggleFsWrapper) toggleFsWrapper.classList.add('tooltip-hidden');
+        toggleFullscreenBtn.blur();
+
+        const nextState = !editorContainer.classList.contains('fullscreen-mode');
+        localStorage.setItem(getWorkspaceStorageKey('multiCheckFullscreen'), nextState);
+        setFullscreenMode(nextState, true);
+    };
+
+    if (toggleFsWrapper) {
+        toggleFsWrapper.addEventListener('mouseleave', () => {
+            if (toggleFsTooltip) toggleFsTooltip.classList.remove('tooltip-hidden');
+            toggleFsWrapper.classList.remove('tooltip-hidden');
+        });
+    }
+}
 
 const trueFullscreenBtn = document.getElementById('true-fullscreen-btn');
 const outputPane = document.getElementById('output-pane');
@@ -4007,25 +4065,7 @@ renameModal.addEventListener('click', (e) => {
     if (e.target === renameModal) closeRenameModal();
 });
 
-let isFullscreen = localStorage.getItem(getWorkspaceStorageKey('multiCheckFullscreen')) === 'true';
 
-function updateFullscreenState() {
-    if (isFullscreen) {
-        editorContainer.classList.add('fullscreen-output');
-        toggleFullscreenBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path></svg>';
-    } else {
-        editorContainer.classList.remove('fullscreen-output');
-        toggleFullscreenBtn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>';
-    }
-}
-
-toggleFullscreenBtn.onclick = () => {
-    isFullscreen = !isFullscreen;
-    localStorage.setItem(getWorkspaceStorageKey('multiCheckFullscreen'), isFullscreen);
-    updateFullscreenState();
-};
-
-updateFullscreenState();
 
 if (dashboardBtn) {
     dashboardBtn.onclick = () => {
