@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="100%" height="100%">
+  <!-- Base Container -->
+  <rect width="600" height="360" rx="16" fill="#0b0f17"/>
+  <rect x="1" y="1" width="598" height="358" rx="15" fill="none" stroke="#1e293b" stroke-width="1.5"/>
+
+  <!-- Radar Circles -->
+  <g transform="translate(300, 170)">
+    <circle cx="0" cy="0" r="120" fill="none" stroke="#1e293b" stroke-width="1.2" stroke-dasharray="6 6"/>
+    <circle cx="0" cy="0" r="85" fill="none" stroke="#1e293b" stroke-width="1.2"/>
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#334155" stroke-width="1.2"/>
+    <circle cx="0" cy="0" r="18" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+    <circle cx="0" cy="0" r="6" fill="#38bdf8"/>
+
+    <!-- Crosshair Lines -->
+    <line x1="-140" y1="0" x2="-25" y2="0" stroke="#1e293b" stroke-width="1"/>
+    <line x1="25" y1="0" x2="140" y2="0" stroke="#1e293b" stroke-width="1"/>
+    <line x1="0" y1="-140" x2="0" y2="-25" stroke="#1e293b" stroke-width="1"/>
+    <line x1="0" y1="25" x2="0" y2="140" stroke="#1e293b" stroke-width="1"/>
+
+    <!-- Scanning Ray Indicator (Muted Ice Blue) -->
+    <line x1="0" y1="0" x2="78" y2="-78" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="78" cy="-78" r="4" fill="#38bdf8"/>
+
+    <!-- Disconnected Node Indicators -->
+    <circle cx="-65" cy="45" r="3.5" fill="#64748b"/>
+    <line x1="-65" y1="45" x2="-45" y2="35" stroke="#64748b" stroke-width="1" stroke-dasharray="2 2"/>
+
+    <circle cx="85" cy="55" r="3.5" fill="#ef4444"/>
+    <circle cx="85" cy="55" r="7" fill="none" stroke="#ef4444" stroke-width="0.8" opacity="0.6"/>
+
+    <path d="M -90 -60 L -70 -45" stroke="#64748b" stroke-width="1" stroke-dasharray="3 3"/>
+  </g>
+
+  <!-- Bottom Subtitle Badge -->
+  <g transform="translate(300, 315)">
+    <rect x="-85" y="-12" width="170" height="24" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+    <circle cx="-65" cy="0" r="3" fill="#ef4444"/>
+    <text x="-52" y="4" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="11" font-weight="600">SIGNAL LOST · 404</text>
+  </g>
+</svg>

@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <!-- Background Base -->
+  <rect width="800" height="450" rx="16" fill="#0b0f17"/>
+  <rect x="1" y="1" width="798" height="448" rx="15" fill="none" stroke="#1e293b" stroke-width="1.5"/>
+
+  <!-- Top Window Header -->
+  <rect x="30" y="25" width="740" height="36" rx="8" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+  <circle cx="50" cy="43" r="5" fill="#ef4444" opacity="0.8"/>
+  <circle cx="66" cy="43" r="5" fill="#f59e0b" opacity="0.8"/>
+  <circle cx="82" cy="43" r="5" fill="#10b981" opacity="0.8"/>
+  <text x="400" y="47" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12" font-weight="600" text-anchor="middle">workspace.html · Inspector Dual-Pane Normalizer</text>
+
+  <!-- Left Editor: Raw Input -->
+  <g transform="translate(30, 75)">
+    <rect width="350" height="340" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+
+    <!-- Tab Header -->
+    <path d="M 0 10 Q 0 0 10 0 L 120 0 Q 130 0 130 10 L 130 32 L 0 32 Z" fill="#1e293b"/>
+    <text x="16" y="20" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="11" font-weight="600">Raw Input (Dump)</text>
+
+    <!-- Code Lines -->
+    <g font-family="'JetBrains Mono', monospace" font-size="12">
+      <!-- Line 1 -->
+      <text x="16" y="65" fill="#475569">01</text>
+      <text x="45" y="65" fill="#94a3b8">Alex_Hunter 1042</text>
+
+      <!-- Line 2 -->
+      <text x="16" y="95" fill="#475569">02</text>
+      <text x="45" y="95" fill="#94a3b8">Shadow_Hunter 1042 Alt</text>
+
+      <!-- Line 3 -->
+      <text x="16" y="125" fill="#475569">03</text>
+      <text x="45" y="125" fill="#94a3b8">Marcus_Vance 2088</text>
+
+      <!-- Line 4 -->
+      <text x="16" y="155" fill="#475569">04</text>
+      <text x="45" y="155" fill="#94a3b8">Vance_Shooter 2088 DM</text>
+
+      <!-- Line 5 -->
+      <text x="16" y="185" fill="#475569">05</text>
+      <text x="45" y="185" fill="#94a3b8">Elena_Rostova 4419</text>
+
+      <!-- Line 6 -->
+      <text x="16" y="215" fill="#475569">06</text>
+      <text x="45" y="215" fill="#94a3b8">Elena_Ghost 4419 Storage</text>
+
+      <!-- Line 7 -->
+      <text x="16" y="245" fill="#475569">07</text>
+      <text x="45" y="245" fill="#94a3b8">Dmitri_Volkov 5512</text>
+
+      <!-- Line 8 -->
+      <text x="16" y="275" fill="#475569">08</text>
+      <text x="45" y="275" fill="#94a3b8">Dmitri_V 5512 Toxicity</text>
+    </g>
+
+    <!-- Bottom Status -->
+    <rect x="0" y="310" width="350" height="30" rx="0 0 10 10" fill="#0b0f17"/>
+    <text x="16" y="328" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="11">Input Buffer · 8 lines</text>
+  </g>
+
+  <!-- Central Processing Indicator -->
+  <g transform="translate(385, 230)">
+    <circle cx="15" cy="0" r="14" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+    <polygon points="12,-6 20,0 12,6" fill="#38bdf8"/>
+  </g>
+
+  <!-- Right Editor: Sanitized Output & Command Matrix -->
+  <g transform="translate(420, 75)">
+    <rect width="350" height="340" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+
+    <!-- Tab Header -->
+    <path d="M 0 10 Q 0 0 10 0 L 130 0 Q 140 0 140 10 L 140 32 L 0 32 Z" fill="#1e293b"/>
+    <text x="16" y="20" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="11" font-weight="700">Normalized Output</text>
+
+    <!-- Code Lines -->
+    <g font-family="'JetBrains Mono', monospace" font-size="12">
+      <!-- Line 1 -->
+      <text x="16" y="65" fill="#475569">01</text>
+      <text x="45" y="65" fill="#f8fafc">Alex_Hunter | 1042 <tspan fill="#38bdf8">(m)</tspan></text>
+
+      <!-- Line 2 -->
+      <text x="16" y="95" fill="#475569">02</text>
+      <text x="45" y="95" fill="#f8fafc">Shadow_Hunter | 1042 <tspan fill="#64748b">(t)</tspan></text>
+
+      <!-- Line 3 -->
+      <text x="16" y="125" fill="#475569">03</text>
+      <text x="45" y="125" fill="#f8fafc">Marcus_Vance | 2088 <tspan fill="#38bdf8">(m)</tspan></text>
+
+      <!-- Line 4 -->
+      <text x="16" y="155" fill="#475569">04</text>
+      <text x="45" y="155" fill="#f8fafc">Vance_Shooter | 2088 | <tspan fill="#ef4444">DM !!</tspan></text>
+
+      <!-- Line 5 -->
+      <text x="16" y="185" fill="#475569">05</text>
+      <text x="45" y="185" fill="#f8fafc">Elena_Rostova | 4419 <tspan fill="#38bdf8">(m)</tspan></text>
+
+      <!-- Line 6 -->
+      <text x="16" y="215" fill="#475569">06</text>
+      <text x="45" y="215" fill="#f8fafc">Elena_Ghost | 4419 <tspan fill="#64748b">(t)</tspan></text>
+
+      <!-- Line 7 -->
+      <text x="16" y="245" fill="#475569">07</text>
+      <text x="45" y="245" fill="#f8fafc">Dmitri_Volkov | 5512 <tspan fill="#38bdf8">(m)</tspan></text>
+
+      <!-- Line 8 -->
+      <text x="16" y="275" fill="#475569">08</text>
+      <text x="45" y="275" fill="#f8fafc">Dmitri_V | 5512 <tspan fill="#64748b">(t)</tspan> | <tspan fill="#ef4444">Toxic !!</tspan></text>
+    </g>
+
+    <!-- Bottom Status -->
+    <rect x="0" y="310" width="350" height="30" rx="0 0 10 10" fill="#0b0f17"/>
+    <text x="16" y="328" fill="#10b981" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="11" font-weight="600">✓ Parsed &amp; Discord-Ready</text>
+  </g>
+</svg>

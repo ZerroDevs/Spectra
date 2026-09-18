@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="chartGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="800" height="450" rx="16" fill="#0b0f17"/>
+  <rect x="1" y="1" width="798" height="448" rx="15" fill="none" stroke="#1e293b" stroke-width="1.5"/>
+
+  <!-- Top Metric Cards -->
+  <g transform="translate(40, 36)">
+    <!-- Card 1 -->
+    <rect width="220" height="74" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+    <circle cx="28" cy="28" r="5" fill="#38bdf8"/>
+    <text x="42" y="32" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12" font-weight="600">SYSTEM HEALTH</text>
+    <text x="24" y="60" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="20" font-weight="700">99.8%</text>
+    <text x="96" y="60" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12" font-weight="600">OPTIMAL</text>
+
+    <!-- Card 2 -->
+    <rect x="250" width="220" height="74" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+    <circle cx="278" cy="28" r="5" fill="#38bdf8"/>
+    <text x="292" y="32" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12" font-weight="600">ACCOUNTS AUDITED</text>
+    <text x="274" y="60" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="20" font-weight="700">14,820</text>
+    <text x="368" y="60" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12" font-weight="500">RECORDS</text>
+
+    <!-- Card 3 -->
+    <rect x="500" width="220" height="74" rx="10" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+    <circle cx="528" cy="28" r="5" fill="#10b981"/>
+    <text x="542" y="32" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12" font-weight="600">LOCAL LATENCY</text>
+    <text x="524" y="60" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="20" font-weight="700">0.4 ms</text>
+    <text x="600" y="60" fill="#10b981" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12" font-weight="600">SANDBOX</text>
+  </g>
+
+  <!-- Main Telemetry Chart Panel -->
+  <g transform="translate(40, 134)">
+    <rect width="470" height="276" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+
+    <!-- Chart Header -->
+    <text x="24" y="34" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="14" font-weight="700">Telemetry Frequency &amp; Activity</text>
+    <text x="24" y="52" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="11">Real-time account log throughput</text>
+
+    <!-- Grid Lines -->
+    <line x1="24" y1="85" x2="446" y2="85" stroke="#1e293b" stroke-width="1" stroke-dasharray="4 4"/>
+    <line x1="24" y1="135" x2="446" y2="135" stroke="#1e293b" stroke-width="1" stroke-dasharray="4 4"/>
+    <line x1="24" y1="185" x2="446" y2="185" stroke="#1e293b" stroke-width="1" stroke-dasharray="4 4"/>
+    <line x1="24" y1="235" x2="446" y2="235" stroke="#1e293b" stroke-width="1"/>
+
+    <!-- Area Fill -->
+    <path d="M 24 210 Q 75 160 120 180 T 210 130 T 300 155 T 390 95 L 446 115 L 446 235 L 24 235 Z" fill="url(#chartGlow)"/>
+
+    <!-- Line Path -->
+    <path d="M 24 210 Q 75 160 120 180 T 210 130 T 300 155 T 390 95 L 446 115" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Data Points -->
+    <circle cx="120" cy="180" r="4" fill="#38bdf8" stroke="#0f172a" stroke-width="2"/>
+    <circle cx="210" cy="130" r="4" fill="#38bdf8" stroke="#0f172a" stroke-width="2"/>
+    <circle cx="300" cy="155" r="4" fill="#38bdf8" stroke="#0f172a" stroke-width="2"/>
+    <circle cx="390" cy="95" r="4" fill="#38bdf8" stroke="#0f172a" stroke-width="2"/>
+  </g>
+
+  <!-- Side Distribution Panel -->
+  <g transform="translate(534, 134)">
+    <rect width="226" height="276" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+    <text x="20" y="34" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="14" font-weight="700">Account Classification</text>
+    <text x="20" y="52" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="11">Categorical ratio</text>
+
+    <!-- Bar 1 -->
+    <text x="20" y="92" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12">Main Accounts (M)</text>
+    <text x="186" y="92" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12" font-weight="700">62%</text>
+    <rect x="20" y="102" width="186" height="8" rx="4" fill="#1e293b"/>
+    <rect x="20" y="102" width="115" height="8" rx="4" fill="#38bdf8"/>
+
+    <!-- Bar 2 -->
+    <text x="20" y="142" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12">Twink / Alternate (T)</text>
+    <text x="186" y="142" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12" font-weight="700">28%</text>
+    <rect x="20" y="152" width="186" height="8" rx="4" fill="#1e293b"/>
+    <rect x="20" y="152" width="52" height="8" rx="4" fill="#64748b"/>
+
+    <!-- Bar 3 -->
+    <text x="20" y="192" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12">Flagged Griefers</text>
+    <text x="186" y="192" fill="#ef4444" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12" font-weight="700">10%</text>
+    <rect x="20" y="202" width="186" height="8" rx="4" fill="#1e293b"/>
+    <rect x="20" y="202" width="19" height="8" rx="4" fill="#ef4444"/>
+
+    <!-- Mini Indicator -->
+    <rect x="20" y="234" width="186" height="28" rx="6" fill="#1e293b" stroke="none"/>
+    <circle cx="34" cy="248" r="4" fill="#10b981"/>
+    <text x="46" y="252" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="11" font-weight="500">Heuristics Engine Sync</text>
+  </g>
+</svg>

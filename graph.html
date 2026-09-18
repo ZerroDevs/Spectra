@@ -180,15 +180,9 @@
 
             <!-- Empty State Overlay -->
             <div class="graph-empty-overlay" id="graph-empty-overlay" style="display: none;">
-                <div class="graph-empty-box">
-                    <div class="graph-empty-icon">
-                        <svg viewBox="0 0 24 24" width="32" height="32" stroke="#22d3ee" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                        </svg>
+                <div class="graph-empty-box" style="max-width: 480px;">
+                    <div class="graph-empty-preview" style="border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 16px; box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.5);">
+                        <img src="assets/images/showcase/network_graph.jpg" alt="Spectra Network Alt Graph Preview" style="width: 100%; height: auto; display: block;">
                     </div>
                     <h3>No Records Found</h3>
                     <p>Your workspace tabs don't contain any account logs yet. Process logs in the Workspace to visualize identity networks and alts in real-time.</p>

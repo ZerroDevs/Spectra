@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="100%" height="100%">
+  <!-- Background Base -->
+  <rect width="800" height="450" rx="16" fill="#0b0f17"/>
+  <rect x="1" y="1" width="798" height="448" rx="15" fill="none" stroke="#1e293b" stroke-width="1.5"/>
+
+  <!-- Title Header -->
+  <text x="50" y="55" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="18" font-weight="700">Spectra Architecture Overview</text>
+  <text x="50" y="76" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12">100% Client-Side Isolated Sandbox Topology</text>
+
+  <!-- Layer 1: Client Interface -->
+  <g transform="translate(50, 105)">
+    <rect width="700" height="85" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1.2"/>
+    <rect x="24" y="24" width="38" height="38" rx="8" fill="#1e293b"/>
+    <circle cx="43" cy="43" r="8" fill="#38bdf8"/>
+    <text x="78" y="38" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="15" font-weight="700">Presentation &amp; Inspector Interface</text>
+    <text x="78" y="56" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12">Live Mirror Editor · Interactive Force Graph · Command Synthesis · Visual Diff</text>
+    <rect x="580" y="30" width="96" height="26" rx="6" fill="#1e293b"/>
+    <text x="628" y="47" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="11" font-weight="600" text-anchor="middle">DOM / Canvas</text>
+  </g>
+
+  <!-- Connectors Layer 1 to 2 -->
+  <line x1="400" y1="190" x2="400" y2="215" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4 4"/>
+  <polygon points="400,218 396,211 404,211" fill="#38bdf8"/>
+
+  <!-- Layer 2: Core Heuristics & Processing Engine -->
+  <g transform="translate(50, 220)">
+    <rect width="700" height="85" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1.2"/>
+    <rect x="24" y="24" width="38" height="38" rx="8" fill="#1e293b"/>
+    <rect x="36" y="36" width="14" height="14" rx="2" fill="#10b981"/>
+    <text x="78" y="38" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="15" font-weight="700">Forensics &amp; Moderation Rule Engine</text>
+    <text x="78" y="56" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12">Main/Twink Heuristics · Serial Identifier Grouping · Griefer Tag Matrix · AES-256 Crypto</text>
+    <rect x="580" y="30" width="96" height="26" rx="6" fill="#1e293b"/>
+    <text x="628" y="47" fill="#10b981" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="11" font-weight="600" text-anchor="middle">Pure ECMAScript</text>
+  </g>
+
+  <!-- Connectors Layer 2 to 3 -->
+  <line x1="400" y1="305" x2="400" y2="330" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4 4"/>
+  <polygon points="400,333 396,326 404,326" fill="#38bdf8"/>
+
+  <!-- Layer 3: Persistence & Storage Sandbox -->
+  <g transform="translate(50, 335)">
+    <rect width="700" height="85" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1.2"/>
+    <rect x="24" y="24" width="38" height="38" rx="8" fill="#1e293b"/>
+    <ellipse cx="43" cy="38" rx="7" ry="3" fill="#38bdf8"/>
+    <path d="M36 38 v8 c0 1.6 3.1 3 7 3 s7 -1.4 7 -3 v-8" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="78" y="38" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="15" font-weight="700">Isolated Local Storage &amp; Backup Vault</text>
+    <text x="78" y="56" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="12">Browser Partitioned Tenancy · Tab State Snapshots · Zero Server Uploads · Strict Privacy</text>
+    <rect x="580" y="30" width="96" height="26" rx="6" fill="#1e293b"/>
+    <text x="628" y="47" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif" font-size="11" font-weight="600" text-anchor="middle">Local Storage</text>
+  </g>
+</svg>

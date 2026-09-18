@@ -195,83 +195,88 @@
 
         <!-- Primary Workspace Launchpad Banner -->
         <section class="workspace-launchpad" aria-label="Primary Platform Workspace">
-            <div class="launchpad-content">
-                <div class="launchpad-badge">
-                    <span class="pulse-dot"></span>
-                    <span>Core Platform Engine · Active</span>
-                </div>
-                <h2 class="launchpad-title">
-                    <span>Spectra Intelligence Workspace</span>
-                </h2>
-                <p class="launchpad-desc">
-                    The central workbench of Spectra. Cleanse unstructured player logs, classify forensic identities, format Discord markdown records, and execute automated moderation commands (/ban &amp; /unban) across isolated browser workspaces.
-                </p>
-                <div class="launchpad-actions">
-                    <a href="workspace.html#main" class="btn-launch-main" id="launch-workspace-main-btn" title="Open Inspector Workspace (#main)">
-                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                        <span>Launch Workspace Engine</span>
-                        <span class="btn-route-badge">#main</span>
-                    </a>
-                    <a href="workspace.html#ban" class="btn-launch-secondary" id="launch-ban-gen-btn" title="Open Ban Command Matrix (#ban)">
-                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                        </svg>
-                        <span>Open Command Matrix (/ban)</span>
-                        <span class="btn-route-badge badge-amber">#ban</span>
-                    </a>
-                </div>
-                <div class="launchpad-route-bar" aria-label="Direct Workspace Route Tags">
-                    <div class="route-bar-header">
-                        <span class="route-bar-title">
-                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line></svg>
-                            Direct Workspace Tags &amp; Deep Links:
-                        </span>
-                        <span class="route-bar-hint">Click any tag to launch directly into that workspace page</span>
+            <div style="display: flex; gap: 32px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                <div class="launchpad-content" style="flex: 1; min-width: 300px;">
+                    <div class="launchpad-badge">
+                        <span class="pulse-dot"></span>
+                        <span>Core Platform Engine · Active</span>
                     </div>
-                    <div class="route-tags-list">
-                        <a href="workspace.html#main" class="route-tag-pill active" title="Open Main Inspector View (#main)">
-                            <code class="tag-code">#main</code>
-                            <span>Inspector</span>
+                    <h2 class="launchpad-title">
+                        <span>Spectra Intelligence Workspace</span>
+                    </h2>
+                    <p class="launchpad-desc">
+                        The central workbench of Spectra. Cleanse unstructured player logs, classify forensic identities, format Discord markdown records, and execute automated moderation commands (/ban &amp; /unban) across isolated browser workspaces.
+                    </p>
+                    <div class="launchpad-actions">
+                        <a href="workspace.html#main" class="btn-launch-main" id="launch-workspace-main-btn" title="Open Inspector Workspace (#main)">
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                            <span>Launch Workspace Engine</span>
+                            <span class="btn-route-badge">#main</span>
                         </a>
-                        <a href="workspace.html#ban" class="route-tag-pill tag-amber" title="Open Ban Command Matrix (#ban)">
-                            <code class="tag-code">#ban</code>
-                            <span>Ban Generator</span>
-                        </a>
-                        <a href="workspace.html#workspaces" class="route-tag-pill tag-green" title="Open Workspaces &amp; Tenancy Manager (#workspaces)">
-                            <code class="tag-code">#workspaces</code>
-                            <span>Workspaces</span>
-                        </a>
-                        <a href="workspace.html#groups" class="route-tag-pill tag-red" title="Open Tag Groups Manager (#groups)">
-                            <code class="tag-code">#groups</code>
-                            <span>Tag Groups</span>
-                        </a>
-                        <a href="workspace.html#archive" class="route-tag-pill tag-slate" title="Open Archived Tabs Vault (#archive)">
-                            <code class="tag-code">#archive</code>
-                            <span>Archive Vault</span>
-                        </a>
-                        <a href="workspace.html#presets" class="route-tag-pill tag-cyan" title="Open Ban Preset Builder (#presets)">
-                            <code class="tag-code">#presets</code>
-                            <span>Preset Builder</span>
-                        </a>
-                        <a href="workspace.html#duplicates" class="route-tag-pill tag-violet" title="Open Deduplication Tool (#duplicates)">
-                            <code class="tag-code">#duplicates</code>
-                            <span>Deduplicate</span>
-                        </a>
-                        <a href="workspace.html#merge" class="route-tag-pill tag-emerald" title="Open Merge New Data Tool (#merge)">
-                            <code class="tag-code">#merge</code>
-                            <span>Merge Data</span>
+                        <a href="workspace.html#ban" class="btn-launch-secondary" id="launch-ban-gen-btn" title="Open Ban Command Matrix (#ban)">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                            <span>Open Command Matrix (/ban)</span>
+                            <span class="btn-route-badge badge-amber">#ban</span>
                         </a>
                     </div>
+                    <div class="launchpad-route-bar" aria-label="Direct Workspace Route Tags">
+                        <div class="route-bar-header">
+                            <span class="route-bar-title">
+                                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line></svg>
+                                Direct Workspace Tags &amp; Deep Links:
+                            </span>
+                            <span class="route-bar-hint">Click any tag to launch directly into that workspace page</span>
+                        </div>
+                        <div class="route-tags-list">
+                            <a href="workspace.html#main" class="route-tag-pill active" title="Open Main Inspector View (#main)">
+                                <code class="tag-code">#main</code>
+                                <span>Inspector</span>
+                            </a>
+                            <a href="workspace.html#ban" class="route-tag-pill tag-amber" title="Open Ban Command Matrix (#ban)">
+                                <code class="tag-code">#ban</code>
+                                <span>Ban Generator</span>
+                            </a>
+                            <a href="workspace.html#workspaces" class="route-tag-pill tag-green" title="Open Workspaces &amp; Tenancy Manager (#workspaces)">
+                                <code class="tag-code">#workspaces</code>
+                                <span>Workspaces</span>
+                            </a>
+                            <a href="workspace.html#groups" class="route-tag-pill tag-red" title="Open Tag Groups Manager (#groups)">
+                                <code class="tag-code">#groups</code>
+                                <span>Tag Groups</span>
+                            </a>
+                            <a href="workspace.html#archive" class="route-tag-pill tag-slate" title="Open Archived Tabs Vault (#archive)">
+                                <code class="tag-code">#archive</code>
+                                <span>Archive Vault</span>
+                            </a>
+                            <a href="workspace.html#presets" class="route-tag-pill tag-cyan" title="Open Ban Preset Builder (#presets)">
+                                <code class="tag-code">#presets</code>
+                                <span>Preset Builder</span>
+                            </a>
+                            <a href="workspace.html#duplicates" class="route-tag-pill tag-violet" title="Open Deduplication Tool (#duplicates)">
+                                <code class="tag-code">#duplicates</code>
+                                <span>Deduplicate</span>
+                            </a>
+                            <a href="workspace.html#merge" class="route-tag-pill tag-emerald" title="Open Merge New Data Tool (#merge)">
+                                <code class="tag-code">#merge</code>
+                                <span>Merge Data</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="launchpad-tags">
+                        <span class="launch-tag">Log Normalizer</span>
+                        <span class="launch-tag">Discord Markdown</span>
+                        <span class="launch-tag">/ban &amp; /unban Commands</span>
+                        <span class="launch-tag">Multi-Tab Workspaces</span>
+                        <span class="launch-tag">Fast Serial Copy</span>
+                        <span class="launch-tag">100% Client-Side Sandbox</span>
+                    </div>
                 </div>
-                <div class="launchpad-tags">
-                    <span class="launch-tag">Log Normalizer</span>
-                    <span class="launch-tag">Discord Markdown</span>
-                    <span class="launch-tag">/ban &amp; /unban Commands</span>
-                    <span class="launch-tag">Multi-Tab Workspaces</span>
-                    <span class="launch-tag">Fast Serial Copy</span>
-                    <span class="launch-tag">100% Client-Side Sandbox</span>
+                <div class="launchpad-showcase-visual" style="flex: 0 0 360px; max-width: 100%; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.5); background: #0b0f17;">
+                    <img src="assets/images/showcase/dashboard_overview.jpg" alt="Spectra Dashboard Overview Preview" style="width: 100%; height: auto; display: block; object-fit: cover;">
                 </div>
             </div>
         </section>
